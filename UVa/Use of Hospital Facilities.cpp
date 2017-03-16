@@ -47,12 +47,16 @@ int main()
         roomInfo[roomID].avilT = minT + patients[i].surgT + prepO;
     }
     sort(pOrder, pOrder + n, [&patients](int a, int b) {
-        return patients[a].roomB + patients[a].surgT < patients[b].roomB + patients[b].surgT ||
-               (patients[a].roomB + patients[a].surgT == patients[b].roomB + patients[b].surgT && a < b);
+        const int Ta = patients[a].roomB + patients[a].surgT;
+        const int Tb = patients[b].roomB + patients[b].surgT;
+        if(Ta == Tb)
+            return (patients[a].roomB!=patients[b].roomB && patients[a].roomID<patients[b].roomID)
+                || (patients[a].roomB==patients[b].roomB && a<b);
+        return Ta < Tb;
     });
     for (int i = 0; i < n; ++i)
     {
-        const int T = patients[pOrder[i]].roomB + patients[pOrder[i]].surgT + transT;
+        const int T = patients[pOrder[i]].roomB + patients[pOrder[i]].surgT;
         for (int j = 0; j < beds; ++j)
             if (bedInfo[j].avilT <=T ) {
                 patients[pOrder[i]].bedID = j + 1;
