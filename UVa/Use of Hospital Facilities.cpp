@@ -19,17 +19,17 @@ int main()
         string name;
         int surgT, recoT, roomID, roomB, bedID;
     };
+    rInfo roomInfo[10], bedInfo[30];
+    pInfo patients[100];
+    int pOrder[100];
     int rooms, beds, time0, transT, prepO, prepR, n, endT;
     while (cin >> rooms >> beds >> time0 >> transT >> prepO >> prepR >> n)
     {
         time0 *= 60, endT = time0;
-        rInfo *roomInfo = new rInfo[rooms], *bedInfo = new rInfo[beds];
         for (int i = 0; i < rooms; ++i)
             roomInfo[i].avilT = time0, roomInfo[i].usedT = 0;
         for (int i = 0; i < beds; ++i)
             bedInfo[i].avilT = time0, bedInfo[i].usedT = 0;
-        int *pOrder = new int[n];
-        pInfo *patients = new pInfo[n];
         for (int i = 0; i < n; ++i)
         {
             pOrder[i] = i;
@@ -63,7 +63,7 @@ int main()
                 {
                     patients[pOrder[i]].bedID = j + 1;
                     bedInfo[j].usedT += patients[pOrder[i]].recoT;
-                    bedInfo[j].avilT = patients[pOrder[i]].roomB + patients[pOrder[i]].surgT + transT + patients[pOrder[i]].recoT;
+                    bedInfo[j].avilT = T + transT + patients[pOrder[i]].recoT;
                     if (bedInfo[j].avilT > endT)
                         endT = bedInfo[j].avilT;
                     bedInfo[j].avilT += prepR;
@@ -111,7 +111,6 @@ int main()
                  << T << (a < 10 ? "    " : "   ") << a << (b < 10 ? ".0" : ".") << b << endl;
         }
         cout << endl;
-        delete[] roomInfo, delete[] bedInfo, delete[] pOrder, delete[] patients;
     }
     return 0;
 }
