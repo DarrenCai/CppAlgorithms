@@ -41,54 +41,52 @@ int main()
     using namespace std;
     freopen("in.txt", "w", stdout);
     //srand(unsigned(time(0)));
+    cout << 500 << endl;
     int count = 0;
     while(count++ < 500)
     {
-        int n = 0;
-        while(n == 0)
-        {
-            n = rand() % 101;
-        }
-        cout << n << endl;
-        vector<b> s;
-        while(s.size() < n)
-        {
-            b x;
-            x.x = rand();
-            x.y = rand();
-            while(x.w == 0)
-            {
-                x.w = rand();
-            }
-            while(x.d == 0)
-            {
-                x.d = rand();
-            }
-            while(x.h == 0)
-            {
-                x.h = rand();
-            }
-            bool flag = true;
-            for(auto t: s)
-            {
-                auto minx = max(x.x, t.x);
-                auto miny = max(x.y, t.y);
-                auto maxx = min(x.x+x.w, t.x+t.w);
-                auto maxy = min(x.y+x.d, t.y+t.d);
-                if(minx<maxx && miny<maxy)
-                {
-                    flag = false;
-                    break;
+        cout << endl;
+        int m = rand()%10 + 1;
+        int t0 = rand()%100 + 1;
+        int q = t0;
+        int t1 = rand()%100 + 1;
+        if(t1 > q) q = t1;
+        int t2 = rand()%100 + 1;
+        if(t2 > q) q = t2;
+        int t3 = rand()%100 + 1;
+        if(t3 > q) q = t3;
+        int t4 = rand()%100 + 1;
+        if(t4 > q) q = t4;
+        q += rand();
+        cout << m << ' ' << t0 << ' ' << t1 << ' ' << ' ' << t2 << ' ' << t3 << ' ' << t4 << q << endl;
+        for(int i=0; i<m; ++i){
+            int t = rand()%25+1, unlock = t;
+            for(int j=0; j<t-1 && j<=unlock; ++j){
+                int op = rand()%4, a;
+                char v;
+                while(op == 2 && j==t-2) op = rand()%4;
+                if(op == 2) {
+                    unlock = rand()%(t-1-j) + j;
+                }
+                switch(op){
+                    case 0:
+                        v = 'a' + rand()%26;
+                        a = rand()%100;
+                        cout << v << " = " << a << endl;
+                        break;
+                    case 1:
+                        v = 'a' + rand()%26;
+                        cout << "print " << v << endl;
+                        break;
+                    case 2:
+                        cout << "lock" << endl;
+                        break;
+                    case 3:
+                        cout << "unlock" << endl;
                 }
             }
-            if(flag)
-            {
-                s.push_back(x);
-                cout << x.x << ' ' << x.y << ' ' << x.w << ' ' << x.d << ' ' << x.h << endl;
-            }
+            cout << "end" << endl;
         }
-        cout << endl;
     }
-    cout << 0 << endl;
     return 0;
 } 
