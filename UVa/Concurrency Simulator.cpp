@@ -6,10 +6,13 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <cstdio>
 
 int main()
 {
     using namespace std;
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
     int n, count=0;
     cin >> n;
     while(n--){
