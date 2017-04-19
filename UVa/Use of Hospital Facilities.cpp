@@ -1,6 +1,7 @@
 /**
  * UVa212
  * 医院设备利用
+ * 注意：自己写的四舍五入时候可能有再次进位的情况，原来就没有考虑这一点
  */
 
 #include <iostream>
@@ -13,16 +14,13 @@ int main()
     struct rInfo
     {
         int avilT, usedT;
-    };
+    }roomInfo[10], bedInfo[30];     // 如果要用自写的测试数据，则改成bedInfo[100]
     struct pInfo
     {
         string name;
         int surgT, recoT, roomID, roomB, bedID;
-    };
-    rInfo roomInfo[10], bedInfo[30];
-    pInfo patients[100];
-    int pOrder[100];
-    int rooms, beds, time0, transT, prepO, prepR, n, endT;
+    }patients[100];
+    int rooms, beds, time0, transT, prepO, prepR, n, endT, pOrder[100];
     while (cin >> rooms >> beds >> time0 >> transT >> prepO >> prepR >> n)
     {
         time0 *= 60, endT = time0;
@@ -45,15 +43,12 @@ int main()
             patients[i].roomB = minT;
             patients[i].roomID = roomID + 1;
             roomInfo[roomID].usedT += patients[i].surgT;
-            roomInfo[roomID].avilT = minT + patients[i].surgT + prepO;
+            roomInfo[roomID].avilT += patients[i].surgT + prepO;
         }
         sort(pOrder, pOrder + n, [&patients](int a, int b) {
             const int Ta = patients[a].roomB + patients[a].surgT;
             const int Tb = patients[b].roomB + patients[b].surgT;
-            if (Ta == Tb)
-                return (patients[a].roomB != patients[b].roomB && patients[a].roomID < patients[b].roomID)
-                    || (patients[a].roomB == patients[b].roomB && a < b);
-            return Ta < Tb;
+            return Ta < Tb || (Ta==Tb && patients[a].roomID < patients[b].roomID);
         });
         for (int i = 0; i < n; ++i)
         {
@@ -75,18 +70,19 @@ int main()
              << " ------------------------------------------------------" << endl;
         for (int i = 1; i <= n; ++i)
         {
-            const int ohs = patients[i - 1].roomB / 60;
-            const int oms = patients[i - 1].roomB % 60;
-            const int ohe = (patients[i - 1].roomB + patients[i - 1].surgT) / 60;
-            const int ome = (patients[i - 1].roomB + patients[i - 1].surgT) % 60;
-            const int rhs = (patients[i - 1].roomB + patients[i - 1].surgT + transT) / 60;
-            const int rms = (patients[i - 1].roomB + patients[i - 1].surgT + transT) % 60;
-            const int rhe = (patients[i - 1].roomB + patients[i - 1].surgT + transT + patients[i - 1].recoT) / 60;
-            const int rme = (patients[i - 1].roomB + patients[i - 1].surgT + transT + patients[i - 1].recoT) % 60;
-            cout << (i < 10 ? " " : "") << i << "  " << patients[i - 1].name << "  " << (patients[i - 1].roomID < 10 ? " " : "")
-                 << patients[i - 1].roomID << "   " << (ohs < 10 ? " " : "") << ohs << (oms < 10 ? ":0" : ":") << oms << "   "
-                 << (ohe < 10 ? " " : "") << ohe << (ome < 10 ? ":0" : ":") << ome << "     " << (patients[i - 1].bedID < 10 ? " " : "")
-                 << patients[i - 1].bedID << "   " << (rhs < 10 ? " " : "") << rhs << (rms < 10 ? ":0" : ":") << rms << "   "
+            const pInfo p = patients[i-1];
+            const int ohs = p.roomB / 60;
+            const int oms = p.roomB % 60;
+            const int ohe = (p.roomB + p.surgT) / 60;
+            const int ome = (p.roomB + p.surgT) % 60;
+            const int rhs = (p.roomB + p.surgT + transT) / 60;
+            const int rms = (p.roomB + p.surgT + transT) % 60;
+            const int rhe = (p.roomB + p.surgT + transT + p.recoT) / 60;
+            const int rme = (p.roomB + p.surgT + transT + p.recoT) % 60;
+            cout << (i < 10 ? " " : "") << i << "  " << p.name << "  " << (p.roomID < 10 ? " " : "")
+                 << p.roomID << "   " << (ohs < 10 ? " " : "") << ohs << (oms < 10 ? ":0" : ":") << oms << "   "
+                 << (ohe < 10 ? " " : "") << ohe << (ome < 10 ? ":0" : ":") << ome << "     " << (p.bedID < 10 ? " " : "")
+                 << p.bedID << "   " << (rhs < 10 ? " " : "") << rhs << (rms < 10 ? ":0" : ":") << rms << "   "
                  << (rhe < 10 ? " " : "") << rhe << (rme < 10 ? ":0" : ":") << rme << endl;
         }
         cout << endl
@@ -97,16 +93,16 @@ int main()
         for (int i = 1; i <= rooms; ++i)
         {
             const int T = roomInfo[i - 1].usedT;
-            const int a = T * 100 / (endT - time0);
-            const int b = (T * 100 % (endT - time0)) * 100.0 / (endT - time0) + 0.5;
+            const int u = T * 10000.0 / (endT - time0) + 0.5;
+            const int a = u / 100, b = u%100;
             cout << "Room " << (i < 10 ? " " : "") << i << (T < 10 ? "       " : (T < 100 ? "      " : (T < 1000 ? "     " : "    ")))
                  << T << (a < 10 ? "    " : "   ") << a << (b < 10 ? ".0" : ".") << b << endl;
         }
         for (int i = 1; i <= beds; ++i)
         {
             const int T = bedInfo[i - 1].usedT;
-            const int a = T * 100 / (endT - time0);
-            const int b = (T * 100 % (endT - time0)) * 100.0 / (endT - time0) + 0.5;
+            const int u = T * 10000.0 / (endT - time0) + 0.5;
+            const int a = u / 100, b = u%100;
             cout << "Bed  " << (i < 10 ? " " : "") << i << (T < 10 ? "       " : (T < 100 ? "      " : (T < 1000 ? "     " : "    ")))
                  << T << (a < 10 ? "    " : "   ") << a << (b < 10 ? ".0" : ".") << b << endl;
         }
