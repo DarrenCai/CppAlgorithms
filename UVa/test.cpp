@@ -3,15 +3,6 @@
 #include <cstdio>
 //#include<ctime>
 
-#define max(a, b) (a>b ? a:b)
-#define min(a, b) (a<b ? a:b)
-
-struct b
-{
-    int x, y, w, d, h;
-    b():x(0), y(0), w(0), d(0), h(0) {}
-};
-
 int main()
 {
     using namespace std;
@@ -45,7 +36,7 @@ int main()
                     while(op == 2) op = rand()%3;
                 }
                 while(op == 2 && j==t-2) op = rand()%3;
-                if(op == 2) unlock = rand()%(t-1-j)+1 + j;
+                if(op == 2) unlock = rand()%(t-2-j)+1+j;
                 switch(op){
                     case 0:
                         v = 'a' + rand()%26;

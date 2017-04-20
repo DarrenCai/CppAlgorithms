@@ -6,13 +6,11 @@
 #include <iostream>
 #include <string>
 #include <queue>
-#include <cstdio>
+#include <deque>
 
 int main()
 {
     using namespace std;
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
     int n, count=0;
     cin >> n;
     while(n--){
@@ -20,7 +18,8 @@ int main()
         int m, t[5], q;
         cin >> m >> t[0] >> t[1] >> t[2] >> t[3] >> t[4] >> q;
         int s[10][25][3] = {0}, r[10] = {0}, v[26] = {0};
-        queue<int> rq, bq;
+        deque<int> rq;
+        queue<int> bq;
         for(int i=0; i<m; ++i){
             int j=0;
             string op;
@@ -41,21 +40,12 @@ int main()
                 ++j;
             }
             s[i][j][0] = 4;
-            rq.push(i);
+            rq.push_back(i);
         }
         bool inLock = false;
-        bool unLock = false;
-        while(!rq.empty() || !bq.empty()){
-            int i, et = 0;
-            if(unLock && !bq.empty()){
-                i = bq.front();
-                bq.pop();
-            }
-            else{
-                i = rq.front();
-                rq.pop();
-            }
-            unLock = false;
+        while(!rq.empty()){
+            int i = rq.front(), et = 0;
+            rq.pop_front();
             bool inBlock = false;
             while(et < q){
                 int op = s[i][r[i]][0];
@@ -71,13 +61,16 @@ int main()
                 }
                 else if(op == 3){
                     inLock = false;
-                    unLock = true;
+                    if(!bq.empty()){
+                        rq.push_front(bq.front());
+                        bq.pop();
+                    }
                 }
                 else break;
                 ++ r[i];
                 et += t[op];
             }
-            if(!inBlock && s[i][r[i]][0] != 4) rq.push(i);
+            if(!inBlock && s[i][r[i]][0] != 4) rq.push_back(i);
         }
     }
     return 0;
