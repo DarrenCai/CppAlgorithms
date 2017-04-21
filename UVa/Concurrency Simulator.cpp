@@ -11,10 +11,9 @@
 int main()
 {
     using namespace std;
-    int n, count=0;
+    int n;
     cin >> n;
     while(n--){
-        if(count++) cout << endl;
         int m, t[5], q;
         cin >> m >> t[0] >> t[1] >> t[2] >> t[3] >> t[4] >> q;
         int s[10][25][3] = {0}, r[10] = {0}, v[26] = {0};
@@ -46,18 +45,16 @@ int main()
         while(!rq.empty()){
             int i = rq.front(), et = 0;
             rq.pop_front();
-            bool inBlock = false;
             while(et < q){
                 int op = s[i][r[i]][0];
                 if(op == 0) v[s[i][r[i]][1]] = s[i][r[i]][2];
                 else if(op == 1) cout << i+1 << ": " << v[s[i][r[i]][1]] << endl;
                 else if(op == 2){
                     if(inLock){
-                        inBlock = true;
                         bq.push(i);
                         break;
                     }
-                    else inLock = true;
+                    inLock = true;
                 }
                 else if(op == 3){
                     inLock = false;
@@ -70,8 +67,9 @@ int main()
                 ++ r[i];
                 et += t[op];
             }
-            if(!inBlock && s[i][r[i]][0] != 4) rq.push_back(i);
+            if(et >= q) rq.push_back(i);
         }
+        if(n) cout << endl;
     }
     return 0;
 }

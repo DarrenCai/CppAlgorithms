@@ -8,9 +8,9 @@ int main()
     using namespace std;
     freopen("in.txt", "w", stdout);
     //srand(unsigned(time(0)));
-    cout << 500 << endl;
+    cout << 1000 << endl;
     int count = 0;
-    while(count++ < 500)
+    while(count++ < 1000)
     {
         cout << endl;
         int m = rand()%10 + 1;
