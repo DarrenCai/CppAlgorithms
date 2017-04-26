@@ -4,6 +4,7 @@
  */
 
 #include <iostream>
+#include <queue>
 #include <stack>
 
 int main()
@@ -13,22 +14,25 @@ int main()
     while(cin >> N && N) {
         int coache;
         while(cin>>coache && coache) {
-            int n = N, top=1;
-            stack<int> marshal, part;
-            part.push(0);
-            do {
-                marshal.push(coache);
+            int n = N, front=1;
+            queue<int> marshal;
+            marshal.push(coache);
+            while(--n) {
                 cin >> coache;
-            } while(--n);
-            while(!marshal.empty()) {
-                while(marshal.top() != top && part.top()+1 == marshal.top()) {
-                    if() break;
-                    part.push(marshal.top());
+                marshal.push(coache);
+            }
+            marshal.push(0);
+            while(marshal.front()) {
+                int top0 = marshal.front()+1, top = top0;
+                while(marshal.front() != front && (top-1 == marshal.front())) {
+                    top = marshal.front();
                     marshal.pop();
                 }
-                //
+                if(marshal.front() != front || top-1 != marshal.front()) break;
+                marshal.pop();
+                front = top0;
             }
-            cout << "No" << endl;
+            cout << (marshal.front() ? "No" : "Yes") << endl;
         }
         cout << endl;
     }
