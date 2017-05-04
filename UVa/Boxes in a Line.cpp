@@ -4,13 +4,10 @@
  */
 
 #include <iostream>
-#include <cstdio>
 
 int main()
 {
     using namespace std;
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
     int n, m, count=0;
     while(cin >> n >> m) {
         int *next = new int[n+1]; next[n] = 0;
@@ -59,21 +56,17 @@ int main()
                         prev[next[y]] = x;
                         prev[t] = y;
                         next[y] = t;
-                        break;
+//                        break;
 //                     case 4:
 // #pragma clang diagnostic push
 // #pragma clang diagnostic ignored "-Wempty-body"
-//                         for(x=0; next[x]; prev[x]=next[x], x=next[x]); prev[x] = 0;     // 其实这里可以写成 prev[x] = next[x]
-//                         for(x=0; prev[x]; next[prev[x]]=x, x=prev[x]); next[0] = x;     // 其实这里可以写成 next[prev[x]] = x
+//                         for(x=0; next[x]; prev[x]=next[x], x=next[x]); prev[x] = 0;
+//                         for(x=0; prev[x]; next[prev[x]]=x, x=prev[x]); next[0] = x;
 // #pragma clang diagnostic pop
                 }
             }
         }
-#if invert
-#define link prev
-#else
-#define link next
-#endif
+#define link (invert ? prev:next)
         unsigned int sum = 0;
         for(int i=1,x=0; link[x]; ++i,x=link[x])
             if(i&1) sum+=link[x];
