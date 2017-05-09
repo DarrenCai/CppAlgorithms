@@ -10,14 +10,28 @@
 int main()
 {
     using namespace std;
-    map<string, string> nodes; string node;
+    map<int,int> nodes; string node;
+    bool complete = true;
     while(cin >> node) {
-        if(node == "()") {
-            //
+        const int len = node.length();
+        if(len == 2) {
+            map<int,int>::const_iterator it=nodes.begin();
+            while(++it != nodes.end())      if(!nodes.count(it->first/2))   complete = false;
+            if(complete) {
+                it=nodes.begin(); cout << it->second;
+                while(++it != nodes.end())      cout << ' ' << it->second;
+                cout << endl;
+            } else  cout << "not complete" << endl;
+            complete = true;
             nodes.clear();
-        } else {
-            const size_t p = node.find(',');
-            nodes[node.substr(p+1, node.length()-p-2)] = node.substr(1, p-1);
+        } else if(complete) {
+            int k=1, v=0;
+            for(int i=1; i<len-1; ++i) {
+                if(node[i]>='0' && node[i]<='9')    v = 10*v + node[i]-'0';
+                else if(node[i]=='L' || node[i]=='R')    k = (k<<1) + int(node[i]=='R');
+            }
+            if(nodes.count(k))      complete = false;
+            else    nodes[k] = v;
         }
     }
     return 0;
