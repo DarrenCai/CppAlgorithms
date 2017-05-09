@@ -16,7 +16,9 @@ int main()
         const int len = node.length();
         if(len == 2) {
             map<int,int>::const_iterator it=nodes.begin();
-            while(++it != nodes.end())      if(!nodes.count(it->first/2))   complete = false;
+            if(it->first != 1)    complete = false;
+            while(++it != nodes.end() && complete)
+                if(!nodes.count(it->first/2))   complete = false;
             if(complete) {
                 it=nodes.begin(); cout << it->second;
                 while(++it != nodes.end())      cout << ' ' << it->second;
