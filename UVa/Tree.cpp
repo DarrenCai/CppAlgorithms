@@ -5,7 +5,6 @@
 
 #include <iostream>
 #include <deque>
-#include <cstdio>
 
 using namespace std;
 
@@ -53,24 +52,19 @@ void destoryTree(node *t) {
 
 int main()
 {
-    char c; int v, line=0; deque<int> q[2];
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
-    while(!cin.eof() && (c=cin.get())) {
-        if(c==' ' || c=='\n') {
-            q[line].push_back(v); v=0;
-            if(c == '\n') {
-                line ^= 1;
-                if(line == 0) {
-                    node *t = buildTree(q[0], q[1]);
-                    int min = 100000000, leaf=10000;
-                    traverse(t, min, leaf);
-                    cout << leaf << endl;
-                    destoryTree(t);     // q[0].clear(); q[1].clear();
-                }
-            } 
+    int v, line=0; deque<int> q[2];
+    while(cin >> v) {
+        q[line].push_back(v);
+        if(cin.get()=='\n') {
+            line ^= 1;
+            if(line == 0) {
+                node *t = buildTree(q[0], q[1]);
+                int min = 100000000, leaf=10000;
+                traverse(t, min, leaf);
+                cout << leaf << endl;
+                destoryTree(t);     // q[0].clear(); q[1].clear();
+            }
         }
-        else v=10*v + c-'0';
     }
     return 0;
 }
