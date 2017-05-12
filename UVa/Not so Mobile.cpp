@@ -4,7 +4,6 @@
  */
 
 #include <iostream>
-// #include <cstdio>
 
 using namespace std;
 
@@ -19,8 +18,6 @@ int build(bool& eq) {
 
 int main()
 {
-    // freopen("in.txt", "r", stdin);
-    // freopen("ou.txt", "w", stdout);
     int t; cin >> t;
     while(t--) {
         bool eq = true; build(eq);
