@@ -1,5 +1,6 @@
 /**
  * UVa10082
+ * WERTYU
  */
 
 #include <iostream>
