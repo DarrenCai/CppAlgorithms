@@ -5,7 +5,6 @@
 
 #include <iostream>
 #include <map>
-#include <cstdio>
 
 void visit(bool s[200][200], int mark[200][200], int m, int n, int i, int j, const int t) {
     if(i-1>=0 && s[i-1][j] && !mark[i-1][j])    { mark[i-1][j] = t; visit(s, mark, m, n, i-1, j, t); }
@@ -37,9 +36,7 @@ void visit1(bool s[200][200], int mark[200][200], int m, int n, int i, int j, in
 int main()
 {
     using namespace std;
-    freopen("in.txt", "r", stdin);
-    // freopen("ou.txt", "w", stdout);
-    const char glyph[6] = {'W', 'A', 'K', 'J', 'S', 'D'}; int m, n;
+    const char glyph[6] = {'W', 'A', 'K', 'J', 'S', 'D'}; int m, n, k=0;
     while(cin >> m >> n && m && n) {
         bool s[200][200] = {false}; int mark[200][200] = {0};
         for(int i=0; i<m; ++i) {
@@ -69,9 +66,10 @@ int main()
             for(int j=0; j<n; ++j)
                 if(s[i][j] && !mark[i][j])    { mark[i][j] = ++t; sum[t] = 0; visit(s, mark, m, n, i, j, t); }
         for(int i=0; i<m; ++i)
-            for(int j=0, f=0, r=1; j<n; ++j)
-                if(!s[i][j] && !mark[i][j]) { mark[i][j] = 1; visit1(s, mark, m, n, i, j, f, r); if(r)   ++sum[f];}
+            for(int j=0; j<n; ++j)
+                if(!s[i][j] && !mark[i][j]) { mark[i][j] = 1; int f=0, r=1; visit1(s, mark, m, n, i, j, f, r); if(r)   ++sum[f];}
         for(int i=1; i<=t; ++i) { ++recg[sum[i]]; }
+        cout << "Case " << ++k << ": ";
         if(recg[1]) for(int i=0; i<recg[1]; ++i) cout << 'A';
         if(recg[5]) for(int i=0; i<recg[5]; ++i) cout << 'D';
         if(recg[3]) for(int i=0; i<recg[3]; ++i) cout << 'J';
