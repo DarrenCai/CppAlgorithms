@@ -10,7 +10,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "linux": {
                 "MIMode": "gdb",
                 "setupCommands": [
@@ -40,7 +40,7 @@
             "type": "cppdbg",
             "request": "attach",
             "program": "enter program name, for example ${workspaceRoot}/a.out",
-            "processId": "${command.pickProcess}",
+            "processId": "${command:pickProcess}",
             "linux": {
                 "MIMode": "gdb",
                 "setupCommands": [
