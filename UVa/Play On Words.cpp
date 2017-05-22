@@ -42,7 +42,6 @@ int main()
             ++d[a][0];
             ++d[b][1];
             g[a].insert(b);
-            g[b].insert(a);
         }
         for (int i = 0; i < 26 && f1 < 2 && f2 < 2; ++i)
         {
