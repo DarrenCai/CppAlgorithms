@@ -9,7 +9,6 @@
 #include <set>
 #include <functional>
 #define p2 pair<short, short>
-#define p3 tuple<short, short, short>
 
 int main()
 {
@@ -27,7 +26,7 @@ int main()
             if(y0 < m[0][1]) m[0][1] = y0; if(y > m[1][1]) m[1][1] = y;
             if(z0 < m[0][2]) m[0][2] = z0; if(z > m[1][2]) m[1][2] = z;
         }
-        int s=0; set<p3 > visit;
+        int s=0; set<tuple<short, short, short> > visit;
         static function<void(short, short, short)> search = [&](short x, short y, short z){
             visit.insert(make_tuple(x, y, z));
             if(z<m[1][2]){
