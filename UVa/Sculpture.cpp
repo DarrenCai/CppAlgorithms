@@ -28,35 +28,36 @@ int main()
             if(z0 < m[0][2]) m[0][2] = z0; if(z > m[1][2]) m[1][2] = z;
         }
         int s=0; set<p3 > visit;
-        function<void(short, short, short)> search = [&](short x, short y, short z){
+        static function<void(short, short, short)> search = [&](short x, short y, short z){
+            visit.insert(make_tuple(x, y, z));
             if(z<m[1][2]){
-                if(!mz[p2(x,y)].count(z+1)){ p3 p = make_tuple(x, y, z+1);
-                    if(!visit.count(p)) visit.insert(p), search(x, y, z+1);
+                if(!mz.count(p2(x,y)) || !mz[p2(x,y)].count(z+1)){
+                    if(!visit.count(make_tuple(x, y, z+1))) search(x, y, z+1);
                 } else ++s;
             }
             if(z>=m[0][2]){
-                if(!mz[p2(x,y)].count(z)){ p3 p = make_tuple(x, y, z-1);
-                    if(!visit.count(p)) visit.insert(p), search(x, y, z-1);
+                if(!mz.count(p2(x,y)) || !mz[p2(x,y)].count(z)){
+                    if(!visit.count(make_tuple(x, y, z-1))) search(x, y, z-1);
                 } else ++s;
             }
             if(y<m[1][1]){
-                if(!my[p2(x,z)].count(y+1)){ p3 p = make_tuple(x, y+1, z);
-                    if(!visit.count(p)) visit.insert(p), search(x, y+1, z);
+                if(!my.count(p2(x,z)) || !my[p2(x,z)].count(y+1)){
+                    if(!visit.count(make_tuple(x, y+1, z))) search(x, y+1, z);
                 } else ++s;
             }
             if(y>=m[0][1]){
-                if(!my[p2(x,z)].count(y)){ p3 p = make_tuple(x, y-1, z);
-                    if(!visit.count(p)) visit.insert(p), search(x, y-1, z);
+                if(!my.count(p2(x,z)) || !my[p2(x,z)].count(y)){
+                    if(!visit.count(make_tuple(x, y-1, z))) search(x, y-1, z);
                 } else ++s;
             }
             if(x<m[1][0]){
-                if(!mx[p2(y,z)].count(x+1)){ p3 p = make_tuple(x+1, y, z);
-                    if(!visit.count(p)) visit.insert(p), search(x+1, y, z);
+                if(!mx.count(p2(y,z)) || !mx[p2(y,z)].count(x+1)){
+                    if(!visit.count(make_tuple(x+1, y, z))) search(x+1, y, z);
                 } else ++s;
             }
             if(x>=m[0][0]){
-                if(!mx[p2(y,z)].count(x)){ p3 p = make_tuple(x-1, y, z);
-                    if(!visit.count(p)) visit.insert(p), search(x-1, y, z);
+                if(!mx.count(p2(y,z)) || !mx[p2(y,z)].count(x)){
+                    if(!visit.count(make_tuple(x-1, y, z))) search(x-1, y, z);
                 } else ++s;
             }
         };
