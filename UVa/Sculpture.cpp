@@ -14,7 +14,7 @@
 int main()
 {
     using namespace std;
-#define p pair<short, short>
+    #define p pair<short, short>
     short t; cin >> t;
     while(t--){
         short n; cin >> n; vector<vector<short> > boxs(n); set<short> sx, sy, sz; map<p, set<short> > mx, my, mz;
@@ -34,7 +34,8 @@ int main()
                     my[p(j,k)].insert(boxs[i][2]), my[p(j,k)].insert(boxs[i][3]);
             }
             for(short j=lower_bound(vy.begin(),vy.end(),boxs[i][2])-vy.begin(); vy[j]!=boxs[i][3]; ++j)
-                for(short k=lower_bound(vz.begin(),vz.end(),boxs[i][4])-vz.begin(); vz[k]!=boxs[i][5]; ++k) mx[p(j,k)].insert(boxs[i][0]), mx[p(j,k)].insert(boxs[i][1]);
+                for(short k=lower_bound(vz.begin(),vz.end(),boxs[i][4])-vz.begin(); vz[k]!=boxs[i][5]; ++k)
+                    mx[p(j,k)].insert(boxs[i][0]), mx[p(j,k)].insert(boxs[i][1]);
         }
         int s=0, v=0; set<tuple<short, short, short> > visit;
         static function<void(short, short, short)> search = [&](short x, short y, short z){
