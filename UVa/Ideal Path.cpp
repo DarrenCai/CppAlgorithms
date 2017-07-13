@@ -4,30 +4,23 @@
  */
 
 #include <iostream>
-#include <map>
-#include <algorithm>
+#include <vector>
 // #include <cstdio>
 using namespace std;
 
-void bfs(const map<int, map<int, int> > &p, int (&d)[100001], bool (&visit)[100001], const int n, int s){
-    visit[s] = true; const map<int, int> &m = p.at(s);
-    for(map<int, int>::const_iterator it = m.cbegin(); it != m.cend(); ++it){
-        int j = it->first; if(j!=n && (!d[j] || d[s]+1 < d[j])) d[j] = d[s]+1;
-    }
-    for(map<int, int>::const_iterator it = m.cbegin(); it != m.cend(); ++it)
-        if(!visit[it->first]) bfs(p, d, visit, n, it->first);
+void bfs(const vector<int> (&g)[100001], int (&d)[100001], bool (&visit)[100001], const int n, int s){
+    visit[s] = true; const vector<int>& m = g[s]; const int l = m.size();
+    for(int i=0; i<l; ++i) if(m[i]!=n && (!d[m[i]] || d[s]+1 < d[m[i]])) d[m[i]] = d[s]+1;
+    for(int i=0; i<l; ++i) if(!visit[m[i]]) bfs(g, d, visit, n, m[i]);
 }
 
-void bfs(const map<int, map<int, int> > &p, const int (&d)[100001], int (&next)[100001], int s){
-    int c = 1000000001, f0, f; const map<int, int> &m = p.at(s);
-    for(map<int, int>::const_iterator it = m.cbegin(); it != m.cend(); ++it)
-        if(d[it->first] + 1 == d[s] && it->second < c) c = it->second, f0 = it->first;
-    next[s] = f = f0; if(!d[f]) return; bfs(p, d, next, f0);
-    for(map<int, int>::const_iterator it = m.cbegin(); it != m.cend(); ++it)
-        if(it->first != f0 && d[it->first] + 1 == d[s] && it->second == c){
-            bfs(p, d, next, it->first);
-            for(int i = it->first, j = f; d[i]; i = next[i], j = next[j])
-                if(p.at(i).at(next[i]) < p.at(j).at(next[j])){ next[s] = f = it->first; break; }
+void bfs(const vector<int> (&g)[100001], const vector<int> (&k)[100001], const int (&d)[100001], int (&next)[100001], int s){
+    int c = 1000000001, f0, f; const vector<int>& m = g[s]; const int l = m.size();
+    for(int i=0; i<l; ++i) if(d[m[i]]+1 == d[s] && k[s][i] < c) c = k[s][i], f0 = i;
+    next[s] = f = f0; if(!d[m[f0]]) return; bfs(g, k, d, next, m[f0]);
+    for(int i=0; i<l; ++i)
+        if(i != f0 && d[m[i]]+1 == d[s] && k[s][i] == c){ bfs(g, k, d, next, m[i]);
+            for(int j=m[i], t=m[f]; d[j]; j=g[j][next[j]], t=g[t][next[t]]) if(k[j][next[j]] < k[t][next[t]]){ next[s] = f = i; break; }
         }
 }
 
@@ -36,12 +29,12 @@ int main()
     // freopen("in.txt", "r", stdin);
     int n, m;
     while(cin >> n >> m){
-        map<int, map<int, int> > p; int d[100001] = {0}; bool visit[100001] = {0}; int next[100001] = {0};
+        vector<int> g[100001], k[100001]; int d[100001]={0}, next[100001]={0}; bool visit[100001] = {0};
         while(m--){ int a, b, c; cin >> a >> b >> c; if(a == b) continue;
-            if (!p.count(a) || !p[a].count(b) || c < p[a][b]) p[a][b] = p[b][a] = c;
+            g[a].push_back(b); k[a].push_back(c); g[b].push_back(a); k[b].push_back(c);
         }
-        bfs(p, d, visit, n, n); bfs(p, d, next, 1); cout << d[1] << endl << p[1][next[1]];
-        for(int i = next[1]; d[i]; i = next[i]) cout << ' ' << p[i][next[i]]; cout << endl;
+        bfs(g, d, visit, n, n); bfs(g, k, d, next, 1); cout << d[1] << endl << k[1][next[1]];
+        for(int i = g[1][next[1]]; d[i]; i = g[i][next[i]]) cout << ' ' << k[i][next[i]]; cout << endl;
     }
     return 0;
 }
