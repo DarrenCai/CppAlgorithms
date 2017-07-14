@@ -5,36 +5,41 @@
 
 #include <iostream>
 #include <vector>
-// #include <cstdio>
+#include <queue>
 using namespace std;
 
-void bfs(const vector<int> (&g)[100001], int (&d)[100001], bool (&visit)[100001], const int n, int s){
-    visit[s] = true; const vector<int>& m = g[s]; const int l = m.size();
-    for(int i=0; i<l; ++i) if(m[i]!=n && (!d[m[i]] || d[s]+1 < d[m[i]])) d[m[i]] = d[s]+1;
-    for(int i=0; i<l; ++i) if(!visit[m[i]]) bfs(g, d, visit, n, m[i]);
+struct ver{int v, c; ver(int v, int c){this->v=v;this->c=c;}};
+
+void bfs(const vector<vector<ver> >&g, vector<int>& d){
+    const int n = g.size(); vector<bool> inq(n, false); queue<int> q; q.push(n-1); inq[n-1]=true;
+    while(!q.empty()){ int v, u=q.front(); q.pop(); const int l = g[u].size();
+        for(int i=0; i<l; ++i) if(!inq[v=g[u][i].v]){ d[v]=d[u]+1; if(!v) return; q.push(v); inq[v]=true; }
+    }
 }
 
-void bfs(const vector<int> (&g)[100001], const vector<int> (&k)[100001], const int (&d)[100001], int (&next)[100001], int s){
-    int c = 1000000001, f0, f; const vector<int>& m = g[s]; const int l = m.size();
-    for(int i=0; i<l; ++i) if(d[m[i]]+1 == d[s] && k[s][i] < c) c = k[s][i], f0 = i;
-    next[s] = f = f0; if(!d[m[f0]]) return; bfs(g, k, d, next, m[f0]);
-    for(int i=0; i<l; ++i)
-        if(i != f0 && d[m[i]]+1 == d[s] && k[s][i] == c){ bfs(g, k, d, next, m[i]);
-            for(int j=m[i], t=m[f]; d[j]; j=g[j][next[j]], t=g[t][next[t]]) if(k[j][next[j]] < k[t][next[t]]){ next[s] = f = i; break; }
+void bfs(const vector<vector<ver> >&g, const vector<int>& d, vector<int>& c){
+    const int n = g.size(); vector<bool> visit(n, false); vector<int> q; q.push_back(0); visit[0]=true;
+    while(!q.empty()){ int k=1000000001; vector<int> s(q); q.clear(); const int t=s.size();
+        for(int i=0; i<t; ++i){ int v, u=s[i]; if(u==n-1) return; const int l = g[u].size();
+            for(int j=0; j<l; ++j) if(!visit[v=g[u][j].v] && d[v]+1==d[u] && g[u][j].c<k) k = g[u][j].c;
         }
+        for(int i=0; i<t; ++i){ int v, u=s[i]; const int l = g[u].size();
+            for(int j=0; j<l; ++j) if(!visit[v=g[u][j].v] && d[v]+1==d[u] && g[u][j].c==k) q.push_back(v), visit[v]=true;
+        }
+        c[d[0]-d[s[0]]] = k;
+    }
 }
 
 int main()
 {
-    // freopen("in.txt", "r", stdin);
     int n, m;
     while(cin >> n >> m){
-        vector<int> g[100001], k[100001]; int d[100001]={0}, next[100001]={0}; bool visit[100001] = {0};
+        vector<vector<ver> > g(n); vector<int> d(n, -1); d[n-1] = 0;
         while(m--){ int a, b, c; cin >> a >> b >> c; if(a == b) continue;
-            g[a].push_back(b); k[a].push_back(c); g[b].push_back(a); k[b].push_back(c);
+            g[a-1].push_back(ver(b-1,c)); g[b-1].push_back(ver(a-1,c));
         }
-        bfs(g, d, visit, n, n); bfs(g, k, d, next, 1); cout << d[1] << endl << k[1][next[1]];
-        for(int i = g[1][next[1]]; d[i]; i = g[i][next[i]]) cout << ' ' << k[i][next[i]]; cout << endl;
+        bfs(g, d); vector<int> c(d[0]); bfs(g, d, c);
+        cout << d[0] << endl << c[0]; for(int i=1; i<d[0]; ++i) cout << ' ' << c[i]; cout <<endl;
     }
     return 0;
 }
