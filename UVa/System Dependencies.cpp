@@ -9,7 +9,6 @@
 #include <vector>
 #include <map>
 #include <set>
-// #include <cstdio>
 using namespace std;
 
 int find(vector<string>& ins, string s){
@@ -31,18 +30,17 @@ void remove(int i, string s, map<string, vector<string> >& dep, map<string, set<
             if(!ex.count(dep[s][j]) && (i = find(ins, dep[s][j])) > -1) remove(i, dep[s][j], dep, r, ins, ex);
 }
 
-void remove(string s, int i, map<string, vector<string> >& dep, map<string, set<string> >& r, vector<string>& ins, set<string>& ex){
+bool remove(string s, int i, map<string, vector<string> >& dep, map<string, set<string> >& r, vector<string>& ins, set<string>& ex){
     if(r.count(s) && !r[s].empty()) for(set<string>::iterator it=r[s].begin(); it!=r[s].end(); ++it)
-            if(find(ins, *it) > -1) return void(cout << "   " << s << " is still needed." << endl);
+            if(find(ins, *it) > -1){ cout << "   " << s << " is still needed." << endl; return false; }
     ins.erase(ins.begin()+i); cout << "   Removing " << s << endl;
     if(dep.count(s) && !dep[s].empty()) for(int j=0,l=dep[s].size(); j<l; ++j)
             if(!ex.count(dep[s][j]) && (i = find(ins, dep[s][j])) > -1) remove(i, dep[s][j], dep, r, ins, ex);
+    return true;
 }
 
 int main()
 {
-    // freopen("in.txt", "r", stdin);
-    // freopen("ou.txt", "w", stdout);
     map<string, vector<string> > dep; map<string, set<string> > r; vector<string> ins; set<string> ex; stringstream ss; string cmd;
     while(getline(cin, cmd) && cmd!="END"){ cout << cmd << endl; ss.str(cmd); ss.clear(); ss >> cmd;
         if(cmd == "DEPEND"){ string s; ss >> s;
@@ -51,7 +49,7 @@ int main()
             if(find(ins,s) == -1) install(s, dep, ins), ex.insert(s);
             else cout << "   " << s << " is already installed." << endl;
         }else if(cmd == "REMOVE"){ string s; ss >> s; int i;
-            if((i = find(ins,s)) > -1) remove(s, i, dep, r, ins, ex), ex.erase(s);
+            if((i = find(ins,s)) > -1){ if(remove(s, i, dep, r, ins, ex)) ex.erase(s); }
             else cout << "   " << s << " is not installed." << endl;
         }else{ const int l = ins.size();
             for(int i=0; i<l; ++i) cout << "   " << ins[i] << endl;
