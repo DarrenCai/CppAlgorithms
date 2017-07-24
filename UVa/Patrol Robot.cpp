@@ -4,26 +4,27 @@
  */
 
 #include <iostream>
+#include <queue>
 #include <set>
 using namespace std;
-char s[20][20]; short m, n, k, mi, ki;
+char s[20][20]; short m, n, k, mi;
+const char d[4][2]={{-1,0},{0,-1},{1,0},{0,1}};
 
-void dfs(char r, char c, short ki, set<pair<char,char> > visit){
-    visit.insert(pair<char,char>(r,c)); if(s[r][c]=='0') ki=0; else if(++ki>k) return;
-    if((r==m-1 && c==n-2) || (r==m-2 && c==n-1)){short t=visit.size(); if(t<mi) mi=t; return;}
-    if(c+1<n && !visit.count(pair<char,char>(r,c+1))) dfs(r,c+1,ki,visit);
-    if(r+1<m && !visit.count(pair<char,char>(r+1,c))) dfs(r+1,c,ki,visit);
-    if(c-1>=0 && !visit.count(pair<char,char>(r,c-1))) dfs(r,c-1,ki,visit);
-    if(r-1>=0 && !visit.count(pair<char,char>(r-1,c))) dfs(r-1,c,ki,visit);
+short dfs(){ queue<pair<set<pair<char,char> >,char> > paths; queue<pair<char,char> > q; q.push(make_pair(0,0));
+    pair<set<pair<char,char> >,char> p1, p; p.first.insert(q.front()); p.second=0; paths.push(p);
+    while(!q.empty()){ p = paths.front(); paths.pop(); char r0=q.front().first, c0=q.front().second; q.pop(); pair<char,char> t;
+        for(char i=0; i<4; ++i){char r=r0+d[i][0], c=c0+d[i][1]; if(r<0 || r>=m || c<0 || c>=n || p.first.count(t=make_pair(r,c))) continue;
+            if(p.second+s[r][c]<=k){if(r==m-1 && c==n-1) return p.first.size(); q.push(t); p1=p;
+                p1.first.insert(t); if(s[r][c]) ++p1.second; else p1.second=0; paths.push(p1);} }
+    } return -1;
 }
 
 int main()
 {
     short t; cin >> t;
-    while(t--){ mi=200; ki=0; cin >> m >> n >> k;
-        for(char i=0; i<m; ++i) for(int j=0; j<n; ++j) cin >> s[i][j];
-        if(m==1 && n==1) mi=0; else dfs(0,0,0,set<pair<char,char> >());
-        cout << (mi==200 ? -1 : mi) << endl;
+    while(t--){ mi=200; cin >> m >> n >> k;
+        for(char i=0; i<m; ++i) for(int j=0; j<n; ++j) cin >> s[i][j], s[i][j] -= '0';
+        cout << dfs() << endl;
     }
     return 0;
 }
