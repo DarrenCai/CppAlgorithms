@@ -4,27 +4,23 @@
  */
 
 #include <iostream>
-#include <queue>
+#include <string>
+#include <map>
 using namespace std;
-struct node{ int val; node *left, *right; node(){val=0; left=right=nullptr;} };
+string s; int idx;
 
-node* build(queue<char>& q){ node *t = new node();
-    if(q.front() == '['){ q.pop(); t->left=build(q); q.pop(); t->right=build(q); q.pop();
-    } else while(q.front()>='0' && q.front()<='9') t->val = 10*t->val + q.front() - '0', q.pop();
-    return t;
-}
-
-int dfs(node* t, int id, bool (&visit)[131072]){
-    //
+void dfs(map<long long, int>& count, int depth){ char c = s[idx];
+    if(c == '['){ ++idx; dfs(count, depth+1); ++idx; dfs(count, depth+1); ++idx; }
+    else{long long a=0; while(c>='0' && c<='9'){a=10*a+c-'0'; c=s[++idx];} ++count[a<<depth];}
 }
 
 int main()
 {
-    short t; cin >> t; cin.get();
-    while(t--){ queue<char> q; char c;
-        while((c=getchar()) != '\n' && !cin.eof()) q.push(c);
-        node* tree = build(q);
-        cout << 0 << endl;
+    short t; cin >> t;
+    while(t--){ map<long long, int> count; cin >> s; idx=0; dfs(count, 0); int max=0, sum=0;
+        for(map<long long, int>::iterator it=count.begin(); it!=count.end(); ++it){
+            sum += it->second; if(max<it->second) max = it->second; }
+        cout << sum-max << endl;
     }
     return 0;
 }
