@@ -3,10 +3,10 @@
  * Petri网模拟
  */
 
- #include <iostream>
- #include <map>
- #include <vector>
- using namespace std;
+#include <iostream>
+#include <map>
+#include <vector>
+using namespace std;
  
 int main()
 {
@@ -31,7 +31,7 @@ int main()
             }
         }
         int t, i, j; cin>>t;
-        for(i=0; i<=t; ++i) {
+        for(i=0; i<t; ++i) {
             for(j=0; j<m; ++j) {
                 bool sufficient = true;
                 for(map<int, int>::iterator it=ip[j].begin(); it!=ip[j].end(); ++it) {
@@ -40,7 +40,7 @@ int main()
                         break;
                     }
                 }
-                if (sufficient) {
+                if(sufficient) {
                     for(map<int, int>::iterator it=ip[j].begin(); it!=ip[j].end(); ++it)
                         p[it->first] -= it->second;
                     for(map<int, int>::iterator it=op[j].begin(); it!=op[j].end(); ++it)
@@ -48,11 +48,13 @@ int main()
                     break;
                 }
             }
-            if(j == m) break;
+            if(j == m) {
+                break;
+            }
         }
-        cout << "Case " << ++k << (i==t ? ": still live" : ": dead") << " after " << i << " transitions" << endl;
+        cout << "Case " << ++k << (i<t ? ": dead" : ": still live") << " after " << i << " transitions" << endl;
         cout << "Places with tokens:";
-        for(int i=0; i<n; ++i) 
+        for(int i=0; i<n; ++i)
             if(p[i] > 0) cout << ' ' << (i+1) << " (" << p[i] << ")";
         cout << endl << endl;
     }
