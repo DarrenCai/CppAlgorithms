@@ -41,14 +41,14 @@ char left(char face, char top) {
     return 7-left(face, 7-top);
 }
 
-short m, n, r0, c0, t0, f0; char maze[11][11];
+short m, n, r0, c0, t0, f0; char maze[11][11]; set<unsigned short> visit;
 bool search(char r, char c, char f, char t, vector<unsigned char>& sln, set<unsigned short>& s) {
     unsigned char v = r<<4 | c; unsigned short k = (v<<8) + (f<<4 | t);
     if (sln.size() > 0 && sln[0] == v) {
         sln.push_back(v); s.insert(k);
         return true;
     }
-    if (s.count(k)) return false;
+    if (s.count(k) || visit.count(k)) return false;
     sln.push_back(v); s.insert(k);
     if (r>1 && (maze[r-1][c]==-1 || maze[r-1][c]==t)) {    // up
         vector<unsigned char> sln1(sln); set<unsigned short> s1(s);
@@ -79,6 +79,7 @@ bool search(char r, char c, char f, char t, vector<unsigned char>& sln, set<unsi
             return true;
         }
     }
+    visit.insert(v);
     return false;
 }
  
@@ -107,6 +108,7 @@ int main()
         } else {
             cout << "  No Solution Possible" << endl;
         }
+        visit.clear();
     }
     return 0;
 }
