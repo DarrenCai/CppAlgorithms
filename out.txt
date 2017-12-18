@@ -1,400 +1,100 @@
-Loss: 124
-Loss: 127
-Loss: 73
-Loss: 241
-Loss: 196
-Loss: 250
-Loss: 151
-Loss: 142
-Loss: 136
-Loss: 109
-Loss: 256
-Loss: 346
-Loss: 127
-Loss: 244
-Loss: 142
-Loss: 106
-Loss: 121
-Loss: 169
-Loss: 169
-Loss: 211
-Loss: 172
-Loss: 235
-Loss: 115
-Loss: 172
-Loss: 181
-Loss: 121
-Loss: 85
-Loss: 145
-Loss: 130
-Loss: 139
-Loss: 190
-Loss: 196
-Loss: 109
-Loss: 103
-Loss: 130
-Loss: 148
-Loss: 169
-Loss: 88
-Loss: 91
-Loss: 103
-Loss: 118
-Loss: 385
-Loss: 169
-Loss: 256
-Win : 390
-Loss: 124
-Loss: 88
-Loss: 103
-Loss: 85
-Loss: 172
-Loss: 109
-Loss: 175
-Loss: 175
-Loss: 103
-Loss: 133
-Loss: 154
-Loss: 268
-Loss: 115
-Loss: 151
-Loss: 115
-Loss: 139
-Loss: 124
-Loss: 133
-Loss: 124
-Loss: 205
-Loss: 118
-Loss: 160
-Loss: 127
-Loss: 85
-Loss: 91
-Loss: 82
-Loss: 103
-Loss: 136
-Loss: 136
-Loss: 103
-Loss: 157
-Loss: 127
-Loss: 106
-Loss: 169
-Loss: 175
-Loss: 73
-Loss: 169
-Loss: 106
-Loss: 145
-Loss: 79
-Loss: 154
-Loss: 175
-Loss: 85
-Loss: 142
-Loss: 157
-Loss: 166
-Loss: 118
-Loss: 112
-Loss: 145
-Win : 228
-Loss: 64
-Loss: 121
-Loss: 124
-Loss: 97
-Loss: 124
-Loss: 121
-Loss: 157
-Win : 153
-Loss: 127
-Loss: 166
-Loss: 124
-Loss: 88
-Loss: 88
-Loss: 100
-Loss: 139
-Loss: 277
-Loss: 94
-Loss: 256
-Loss: 262
-Loss: 520
-Loss: 256
-Loss: 97
-Loss: 127
-Loss: 154
-Loss: 124
-Loss: 133
-Loss: 154
-Loss: 133
-Loss: 82
-Loss: 133
-Loss: 151
-Loss: 88
-Loss: 253
-Loss: 130
-Loss: 163
-Loss: 97
-Loss: 181
-Loss: 85
-Loss: 178
-Loss: 166
-Loss: 109
-Loss: 88
-Loss: 109
-Loss: 106
-Loss: 160
-Loss: 127
-Loss: 94
-Loss: 133
-Loss: 118
-Loss: 124
-Loss: 313
-Loss: 79
-Loss: 154
-Loss: 148
-Loss: 304
-Loss: 82
-Loss: 121
-Loss: 136
-Loss: 202
-Loss: 214
-Loss: 97
-Loss: 118
-Loss: 142
-Loss: 121
-Loss: 118
-Loss: 199
-Loss: 148
-Loss: 166
-Loss: 166
-Win : 312
-Loss: 97
-Loss: 79
-Loss: 106
-Loss: 271
-Loss: 106
-Loss: 199
-Loss: 106
-Loss: 550
-Loss: 130
-Loss: 178
-Loss: 205
-Loss: 208
-Loss: 115
-Loss: 94
-Loss: 100
-Loss: 79
-Loss: 244
-Loss: 115
-Loss: 187
-Loss: 178
-Loss: 121
-Loss: 184
-Loss: 103
-Loss: 79
-Loss: 193
-Loss: 127
-Loss: 76
-Loss: 136
-Loss: 118
-Loss: 280
-Loss: 292
-Loss: 163
-Loss: 85
-Loss: 136
-Loss: 196
-Loss: 310
-Loss: 310
-Loss: 121
-Loss: 172
-Loss: 115
-Loss: 121
-Loss: 184
-Loss: 118
-Loss: 103
-Loss: 148
-Loss: 157
-Loss: 199
-Loss: 238
-Draw: 142
-Loss: 187
-Loss: 148
-Loss: 136
-Loss: 88
-Loss: 211
-Loss: 196
-Loss: 91
-Loss: 106
-Loss: 148
-Loss: 148
-Loss: 208
-Loss: 109
-Loss: 166
-Loss: 124
-Loss: 127
-Loss: 175
-Loss: 115
-Loss: 175
-Loss: 166
-Loss: 109
-Loss: 79
-Loss: 205
-Loss: 193
-Loss: 100
-Loss: 190
-Loss: 88
-Win : 246
-Loss: 85
-Loss: 109
-Loss: 382
-Loss: 115
-Loss: 112
-Loss: 136
-Loss: 379
-Loss: 139
-Loss: 124
-Loss: 136
-Loss: 82
-Loss: 148
-Loss: 229
-Loss: 136
-Loss: 127
-Loss: 196
-Loss: 313
-Loss: 106
-Loss: 148
-Loss: 322
-Loss: 169
-Loss: 142
-Loss: 121
-Loss: 175
-Loss: 184
-Loss: 175
-Loss: 124
-Loss: 151
-Loss: 238
-Loss: 163
-Loss: 64
-Loss: 595
-Loss: 160
-Loss: 151
-Loss: 184
-Loss: 133
-Loss: 100
-Loss: 91
-Loss: 112
-Loss: 157
-Loss: 145
-Loss: 94
-Loss: 304
-Loss: 142
-Loss: 91
-Loss: 148
-Loss: 100
-Loss: 133
-Loss: 178
-Loss: 112
-Loss: 154
-Loss: 118
-Loss: 112
-Loss: 172
-Loss: 379
-Loss: 121
-Loss: 142
-Loss: 112
-Loss: 328
-Loss: 160
-Loss: 217
-Loss: 187
-Loss: 202
-Loss: 145
-Loss: 76
-Loss: 190
-Loss: 106
-Loss: 145
-Loss: 154
-Loss: 85
-Loss: 184
-Loss: 355
-Loss: 169
-Loss: 289
-Loss: 151
-Loss: 79
-Loss: 139
-Loss: 184
-Loss: 157
-Loss: 130
-Loss: 163
-Loss: 403
-Loss: 103
-Loss: 184
-Loss: 133
-Loss: 136
-Loss: 193
-Loss: 232
-Loss: 175
-Loss: 289
-Loss: 127
-Loss: 124
-Loss: 214
-Loss: 121
-Loss: 103
-Loss: 562
-Loss: 319
-Loss: 64
-Loss: 220
-Loss: 148
-Loss: 364
-Win : 243
-Loss: 187
-Loss: 127
-Loss: 85
-Loss: 244
-Loss: 205
-Loss: 259
-Loss: 169
-Loss: 160
-Loss: 97
-Loss: 481
-Loss: 142
-Loss: 115
-Loss: 169
-Loss: 103
-Loss: 100
-Loss: 202
-Loss: 121
-Loss: 136
-Loss: 115
-Loss: 103
-Loss: 148
-Loss: 268
-Loss: 190
-Loss: 193
-Loss: 118
-Loss: 169
-Loss: 94
-Loss: 106
-Loss: 214
-Loss: 139
-Loss: 118
-Loss: 124
-Loss: 91
-Loss: 118
-Loss: 79
-Loss: 109
-Loss: 163
-Loss: 142
-Loss: 109
-Loss: 109
-Loss: 109
-Draw: 259
-Loss: 169
-Loss: 241
-Loss: 166
-Loss: 100
-Loss: 112
-Loss: 97
-Loss: 118
-Loss: 139
-Loss: 85
-Loss: 103
-Loss: 115
-Loss: 103
-Loss: 193
-Loss: 226
-Loss: 139
+Case 1: 0
+Case 2: 15
+Case 3: 60
+Case 4: 110
+Case 5: 0
+Case 6: 4
+Case 7: 30
+Case 8: 5
+Case 9: 170
+Case 10: 9
+Case 11: 21
+Case 12: 8
+Case 13: 136
+Case 14: 12
+Case 15: 20
+Case 16: 182
+Case 17: 17
+Case 18: 154
+Case 19: 9
+Case 20: 0
+Case 21: 0
+Case 22: 20
+Case 23: 0
+Case 24: 90
+Case 25: 54
+Case 26: 216
+Case 27: 32
+Case 28: 21
+Case 29: 180
+Case 30: 21
+Case 31: 0
+Case 32: 2
+Case 33: 36
+Case 34: 3
+Case 35: 7
+Case 36: 0
+Case 37: 39
+Case 38: 90
+Case 39: 110
+Case 40: 45
+Case 41: 30
+Case 42: 3
+Case 43: 54
+Case 44: 0
+Case 45: 1
+Case 46: 160
+Case 47: 198
+Case 48: 0
+Case 49: 28
+Case 50: 32
+Case 51: 105
+Case 52: 144
+Case 53: 6
+Case 54: 9
+Case 55: 9
+Case 56: 72
+Case 57: 0
+Case 58: 105
+Case 59: 8
+Case 60: 3
+Case 61: 35
+Case 62: 9
+Case 63: 18
+Case 64: 48
+Case 65: 0
+Case 66: 32
+Case 67: 0
+Case 68: 80
+Case 69: 0
+Case 70: 0
+Case 71: 56
+Case 72: 1
+Case 73: 180
+Case 74: 78
+Case 75: 5
+Case 76: 3
+Case 77: 0
+Case 78: 189
+Case 79: 4
+Case 80: 56
+Case 81: 144
+Case 82: 81
+Case 83: 126
+Case 84: 0
+Case 85: 21
+Case 86: 50
+Case 87: 3
+Case 88: 12
+Case 89: 36
+Case 90: 140
+Case 91: 39
+Case 92: 64
+Case 93: 0
+Case 94: 126
+Case 95: 144
+Case 96: 3
+Case 97: 20
+Case 98: 25
+Case 99: 6
+Case 100: 12
