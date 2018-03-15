@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_set>
-#include <cstdio>
+// #include <cstdio>
 using namespace std;
 
 class pile {
@@ -83,7 +83,6 @@ public:
     }
 };
 
-// class deck: public pile {
 struct deck: pile {
     vector<pile> piles; unsigned char cur;
     bool operator== (const deck& rhs) const {
@@ -186,8 +185,8 @@ Result judge(deck& d) {
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     while (true) {
         deck d;
         for (unsigned char i=0; i<52; ++i) {
