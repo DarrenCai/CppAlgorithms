@@ -1,10 +1,9 @@
 /**
- * UVa10340
+ * UVa750
  * 8皇后问题
  */
 
 #include <iostream>
-#include <cstdio>
 using namespace std;
 
 short a[9], r, c, t;
@@ -37,8 +36,6 @@ void solve(short cur) {
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
     int k; cin>>k;
     while (k--) {
         cout << "SOLN       COLUMN" << endl << " #      1 2 3 4 5 6 7 8" << endl << endl;
