@@ -24,9 +24,11 @@ void dfs(char cur) {
             visit[i] = true;
             s[cur] = i;
             p[i] = cur;
-            bool ok = true;
+            char t = 0, len = g[v[i]].size();
+            for (char j=0; j<len; ++j) if (!visit[g[v[i]][j]]) ++t;
+            bool ok = !mi || t<mi;
             for (char j=0; ok && j<cur; ++j) {
-                if (s[j]!=i && find(g[v[i]].begin(), g[v[i]].end(), v[s[j]]) != g[v[i]].end()) {
+                if (find(g[v[i]].begin(), g[v[i]].end(), v[s[j]]) != g[v[i]].end()) {
                     char d = max(p[s[j]]-p[i], p[i]-p[s[j]]);
                     m[i] = max(m[i], d);
                     if (mi && m[i]>=mi) ok = false;
@@ -54,8 +56,10 @@ int main()
                     while(s[++i] != ';') {
                         char c1= s[i]-'A';
                         v.push_back(c1);
-                        g[c].push_back(c1);
-                        g[c1].push_back(c);
+                        if (find(g[c].begin(), g[c].end(), c1) == g[c].end())
+                            g[c].push_back(c1);
+                        if (find(g[c1].begin(), g[c1].end(), c) == g[c1].end())
+                            g[c1].push_back(c);
                     }
                 }
             }
