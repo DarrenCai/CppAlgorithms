@@ -1,0 +1,7 @@
+A B C F G D H E -> 3
+B A F -> 1
+A E -> 1
+A Z -> 1
+B A C -> 1
+B A C -> 1
+M N O P Q R S T -> 1
