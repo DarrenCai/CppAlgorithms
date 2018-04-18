@@ -10,17 +10,17 @@ using namespace std;
 
 #define min(a,b) (a<b ? a:b)
 
-short water[8120602], a, b, c, d, a1, b1, c1, m, w; queue<int> q;
+short water[40402], a, b, c, d, a1, b1, c1, m, w; queue<int> q;
 
 void bfs() {
     while (!q.empty()) {
         int t = q.front(); q.pop();
-        a1 = t/40401; b1 = (t%40401)/201; c1 = t%201;
+        a1 = t/201; b1 = t%201; c1 = c-a1-b1;
         if (a1) {
             short w1 = min(a1, b-b1);
             if (w1) {
                 short a2 = a1-w1, b2 = b1+w1;
-                int t1 = a2*40401 + b2*201 + c1;
+                int t1 = a2*201 + b2;
                 short w2 = water[t] + w1;
                 if (t1!=c && (!water[t1] || water[t1]>w2)) {
                     if (a2<=d && (a2>m || (a2==m && w2<w))) {
@@ -36,7 +36,7 @@ void bfs() {
             w1 = min(a1, c-c1);
             if (w1) {
                 short a2 = a1-w1, c2 = c1+w1;
-                int t1 = a2*40401 + b1*201 + c2;
+                int t1 = a2*201 + b1;
                 short w2 = water[t] + w1;
                 if (t1!=c && (!water[t1] || water[t1]>w2)) {
                     if (a2<=d && (a2>m || (a2==m && w2<w))) {
@@ -54,7 +54,7 @@ void bfs() {
             short w1 = min(b1, a-a1);
             if (w1) {
                 short a2 = a1+w1, b2 = b1-w1;
-                int t1 = a2*40401 + b2*201 + c1;
+                int t1 = a2*201 + b2;
                 short w2 = water[t] + w1;
                 if (t1!=c && (!water[t1] || water[t1]>w2)) {
                     if (a2<=d && (a2>m || (a2==m && w2<w))) {
@@ -70,7 +70,7 @@ void bfs() {
             w1 = min(b1, c-c1);
             if (w1) {
                 short b2 = b1-w1, c2 = c1+w1;
-                int t1 = a1*40401 + b2*201 + c2;
+                int t1 = a1*201 + b2;
                 short w2 = water[t] + w1;
                 if (t1!=c && (!water[t1] || water[t1]>w2)) {
                     if (b2<=d && (b2>m || (b2==m && w2<w))) {
@@ -88,7 +88,7 @@ void bfs() {
             short w1 = min(c1, a-a1);
             if (w1) {
                 short a2 = a1+w1, c2 = c1-w1;
-                int t1 = a2*40401 + b1*201 + c2;
+                int t1 = a2*201 + b1;
                 short w2 = water[t] + w1;
                 if (t1!=c && (!water[t1] || water[t1]>w2)) {
                     if (a2<=d && (a2>m || (a2==m && w2<w))) {
@@ -104,7 +104,7 @@ void bfs() {
             w1 = min(c1, b-b1);
             if (w1) {
                 short b2 = b1+w1, c2 = c1-w1;
-                int t1 = a1*40401 + b2*201 + c2;
+                int t1 = a1*201 + b2;
                 short w2 = water[t] + w1;
                 if (t1!=c && (!water[t1] || water[t1]>w2)) {
                     if (b2<=d && (b2>m || (b2==m && w2<w))) {
@@ -129,7 +129,7 @@ int main()
         memset(water, 0, sizeof(water));
         m = 0; w = 0;
         if (c>m && c<=d) m = c;
-        q.push(c);
+        q.push(0);
         bfs();
         cout << w << ' ' << m << endl;
     }
