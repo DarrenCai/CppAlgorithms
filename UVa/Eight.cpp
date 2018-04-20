@@ -54,7 +54,7 @@ void bfs() {
 int main()
 {
     q.push(0);
-    visit[0] = 1;
+    visit[0] = true;
     memcpy(map[0], s1, 9);
     x[0] = 8;
     bfs();
