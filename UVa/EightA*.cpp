@@ -47,8 +47,8 @@ char diff() {
     char t = 0;
     for (char i=0; i<9; ++i)
         if (s1[i]!='x' && s1[i]!='1'+i)
-            ++ t;
-    return t*15;
+            t += abs((s1[i]-'1')/3 - i/3) + abs((s1[i]-'1')%3 - i%3);
+    return t<<2; // 因为最大的曼哈顿距离是4，4*8也不过32，题目不求最优解，所以放大4倍毫无压力(当然，实际上不放大也能AC)
 }
 
 bool expand(char n, int t) {
