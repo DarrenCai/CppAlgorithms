@@ -2,9 +2,9 @@
  * UVa652
  * 8数码问题的Ẵ解法
  * Ẵ算法的估价函数可表示为：f'(n) = g'(n) + h'(n) 这里，f'(n)是估价函数，g'(n)是起点到n的最短路径值，
- * h'(n)是n到目标的最断路经的启发值。由于这个f'(n)其实是无法预先知道的，所以我们用前面的估价函数f(n)做近似。
- * g(n)代替g'(n)，但g(n)>=g'(n)才可（大多数情况下都是满足的，可以不用考虑），h(n)代替h'(n)，但h(n)<=h'(n)才可。
- * 可以证明应用这样的估价函数是可以找到最短路径的，也就是可采纳的。
+ * h'(n)是n到目标的最断路经的启发值。由于这个f'(n)其实是无法预先知道的，所以我们用估价函数f(n)做近似，用
+ * g(n)代替g'(n)，但要g(n)>=g'(n)（大多数情况都是满足的，可不考虑），h(n)代替h'(n)。如果要求最短路径，
+ * 则一定要选择h(n)<=h'(n)；如果不一定求解最优解，而是要速度快，则可以选择h(n)>h'(n)。
  */
 
 #include <iostream>
@@ -12,7 +12,9 @@
 #include <set>
 using namespace std;
 
-char *s, s1[9], map[362880][9]={0}, x[362880], g[362880], h[362880]={0}, c[]="ulrd";
+#define abs(x) (x>0 ? x : -(x))
+
+unsigned char *s, s1[9], map[362880][9]={0}, x[362880], g[362880], h[362880]={0}, c[]="ulrd";
 struct cmp {
     bool operator() (int a, int b) const {
         return g[a]+h[a] < g[b]+h[b] || (g[a]+h[a] == g[b]+h[b] && a<b);
@@ -46,7 +48,7 @@ char diff() {
     for (char i=0; i<9; ++i)
         if (s1[i]!='x' && s1[i]!='1'+i)
             ++ t;
-    return t;
+    return t*15;
 }
 
 bool expand(char n, int t) {
