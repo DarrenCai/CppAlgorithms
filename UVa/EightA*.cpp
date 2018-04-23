@@ -48,7 +48,7 @@ char diff() {
     for (char i=0; i<9; ++i)
         if (s1[i]!='x' && s1[i]!='1'+i)
             t += abs((s1[i]-'1')/3 - i/3) + abs((s1[i]-'1')%3 - i%3);
-    return t<<2; // 因为最大的曼哈顿距离是4，4*8也不过32，题目不求最优解，所以放大4倍毫无压力(当然，实际上不放大也能AC)
+    return t<<2; // 因为最大的曼哈顿距离是4，4*8也不过32。题目不求最优解，diff放大4倍可快速求解(实际上不放大也能AC,而且得出的是最短路径)
 }
 
 bool expand(char n, int t) {
@@ -58,16 +58,13 @@ bool expand(char n, int t) {
     int next = ::hash();
     x[next] = n;
     if (!close.count(next)) {
-        if (next == 0) {
-            parent[0] = t;
-            g[0] = g[t] + 1;
-            return false;
-        }
         if (!open.count(next)) {
-            if (!map[next][0])
-                memcpy(map[next], s1, 9);
             g[next] = g[t] + 1;
             parent[next] = t;
+            if (next == 0)
+                return false;
+            if (!map[next][0])
+                memcpy(map[next], s1, 9);
             if (!h[next])
                 h[next] = diff();
             open.insert(next);
