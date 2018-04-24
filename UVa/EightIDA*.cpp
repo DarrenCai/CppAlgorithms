@@ -70,9 +70,11 @@ int main()
             cout << endl;
         } else if (invN()&1) {
             cout << "unsolvable" << endl;
-        } else {
-            depth = diff(s);
-            while(!IDAStar(s, sp)) ++depth;
+        } else {    //  不求最短路径时，IDẴ同样可以象Ẵ那样加快速度，放大估价函数，调大步长
+            char d = diff(s);
+            depth = d<<2;
+            d>>=1; if (d<4) d=4;
+            while(!IDAStar(s, sp)) depth += d;
         }
         if (n) cout << endl;
     }
