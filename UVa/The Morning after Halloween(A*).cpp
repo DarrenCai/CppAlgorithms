@@ -4,136 +4,117 @@
  */
 
 #include <iostream>
-#include <cstring>
 #include <vector>
-#include <map>
-#include <set>
-using namespace std;
+#include <queue>
+#include <cstring>  // gcc编译器一定要加上,clang可以不要
 
-#define abs(x) (x>0 ? x : -(x))
+const char d[]={0, -16, 16, -1, 1}; short dist[3][256];
 
-short w, h, n, a[3], b[3], c[3]; char d[5]={0, -16, 16, -1, 1}, s[256]; vector<char> m[256];
-map<int, short> g, hh; int t, goal;
-struct cmp {
-    bool operator() (int a, int b) const {
-        return g[a]+hh[a] < g[b]+hh[b] || (g[a]+hh[a] == g[b]+hh[b] && a<b);
-    }
-};
-set<int> close; set<int, cmp> open;
-
-int convert(const short (&r)[3]) {
-    return r[0]<<16 | r[1]<<8 | r[2];
-}
-
-void convert() {
-    int tt = t; char i = 3;
-    while (i) {
-        a[--i] = tt & 0xff;
-        c[i] = a[i];
-        tt >>= 8;
-    }
-}
-
-short diff() {
-    short ds, max=0;
+short h(int s, short n) {
+    short max = 0;
     for (char i=0; i<n; ++i) {
-        ds = abs((a[i]>>4)-(c[i]>>4)) + abs((a[i]&0xf)-(c[i]%w&0xf));
-        if (ds>max) max = ds;
+        max = std::max(max, dist[i][s & 0xff]); s>>=8;
     }
     return max;
 }
 
-bool expand() {
-    int next = convert(c);
-    if (!close.count(next)) {
-        if (!open.count(next)) {
-            g[next] = g[t] + 1;
-            if (next == goal)
-                return false;
-            if (!hh.count(next))
-                hh[next] = diff();
-            open.insert(next);
-        } else if (g[t]+1<g[next]) {
-            g[next] = g[t]+1;
-            open.erase(next);
-            open.insert(next);
-        }
-    }
-    return true;
-}
-
-void AStar() {
-    while (!open.empty()) {
-        t = *open.begin(); open.erase(open.begin()); convert();
-        if (n==1)
-            for (char i=m[a[0]].size()-1; i>0; --i) {
-                c[0] = a[0] + d[m[a[0]][i]];
-                if (!expand()) return;
-            }
-        else if (n==2)
-            for (char i=m[a[0]].size()-1; i>=0; --i) {
-                char dir = m[a[0]][i];
-                c[0] = a[0] + d[m[a[0]][i]];
-                for (char j=m[a[1]].size()-1; j>=0; --j) {
-                    dir = m[a[1]][j];
-                    c[1] = a[1] + d[m[a[1]][j]];
-                    if ((c[0]==a[0] && c[1]==a[1]) || (c[0]==a[1] && c[1]==a[0]) || c[0]==c[1]) continue;
-                    if (!expand()) return;
+int main()
+{
+    using namespace std;
+    short w, h, n;
+    while (cin >> w >> h >> n && w) {
+        char s[16][16];
+        int a = 0, b = 0, bp[3];
+        for (char i = 0; i < h; ++i) {
+            cin.ignore();
+            for (char j = 0; j < w; ++j) {
+                s[i][j] = cin.get();
+                if (s[i][j] >= 'a' && s[i][j] < 'd')
+                    a |= (i<<4 | j) << ((s[i][j]-'a') << 3);
+                else if (s[i][j] >= 'A' && s[i][j] < 'D') {
+                    char p = s[i][j]-'A';
+                    short k = i<<4 | j;
+                    dist[p][k] = 0;
+                    bp[p] = k;
+                    b |= k << (p << 3);
                 }
             }
-        else for (char i=m[a[0]].size()-1; i>=0; --i) {
-                c[0] = a[0] + d[m[a[0]][i]]; 
-                for (char j=m[a[1]].size()-1; j>=0; --j) {
-                    c[1] = a[1] + d[m[a[1]][j]];
-                    for (char k=m[a[2]].size()-1; k>=0; --k) {
-                        c[2] = a[2] + d[m[a[2]][k]];
-                        if ((c[0]==a[1] && c[1]==a[0]) || (c[0]==a[2] && c[2]==a[0]) ||
-                            (c[1]==a[2] && c[2]==a[1]) || (c[0]==a[0] && c[1]==a[1] && c[2]==a[2]) ||
-                            c[0]==c[1] || c[0]==c[2] || c[1]==c[2]) continue;
-                        if (!expand()) return;
+        }
+        if (a == b) {
+            cout << 0 << endl;
+        } else {
+            vector<char> m[256];
+            for (char i = 0; i < h; ++i)
+                for (char j = 0; j < w; ++j) {
+                    if (s[i][j] != '#') {
+                        short k = i<<4 | j; m[k].push_back(0);
+                        if (i && s[i-1][j]!='#') m[k].push_back(1);
+                        if (i<h-1 && s[i+1][j]!='#') m[k].push_back(2);
+                        if (j && s[i][j-1]!='#') m[k].push_back(3);
+                        if (j<w-1 && s[i][j+1]!='#') m[k].push_back(4);
+                    }
+                }
+            for (char i=0; i<n; ++i) {
+                bool visit[256] = {false}; queue<short> q; q.push(bp[i]); visit[bp[i]] = true;
+                while (!q.empty()) {
+                    short k = q.front(); q.pop();
+                    for (char j=m[k].size()-1; j>0; --j) {
+                        short next = k + d[m[k][j]];
+                        if (!visit[next]) {
+                            dist[i][next] = dist[i][k] + 1;
+                            q.push(next); visit[next] = true;
+                        }
                     }
                 }
             }
-        close.insert(t);
-    }
-}
-
-int main()
-{
-    while (cin >> w >> h >> n && w) {
-        memset(s, '#', 256);
-        for (char i = 0; i < h; ++i) {
-            cin.get();
-            for (char j = 0; j < w; ++j) {
-                short k = i<<4 | j;
-                s[k] = cin.get();
-                if (s[k] >= 'a' && s[k] < 'd') {
-                    a[s[k] - 'a'] = k;
-                } else if (s[k] >= 'A' && s[k] < 'D') {
-                    b[s[k] - 'A'] = k;
+            if (n==1) {
+                cout << dist[0][a] << endl;
+                continue;
+            }
+            static unsigned short g[16777216]; memset(g, 0xff, sizeof(g)); g[a] = 0;
+            priority_queue<pair<short, int>, vector<pair<short, int> >, greater<pair<short, int> > > q;
+            q.push(make_pair(::h(a, n), a));
+            while (!q.empty()) {
+                short f = q.top().first; int c = q.top().second; q.pop();
+                if (c == b) {
+                    cout << f << endl; break;
+                }
+                const short d = f - ::h(c, n);
+                if (d > g[c]) continue;
+                if (n==2) {
+                    short c0 = c&0xff, c1 = c>>8;
+                    for (char i=m[c0].size()-1; i>=0; --i) {
+                        short a0 = c0 + ::d[m[c0][i]];
+                        for (char j=m[c1].size()-1; j>=0; --j) {
+                            short a1 = c1 + ::d[m[c1][j]];
+                            if (a0==a1 || (a0==c0 && a1==c1) || (a0==c1 && a1==c0)) continue;
+                            int next = a1<<8 | a0;
+                            if (d+1 < g[next]) {
+                                g[next] = d + 1;
+                                q.push(make_pair(g[next]+::h(next, n), next));
+                            }
+                        }
+                    }
+                } else {
+                    short c0 = c&0xff, c1 = c>>8 & 0xff, c2 = c>>16;
+                    for (char i=m[c0].size()-1; i>=0; --i) {
+                        short a0 = c0 + ::d[m[c0][i]];
+                        for (char j=m[c1].size()-1; j>=0; --j) {
+                            short a1 = c1 + ::d[m[c1][j]];
+                            for (char k=m[c2].size()-1; k>=0; --k) {
+                                short a2 = c2 + ::d[m[c2][k]];
+                                if (a0==a1 || a0==a2 || a1==a2 || (a0==c0 && a1==c1 && a2==c2) ||
+                                    (a0==c1 && a1==c0) || (a0==c2 && a2==c0) || (a1==c2 && a2==c1)) continue;
+                                int next = a2<<16 | a1<<8 | a0;
+                                if (d+1 < g[next]) {
+                                    g[next] = d + 1;
+                                    q.push(make_pair(g[next]+::h(next, n), next));
+                                }
+                            }
+                        }
+                    }
                 }
             }
-        }
-        for (short i=0; i<256; ++i)
-            if (s[i] != '#') {
-                m[i].clear(); m[i].push_back(0);
-                if (i>=16 && s[i-16]!='#') m[i].push_back(1);
-                if (i<240 && s[i+16]!='#') m[i].push_back(2);
-                if (i && s[i-1]!='#') m[i].push_back(3);
-                if (i<255 && s[i+1]!='#') m[i].push_back(4);
-            }
-        t = convert(a);
-        goal = convert(b);
-        if (t == goal) {
-            cout << 0 << endl;
-        } else {
-            open.insert(t);
-            g[t] = 0;
-            AStar();
-            cout << g[goal] << endl;
-            open.clear();
-            close.clear();
-            hh.clear();
         }
     }
     return 0;
