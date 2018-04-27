@@ -39,7 +39,8 @@ int main()
                         if (j<w-1 && s[i][j+1]!='#') m[k].push_back(4);
                     }
                 }
-            static short dd[16777216]; memset(dd, 0, sizeof(dd)); dd[a] = 1;
+            static short dd[16777216];       // static一定要加上，否则运行时可能导致error
+            memset(dd, 0, sizeof(dd)); dd[a] = 1;
             queue<int> q; q.push(a);
             while (!q.empty()) {
                 int f = q.front(); q.pop();
