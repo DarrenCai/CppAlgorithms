@@ -101,10 +101,11 @@ int main()
                         short a0 = c0 + ::d[m[c0][i]];
                         for (char j=m[c1].size()-1; j>=0; --j) {
                             short a1 = c1 + ::d[m[c1][j]];
+                            if (a0==a1 || (a0==c1 && a1==c0)) continue;
                             for (char k=m[c2].size()-1; k>=0; --k) {
                                 short a2 = c2 + ::d[m[c2][k]];
-                                if (a0==a1 || a0==a2 || a1==a2 || (a0==c0 && a1==c1 && a2==c2) ||
-                                    (a0==c1 && a1==c0) || (a0==c2 && a2==c0) || (a1==c2 && a2==c1)) continue;
+                                if (a0==a2 || a1==a2 || (a0==c0 && a1==c1 && a2==c2) ||
+                                    (a0==c2 && a2==c0) || (a1==c2 && a2==c1)) continue;
                                 int next = a2<<16 | a1<<8 | a0;
                                 if (d+1 < g[next]) {
                                     g[next] = d + 1;
