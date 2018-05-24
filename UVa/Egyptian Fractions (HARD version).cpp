@@ -32,7 +32,7 @@ bool ok(LL i) {
     return true;
 }
 
-bool IDAStar(LL a, LL b, short cur=0, LL l=2) {
+bool IDDFS(LL a, LL b, short cur=0, LL l=2) {
     if (cur+2 == d) {
         for (LL t=b<<1, i=max(l, (b+a-1)/a); a*i < t; ++i) {
             if (ok(i) && b*i % (a*i-b) == 0) {
@@ -62,7 +62,7 @@ bool IDAStar(LL a, LL b, short cur=0, LL l=2) {
                 aa /= c; bb /= c;
                 if (tmp.size() > cur) tmp[cur] = i;
                 else tmp.push_back(i);
-                IDAStar(aa, bb, cur+1, i+1);
+                IDDFS(aa, bb, cur+1, i+1);
             }
         }
     }
@@ -71,13 +71,11 @@ bool IDAStar(LL a, LL b, short cur=0, LL l=2) {
 
 int main()
 {
-    // freopen("in.txt", "r", stdin);
-    // freopen("ou.txt", "w", stdout);
     int t; cin>>t;
     for (int i=1; i<=t; ++i) {
         short a, b; cin>>a>>b>>k; d = 2;
         for (char j=0; j<k; ++j) cin >> s[j];
-        while (!IDAStar(a, b)) ++ d;
+        while (!IDDFS(a, b)) ++ d;
         cout << "Case " << i << ": " << a << '/' << b << "=1/" << ans[0];
         for (short j=1; j<d; ++j) cout << "+1/" << ans[j];
         cout << endl; tmp.clear(); ans.clear();

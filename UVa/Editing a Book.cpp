@@ -15,7 +15,7 @@ char idx(const char *s, char a) {
 
 bool expand(const char *s, char d, char i, char l, char j);
 
-bool IDAStar(const char* s, char d=0) {
+bool IDDFS(const char* s, char d=0) {
     bool isAns = true;
     for (char i=0; isAns && i<n; ++i)
         if (s[i] != '1'+i) isAns = false;
@@ -49,7 +49,7 @@ bool expand(const char *s, char d, char i, char l, char j) {
     for (char k=j+1; k<n; ++k) s1[k] = s[k];
     for (char k=0; k<n-1; ++k)
         if (s1[k]+1 != s1[k+1]) ++t;
-    if (3*d + t <= 3*ops && IDAStar(s1, d))
+    if (3*d + t <= 3*ops && IDDFS(s1, d))
         return true;
     return false;
 }
@@ -62,7 +62,7 @@ int main()
         for (short i=0; i<n; ++i)
             cin >> p[i];
         ops = 0;
-        while (!IDAStar(p)) ++ ops;
+        while (!IDDFS(p)) ++ ops;
         cout << "Case " << ++k << ": " << short(ops) << endl;
     }
     return 0;

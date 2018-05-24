@@ -20,7 +20,7 @@ const short idx[][7] = {
 const short c[] = {6, 7, 8, 11, 12, 15, 16, 17};
 short s[24], depth; char rota[100];
 
-int IDAStar(const short (&s)[24], short d=0, short pre=-1) {
+int IDDFS(const short (&s)[24], short d=0, short pre=-1) {
     if (d == depth) {
         bool isSame = true;
         for (short i=0; isSame && i<7; ++i) if (s[c[i]] != s[c[i+1]]) isSame = false;
@@ -37,7 +37,7 @@ int IDAStar(const short (&s)[24], short d=0, short pre=-1) {
                 short count[4] = {0}, max = 0, ret;
                 for (short j=0; j<8; ++j) ++ count[ss[c[j]]];
                 for (short j=1; j<4; ++j) if (count[j] > max) max = count[j];
-                if (d+9-max<=depth && (ret=IDAStar(ss, d+1, i))) return ret;
+                if (d+9-max<=depth && (ret=IDDFS(ss, d+1, i))) return ret;
             }
         }
     }
@@ -49,7 +49,7 @@ int main()
     while (cin >> s[0] && s[0]) {
         for (short i=1; i<24; ++i) cin>>s[i];
         short ret; memset(rota, 0, 100); depth = 0;
-        while (!(ret = IDAStar(s))) ++ depth;
+        while (!(ret = IDDFS(s))) ++ depth;
         cout << (depth==0 ? "No moves needed" : rota) << endl << ret << endl;
     }
     return 0;
