@@ -92,7 +92,7 @@ int main()
 {
     int t; cin >> t;
     while (t--) {
-        cin >> n >> k; char c = 0;
+        cin >> n >> k;
         maxMatch = n*(n+1)<<1;
         offset = 1+(n<<1);
         memset(e, 1, maxMatch);
