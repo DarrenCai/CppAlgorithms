@@ -2,12 +2,12 @@
 using namespace std;
 
 #define maxNode 100000
-#define maxN 1000
+#define maxC 1000
 #define maxR 1000
 
 //列编号为1～n,节点0是表头节点;节点1～n是各列顶部的虚拟节点
 int n, sz;                                              //列数，节点总数
-int S[maxN], H[maxR];                                   //各列节点数，各行头节点
+int S[maxC], H[maxR];                                   //各列节点数，各行头节点
 
 int row[maxNode], col[maxNode];                         //各节点行列编号
 int L[maxNode], R[maxNode], U[maxNode], D[maxNode];     //4方向循环链表
@@ -30,7 +30,7 @@ void link(int r, int c) {
         L[sz]=L[H[r]]; R[L[H[r]]]=sz;
         R[sz]=H[r]; L[H[r]]=sz;
     }
-    col[sz]=c; ++ sz; ++ S[c];
+    row[sz] = r; col[sz]=c; ++ sz; ++ S[c];
 }
 
 void remove(int c) {
@@ -44,7 +44,7 @@ void remove(int c) {
 void restore(int c) {
     for (int i=U[c]; i!=c; i=U[i])
         for(int j=L[i]; j!=i; j=L[j]) {
-            U[D[j]] = j; D[U[j]] = j; ++S[col[j]];
+            U[D[j]] = D[U[j]] = j; ++S[col[j]];
         }
     L[R[c]] = c; R[L[c]] = c;
 }
