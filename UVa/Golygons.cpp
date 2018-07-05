@@ -90,7 +90,6 @@ void dfs(short d=0, int x=0, int y=0) {
 
 int main()
 {
-    freopen("ou.txt", "w", stdout);
     int t; cin >> t;
     while (t--) {
         memset(blockX, 0, sizeof(blockX));

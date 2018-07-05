@@ -78,9 +78,8 @@ void decode(short code, short& a, short& b, short& c) {
 int main()
 {
     char sudoku[16][17]; int k=0;
-    while (cin) {
-        for (short i=0; i<16; ++i)
-            if (!(cin>>sudoku[i])) return 0;
+    while (!cin.eof()) {
+        for (short i=0; i<16; ++i) cin >> sudoku[i];
         if (k++) cout << endl;
         init();
         for (short r=0; r<16; ++r)
