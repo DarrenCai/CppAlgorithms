@@ -1,6 +1,6 @@
 /**
  * UVa12558
- * 埃及分数问
+ * 埃及分数
  */
 
 #include <iostream>

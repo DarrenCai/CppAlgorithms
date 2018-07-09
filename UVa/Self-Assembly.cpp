@@ -7,7 +7,7 @@
 
 bool topology(const char u, const char (&g)[52][52], char (&visit)[52]){
     visit[u] = -1;
-    for(char v=0; v<52; ++v) if(g[u][v] && (visit[v] == -1 || (!visit[v] && topology(v, g, visit)))) return true;;
+    for(char v=0; v<52; ++v) if(g[u][v] && (visit[v] == -1 || (!visit[v] && topology(v, g, visit)))) return true;
     visit[u] = 1; return false;
 }
 
