@@ -40,7 +40,7 @@ bool IDAStar(const char *s, char sp, char d=0, char pre=-1) {
         path[d] = '\0';
         cout << path << endl;
         return true;
-    } else if (d<depth) {
+    } else if (d<depth)
         for (char i=0; i<4; ++i) {
             if (pre+i == 3) continue;   // 重要剪支
             char r = sp/3+m[i][0], c = sp%3+m[i][1];
@@ -50,10 +50,9 @@ bool IDAStar(const char *s, char sp, char d=0, char pre=-1) {
             char s1[9]; memcpy(s1, s, 9);
             s1[n] = s[sp];
             s1[sp] = s[n];
-            if (d+diff(s1)<=depth && IDAStar(s1, n, d+1,i))   // 重要剪支
+            if (d+diff(s1)<depth && IDAStar(s1, n, d+1,i))   // 重要剪支
                 return true;
         }
-    }
     return false;
 }
 
