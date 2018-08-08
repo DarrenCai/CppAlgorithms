@@ -51,7 +51,7 @@ void restore(int c) {
 
 //d为递归深度,这个其实是具体的dance函数实现,一般是dfs
 bool dfs(int d=0) {
-    if (!R[0]) {                                    //找到解
+    if (!R[0]) {                                        //找到解
         ansd = d;                                       //记录解的长度
         return true;
     }
