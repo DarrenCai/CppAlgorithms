@@ -62,10 +62,10 @@ void dfs(int d=0) {     //根据具体问题选择限制搜索深度或直接求
     for(int i=D[c]; i!=c; i=D[i]) {
         remove(i);
         for(int j=R[i]; j!=i; j=R[j])
-            remove(j), --S[col[j]];
+            remove(j);
         dfs(d+1);
         for(int j=L[i]; j!=i; j=L[j])
-            restore(j), ++S[col[j]];
+            restore(j);
         restore(i);
     }
 }

@@ -68,10 +68,10 @@ void dfs(short d=0) {
     for(short i=D[c]; i!=c; i=D[i]) {
         remove(i);
         for(short j=R[i]; j!=i; j=R[j])
-            remove(j), --S[col[j]];
+            remove(j);
         dfs(d+1);
         for(short j=L[i]; j!=i; j=L[j])
-            restore(j), ++S[col[j]];
+            restore(j);
         restore(i);
     }
 }
