@@ -58,7 +58,7 @@ int main()
     for (int k=1; k<=T; ++k) {
         memset(g, 0, sizeof(g));
         cin >> n >> m >> s >> t; c = s<<16;
-        for (int i=1; i<=m; ++i) cin >> s, c |= 1<<s;
+        for (int i=0; i<m; ++i) cin >> s, c |= 1<<s;
         for (int i=1; i<n; ++i) { int u, v; cin >> u >> v; g[u][v] = g[v][u] = true; }
         int step = bfs(); cout << "Case " << k << ": " << step << endl;
         if (step != -1) printPath(c); cout << endl;
