@@ -12,7 +12,7 @@ short s[51], mini, m, n, ans; int t;
 
 bool dfs(short r, short mx, int tt) {
     if (t % ans) return false;
-    if (r == 0) return tt==0 || dfs(ans, m, tt);
+    if (r == 0) return tt == ans || dfs(ans, m, tt);
     if (s[mx]) {
         --s[mx];
         if (dfs(r-mx, min(r-mx, mx), tt-mx))
@@ -25,16 +25,17 @@ bool dfs(short r, short mx, int tt) {
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     while (cin >> n && n) {
         mini=50, t = m = 0; memset(s, 0, sizeof(s));
         for (short i=0; i<n; ++i) {
             short x; cin>>x; ++s[x]; t += x;
             if (x > m) m = x; if (x < mini) mini = x;
         }
-        for (ans=m; !dfs(ans, m, t) && ans <= (t>>1); ++ans);
-        cout << (ans>(t>>1) ? t : ans) << endl;
+        int mx = t >> 1;
+        for (ans=m; !dfs(ans, m, t) && ans <= mx; ++ans);
+        cout << (ans>mx ? t : ans) << endl;
     }
     return 0;
 }
