@@ -11,7 +11,6 @@ using namespace std;
 short s[51], mini, m, n, ans; int t;
 
 bool dfs(short r, short mx, int tt) {
-    if (t % ans) return false;
     if (r == 0) return tt == ans || dfs(ans, m, tt);
     if (s[mx]) {
         --s[mx];
@@ -34,7 +33,8 @@ int main()
             if (x > m) m = x; if (x < mini) mini = x;
         }
         int mx = t >> 1;
-        for (ans=m; !dfs(ans, m, t) && ans <= mx; ++ans);
+        for (ans=m; ans <= mx; ++ans)
+            if (t % ans == 0 && dfs(ans, m, t)) break;
         cout << (ans>mx ? t : ans) << endl;
     }
     return 0;
