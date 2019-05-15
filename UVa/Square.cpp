@@ -23,8 +23,8 @@ bool dfs(int r, short k=3, short f=n-1) {
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     int k; cin >> k;
     while (k--) {
         int t = 0; memset(visit, 0, 25); cin >> n;
