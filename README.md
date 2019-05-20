@@ -1,2 +1,2 @@
-# CppAlgorithms
+# C++ Algorithms
 Algorithms implememted in C++
