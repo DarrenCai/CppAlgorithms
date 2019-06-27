@@ -9,8 +9,8 @@ using namespace std;
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     short t; cin >> t;
     while (t--) {
         short n, a[200]={0}; cin >> n;
