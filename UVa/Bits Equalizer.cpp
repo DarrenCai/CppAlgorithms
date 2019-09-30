@@ -27,9 +27,7 @@ int main()
             if (t[i] == '1') ++t1;
         }
         if (s1>t1 || n1+s1>n) cout << "Case " << k << ": -1" << endl;
-        else {
-            cout << "Case " << k << ": " << nz + max(n1, n0) << endl;
-        }
+        else cout << "Case " << k << ": " << nz + max(n1, n0) << endl;
     }
     return 0;
 }
