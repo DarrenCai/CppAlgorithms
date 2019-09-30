@@ -11,7 +11,7 @@ using namespace std;
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
+    // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     short c; cin >> c; string s, t;
     for (short k=1; k<=c; ++k) {
