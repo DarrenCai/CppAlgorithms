@@ -51,9 +51,6 @@ class AVLTree {
         // 删除结点(key为节点键值)
         void remove(T key);
 
-        // 销毁AVL树
-        void destroy();
-
         // 打印AVL树
         void print();
     private:
@@ -532,12 +529,6 @@ void AVLTree<T>::destroy(AVLTreeNode<T>* &tree)
         destroy(tree->right);
 
     delete tree;
-}
-
-template <class T>
-void AVLTree<T>::destroy()
-{
-    destroy(mRoot);
 }
 
 /*
