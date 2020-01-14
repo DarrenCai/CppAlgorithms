@@ -14,13 +14,12 @@ int main() {
         short x = 0, a, b, c; cin >> a >> b >> c;
         cout << 0;
         if (c % 3 == 0) {
-            cout << ' ' << (x += 2);
             for (short i=c/3; i; --i) cout << ' ' << (x += 3);
-            cout << ' ' << --x;
+            cout << ' ' << ++x;
             for (short i=c/3; i; --i) cout << ' ' << (x -= 3);
-            cout << ' ' << (x += 2);
+            cout << ' ' << ++x;
             for (short i=c/3; i; --i) cout << ' ' << (x += 3);
-            b -=2 ; --a;
+            a -= 2;
         } else if (c % 3 == 1) {
             for (short i=c/3+1; i; --i) cout << ' ' << (x += 3);
             cout << ' ' << (x -= 2);
