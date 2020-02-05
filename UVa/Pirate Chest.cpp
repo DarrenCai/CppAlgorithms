@@ -81,8 +81,8 @@ long long solve() {
 }
 
 int main() {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     while (cin >> a >> b >> m >> n) {
         t = 0;
         for (int i=0; i<m; ++i) for (int j=0; j<n; ++j) cin >> d[i][j], h[t++] = d[i][j];
