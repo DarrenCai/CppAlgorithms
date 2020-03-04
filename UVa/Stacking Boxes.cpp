@@ -1,6 +1,6 @@
 /**
  * UVa103
- * 打结
+ * 矩形嵌套
  */
 
 #include <iostream>
