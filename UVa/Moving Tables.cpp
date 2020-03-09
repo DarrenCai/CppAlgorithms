@@ -1,7 +1,7 @@
 /**
- * ICPC Archive Volumes :: Volume 23 (2300-2399) 2326
+ * ICPC Archive Volumes :: Volume 23 (2300-2399)
  * Regionals 2001 >> Asia - Taejon
- * Moving Tables
+ * 2326 - Moving Tables
  */
 
 #include <iostream>
