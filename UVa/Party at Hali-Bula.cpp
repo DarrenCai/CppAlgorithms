@@ -15,7 +15,7 @@ short d0[N], d1[N], n; bool f0[N], f1[N];
 
 void calc(short i) {
     if (g[i].size() == 0) {
-        d0[i] = g[i].size(); d1[i] = 1; f0[i] = f1[i] = true;
+        d0[i] = 0; d1[i] = 1; f0[i] = f1[i] = true;
         return;
     }
     for (short j=g[i].size()-1; j>=0; --j) calc(g[i][j]);
