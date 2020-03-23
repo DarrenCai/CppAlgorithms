@@ -22,31 +22,23 @@ void create(short i = 1) {
 
 void dp(short i = 1) {
     if (g[i].size() == 0) {
-        d00[i] = N; d01[i] = 0; d1[i] = 1;
+        d00[i] = n; d01[i] = 0; d1[i] = 1;
         return;
     }
     for (short j=g[i].size()-1; j>=0; --j) dp(g[i][j]);
-    int v = 0;
-    for (short j=g[i].size()-1; j>=0; --j) v = min(v+d00[g[i][j]], N);
-    d01[i] = v;
-    d00[i] = N;
+    d01[i] = 0; d1[i] = 1;
     for (short j=g[i].size()-1; j>=0; --j) {
-        v = d1[g[i][j]];
-        for (short k=g[i].size()-1; k>=0; --k) if (j != k) {
-            if (g[g[i][k]].size() == 0) {
-                v = N; break;
-            }
-            v = min(v+d00[g[i][k]], N);
-        }
-        if (v < d00[i]) d00[i] = v;
+        d01[i] += d00[g[i][j]], d1[i] += min(d01[g[i][j]], d1[g[i][j]]);
+        if (d01[i] > n) d01[i] = n;
+        if (d1[i] > n) d1[i] = n;
     }
-    d1[i] = 1;
-    for (short j=g[i].size()-1; j>=0; --j) d1[i] += min(d01[g[i][j]], d1[g[i][j]]);
+    d00[i] = n;
+    for (short j=g[i].size()-1; j>=0; --j) d00[i] = min(d00[i], d01[i]-d00[g[i][j]]+d1[g[i][j]]);
 }
 
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("ou.txt", "w", stdout);
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
     while (true) {
         cin >> n;
         for (short i=1; i<=n; ++i) e[i].clear(), g[i].clear(), visit[i] = false;
