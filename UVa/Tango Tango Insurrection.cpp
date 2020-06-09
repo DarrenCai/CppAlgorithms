@@ -23,7 +23,7 @@ int main()
         for (short p=n-1; p>=0; --p) for (short i=0; i<11; ++i)
             if (s[p] == '.') {
                 for (short j=0; j<3; ++j) d[p][i][j] = d[p+1][i][2], ans[p][i][j] = i;
-                if (fs[i] != 4 && fs[i] != 12) {
+                if (i != 3 && i != 8) {
                     for (short k=0; k<4; ++k) if (k != (fs[i]&3) && k != fs[i]>>2) {
                         short r = d[p+1][sf[k<<2 | fs[i]&3]][0];
                         for (short j=0; j<3; ++j) {
@@ -32,7 +32,7 @@ int main()
                         }
                     }
                 }
-                if (fs[i] != 9 && fs[i] != 11) {
+                if (i != 6 && i != 7) {
                     for (short k=0; k<4; ++k) if (k != (fs[i]&3) && k != fs[i]>>2) {
                         short r = d[p+1][sf[fs[i]&12 | k]][1];
                         for (short j=0; j<3; ++j) {
@@ -45,10 +45,10 @@ int main()
                 d[p][i][j] = d[p+1][i][0] + (j==0 ? 3 : 1), ans[p][i][j] = i;
             } else if (a[fs[i]&3] == s[p]) for (short j=0; j<3; ++j) {
                 d[p][i][j] = d[p+1][i][1] + (j==1 ? 3 : 1), ans[p][i][j] = i;
-            } else if (fs[i] == 9 || fs[i] == 11) for (short j=0; j<3; ++j) {
+            } else if (i == 6 || i == 7) for (short j=0; j<3; ++j) {
                 ans[p][i][j] = sf[(s[p]=='L' ? 0 : (s[p]=='U' ? 1 : 3))<<2 | fs[i]&3];
                 d[p][i][j] = d[p+1][ans[p][i][j]][0] + (j==0 ? (s[p]=='L' ? 7 : 5) : 1);
-            } else if (fs[i] == 4 || fs[i] == 12) for (short j=0; j<3; ++j) {
+            } else if (i == 3 || i == 8) for (short j=0; j<3; ++j) {
                 ans[p][i][j] = sf[fs[i]&12 | (s[p]=='R' ? 2 : (s[p]=='U' ? 1 : 3))];
                 d[p][i][j] = d[p+1][ans[p][i][j]][1] + (j==1 ? (s[p]=='R' ? 7 : 5) : 1);
             } else {
