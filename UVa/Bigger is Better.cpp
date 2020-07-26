@@ -10,10 +10,10 @@ using namespace std;
 
 #define N 105
 #define M 3005
-short n, m, t, c[] = {6, 2, 5, 5, 4, 5, 6, 3, 7, 6};
+short n, m, c[] = {6, 2, 5, 5, 4, 5, 6, 3, 7, 6};
 const long long p17 = 100000000000000000ll;
 
-struct num{
+struct num {
     long long p[3];
     num():p{0, 0, 0}{}
     bool invalid() const {
