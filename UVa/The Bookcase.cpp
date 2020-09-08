@@ -13,7 +13,7 @@ using namespace std;
 #define N 80
 #define V 4000
 
-struct book{
+struct book {
     short h, w;
     bool operator< (const book& rhs) const {
         return h>rhs.h;
