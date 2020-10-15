@@ -19,9 +19,7 @@ bool check(short i, short color) {
 void dfs(short i) {
     if (cnt >= ans) return;
     if (i >= n) {
-        if (cnt < ans) {
-            ans = cnt, memcpy(c, c1, sizeof(c));
-        }
+        ans = cnt; memcpy(c, c1, sizeof(c));
     } else for (short color=1; color <= cnt+1; ++color) {
         if (check(i, color)) {
             c1[a[i]] = color;
@@ -41,7 +39,7 @@ int main()
     // freopen("ou.txt", "w", stdout);
     short m;
     while (cin >> m) {
-        ans = N; n=0; cnt=0; memset(c1, 0, sizeof(c1)); memset(g, 0, sizeof(g)); memset(v, 0, sizeof(v));
+        n=0; ans=N; cnt=0; memset(c1, 0, sizeof(c1)); memset(g, 0, sizeof(g)); memset(v, 0, sizeof(v));
         for (short i=0; i<m; ++i) {
             char c1, c2; cin >> c1 >> c2; c1 -= 'L'; c2 -= 'L';
             if (!v[c1]) a[n++] = c1, v[c1] = true;
@@ -53,9 +51,6 @@ int main()
         cout << ans-2 << endl;
         for (short i=0; i<m; ++i) {
             char c1 = 'L'+e[i][0], c2 = 'L'+e[i][1]; bool less = c[e[i][0]] < c[e[i][1]];
-            if (c[e[i][0]] == c[e[i][1]]) {
-                cout << "warn " << c1 << ' ' << c2 << endl;
-            }
             cout << (less ? c1 : c2) << ' ' << (less ? c2 : c1) << endl;
         }
     }
