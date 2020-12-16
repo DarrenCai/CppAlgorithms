@@ -14,8 +14,8 @@ int a[N];
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     int d; cin >> d;
     while (d--) {
         int s, n, ans=0; cin >> s >> n;
