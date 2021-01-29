@@ -21,8 +21,8 @@ struct node {
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     short t; cin >> t;
     while (t--) {
         cin >> n >> m >> g; g+=10;
