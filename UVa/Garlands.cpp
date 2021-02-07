@@ -17,14 +17,14 @@ bool check(int x) {
         if (w[i]-w[i-j] > x) break;
         if (w[i-j]-w[ii] > x) continue;
         dp[i][0] = min(dp[i][0], dp[ii][1]+1);
-        dp[i][1] = min(dp[i][1], dp[ii][0]+1); 
+        dp[i][1] = min(dp[i][1], dp[ii][0]+1);
     }
     return dp[n][m&1] <= m;
 }
 
 int main()
 {
-    // freopen("in0.txt", "r", stdin);
+    // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     short z; cin >> z;
     while (z--) {
