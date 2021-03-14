@@ -14,7 +14,7 @@ short d[M][N], m, n; char x[M], y[N];
 
 int main() {
     // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
+    // freopen("ou.txt", "w", stdout);
     for (short i=0; i<N; ++i) d[0][i] = i;
     short t; cin >> t;
     while (t--) {
