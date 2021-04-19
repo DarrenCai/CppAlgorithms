@@ -14,7 +14,7 @@ bool flag[N] = {false}; short prim[C], c=0;
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    for (short i=2; i<178; ++i) for (short j=i*i; j<N; j+=i) flag[j] = true;
+    for (short i=2; i<178; ++i) if (!flag[i]) for (short j=i*i; j<N; j+=i) flag[j] = true;
     for (short i=2; i<N; ++i) if (!flag[i]) prim[c++] = i;
     short t; cin >> t;
     while (t--) {

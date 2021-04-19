@@ -13,7 +13,7 @@ int main()
 {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    for (int i=2; i<1141; ++i) for (int j=i*i; j<1299710; j+=i) flag[j] = true;
+    for (int i=2; i<1141; ++i) if (!flag[i]) for (int j=i*i; j<1299710; j+=i) flag[j] = true;
     for (int i=2, t=0; i<1299710; ++i) if (!flag[i]) prim[t++] = i;
     int n;
     while (cin>>n && n) {

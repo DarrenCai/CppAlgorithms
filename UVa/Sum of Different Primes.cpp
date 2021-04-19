@@ -16,7 +16,7 @@ int main()
 {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    for (short i=2; i<34; ++i) for (short j=i*i; j<N; j+=i) flag[j] = true;
+    for (short i=2; i<34; ++i) if (!flag[i]) for (short j=i*i; j<N; j+=i) flag[j] = true;
     for (short i=2; i<N; ++i) if (!flag[i]) idx[prim[c] = i] = c, c++;
     memset(d, 0, sizeof(d));
     for (short i=2; i<N; ++i) {

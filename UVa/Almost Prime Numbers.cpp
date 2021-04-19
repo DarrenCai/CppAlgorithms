@@ -13,7 +13,7 @@ bool flag[N] = {false}; int prim[C], c=0;
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    for (int i=2; i<1001; ++i) for (int j=i*i; j<N; j+=i) flag[j] = true;
+    for (int i=2; i<1001; ++i) if (!flag[i]) for (int j=i*i; j<N; j+=i) flag[j] = true;
     for (int i=2; i<N; ++i) if (!flag[i]) prim[c++] = i;
     short t; cin >> t;
     while (t--) {

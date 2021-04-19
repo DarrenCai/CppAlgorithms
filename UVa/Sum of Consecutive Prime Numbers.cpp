@@ -14,7 +14,7 @@ int main()
 {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    for (short i=2; i<100; ++i) for (short j=i*i; j<N; j+=i) flag[j] = true;
+    for (short i=2; i<100; ++i) if (!flag[i]) for (short j=i*i; j<N; j+=i) flag[j] = true;
     for (short i=2; i<N; ++i) if (!flag[i]) prim[c++] = i;
     for (short i=1; i<67; ++i) {
         short s = 0; for (short j=0; j<i; ++j) s += prim[j]; ++ d[s];
