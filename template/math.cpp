@@ -3,8 +3,10 @@ int gcd(int a, int b) {
     return b==0 ? a : gcd(b, a%b);
 }
 
+/* 出自编程之美的求最大公约数算法 */
 int gcd(int a, int b) {
     if (a > b) return gcd(b, a);
+    if (a < 0) return gcd(-a, b);
     if (a == 0) return b;
     if (a & 1) {
         if (b & 1) return gcd(a, (b-a)>>1);
