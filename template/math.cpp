@@ -25,12 +25,13 @@ int gcd(int a, int b) {
  * 结论2: 若方程ax+by=g的一组解是(x0,y0),
  *       则当c是g的倍数时ax+by=c的一组解是(x0*(c/g), y0*(c/g));当c不是g的倍数时无整数解。
  */
-void gcd(int a, int b, int& g, int& x, int& y) {
+int gcd(int a, int b, int& x, int& y) {
     if (!b) {
-        g = a; x = 1; y = 0;
+        x = 1; y = 0; return a;
     } else {
-        gcd(b, a%b, g, y, x);
-        y -= x*(a/b);
+        int g = gcd(b, a%b, y, x);
+        y -= a/b*x;
+        return g;
     }
 }
 
