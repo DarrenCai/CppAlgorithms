@@ -8,44 +8,35 @@
 using namespace std;
 
 #define N 10010
-short a[10], s[2][N], c[2], t, l, n;
-struct node {short p, c;} d[N][N]; bool visit[N];
+short a[10], t, n, head, tail;
+struct node {short r, p, c;} q[N]; bool visit[N];
 
 void solve() {
-    c[0] = l = 0;
     memset(visit, 0, sizeof(visit));
     if (t == 0 || (t==1 && a[0] == 0)) return;
-    short c1 = 0, c2 = 0;
+    head = tail = 0;
     for (short i=a[0] ? 0 : 1; i<t; ++i) {
         short r = a[i]%n;
         if (!visit[r]) {
-            d[0][r].p = -1; d[0][r].c = a[i];
+            q[tail].r = r; q[tail].p = -1; q[tail++].c = a[i];
             visit[r] = true;
-            ++c2;
-            s[0][c[0]++] = r;
         }
+        if (r == 0) return;
     }
-    while (!visit[0] && c1<c2) {
-        c1 = c2;
-        short (&ps)[N] = s[l&1], &pc = c[l&1];
-        node (&prev)[N] = d[l];
-        short (&cs)[N] = s[++l&1], &cc = c[l&1] = 0;
-        node (&curr)[N] = d[l];
-        for (short i=0; i<pc; ++i) for (short j=0; j<t; ++j) {
-            short r = (10l*ps[i]+a[j])%n;
-            if (!visit[r]) {
-                curr[r].p = ps[i]; curr[r].c = a[j];
-                cs[cc++] = r;
-                visit[r] = true;
-                ++c2;
-            }
-            if (r == 0) return;
+    while (head++ < tail) for (short i=0; i<t; ++i) {
+        const node &p1 = q[head-1];
+        short r = (10l*p1.r+a[i])%n;
+        if (!visit[r]) {
+            node &p2 = q[tail++];
+            p2.r = r; p2.p = head-1; p2.c = a[i];
+            visit[r] = true;
         }
+        if (r == 0) return;
     }
 }
 
-void print(const node& node, short c) {
-    if (node.p >= 0) print(d[c-1][node.p], c-1);
+void print(const node& node) {
+    if (node.p >= 0) print(q[node.p]);
     if (node.c >= 0) cout << node.c;
 }
 
@@ -65,7 +56,7 @@ int main() {
             cout << "Case " << ++kase << ": -1" << endl;
         } else {
             cout << "Case " << ++kase << ": ";
-            print(d[l][0], l);
+            print(q[tail-1]);
             cout << endl;
         }
     }
