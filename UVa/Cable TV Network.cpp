@@ -7,7 +7,7 @@
 using namespace std;
 
 #define N 60
-struct {short u, v;} e[N*N>>1]; short c[N], cc[N], p[N], g[N][N], n, m;
+short u[N*N>>1], v[N*N>>1], c[N], cc[N], p[N], g[N][N], n, m;
 
 short find(short x) {
     return p[x]==x ? x : p[x] = find(p[x]);
@@ -25,28 +25,27 @@ int main() {
     while (cin >> n >> m) {
         for (short i=0; i<n; ++i) cc[i] = 0, p[i] = i;
         for (short i=0; i<m; ++i) {
-            short u, v; char t;
-            cin >> t >> u >> t >> v >> t;
-            g[u][cc[u]++] = v; g[v][cc[v]++] = u;
-            e[i].u = u; e[i].v = v;
-            p[find(u)] = find(v);
+            short a, b; char t;
+            cin >> t >> a >> t >> b >> t;
+            g[a][cc[a]++] = b; g[b][cc[b]++] = a;
+            u[i] = a; v[i] = b;
+            p[find(a)] = find(b);
         }
         for (short i=0; i<n; ++i) c[i] = cc[i];
         short ans = 0;
         while (check() == 1) {
-            short cx = N, cy = -1, x, y;
-            for (short i=0; i<n; ++i) if (c[i] >= 0) {
-                if (cx > c[i]) cx = c[y = x = i];
-                p[i] = i;
+            ++ ans;
+            short cx = N, cy = -1, k;
+            for (short i=0; i<m; ++i) if (c[u[i]]>0 && c[v[i]]>0) {
+                short a = min(c[u[i]], c[v[i]]), b = max(c[u[i]], c[v[i]]);
+                if (a<cx || (a==cx && b>cy)) cx = a, cy = b, k = i;
             }
-            for (short i=0; i<cc[x]; ++i) if (c[g[x][i]] > cy) cy = c[y = g[x][i]];
+            if (cy < 0) break;
+            short y = c[u[k]] == cy ? u[k] : v[k];
             for (short i=0; i<cc[y]; ++i) --c[g[y][i]];
             c[y] = -1;
-            for (short i=0; i<m; ++i) {
-                short u = e[i].u, v = e[i].v;
-                if (c[u]>0 && c[v]>0) p[find(u)] = find(v);
-            }
-            ++ ans;
+            for (short i=0; i<n; ++i) p[i] = i;
+            for (short i=0; i<m; ++i) if (c[u[i]]>0 && c[v[i]]>0) p[find(u[i])] = find(v[i]);
         }
         cout << ans << endl;
     }
