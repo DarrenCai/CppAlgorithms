@@ -9,7 +9,7 @@ using namespace std;
 #define N 110
 #define INF 30000
 struct edge {short u, v, cap, flow;} e[N*N>>1];
-short g[N][N>>1], q[N*N*N>>1], p[N], a[N], cnt[N], u[N], n, m, c;
+short g[N][N>>1], q[N*N*N>>1], p[N], a[N], cnt[N], n, m, c;
 
 void addEdge(short u, short v, short cap) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
