@@ -9,11 +9,7 @@
 using namespace std;
 
 #define N 100100
-int a[N], q[N], n; vector<int> g[N], gg[N];
-
-bool cmp(int x, int y) {
-    return gg[x].size() > gg[y].size();
-}
+int q[N], n; vector<int> g[N], gg[N];
 
 int main() {
     // freopen("in.txt", "r", stdin);
@@ -28,16 +24,11 @@ int main() {
             gg[u].push_back(i);
         }
         cout << (c+1)/2 << endl;
-        u = 0; for (int i=1; i<=n; ++i) if (gg[i].size() > 0) a[u++] = i;
-        sort(a, a+u, cmp);
-        int head = 0, tail = gg[a[0]].size();
-        for (int i=0; i<tail; ++i) q[i] = gg[a[0]][i];
-        for (int i=1; i<u; ++i) {
-            vector<int>& g = gg[a[i]];
-            if (g.size() > 1) {
-                cout << q[head++] << ' ' << g.back() << endl;
-                for (int j=g.size()-2; j>=0; --j) q[tail++] = g[j];
-            } else q[tail++] = g[0];
+        int head = 0, tail = 0;
+        for (int i=1; i<=n; ++i) {
+            int s = gg[i].size();
+            if (s>1 && head<tail) cout << q[head++] << ' ' << gg[i].back() << endl, --s;
+            for (int j=0; j<s; ++j) q[tail++] = gg[i][j];
         }
         for (int i=head+1; i<tail; i+=2) cout << q[i-1] << ' ' << q[i] << endl;
         if ((tail-head)&1) cout << q[0] << ' ' << q[tail-1] << endl;
