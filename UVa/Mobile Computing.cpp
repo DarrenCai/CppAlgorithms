@@ -1,5 +1,5 @@
 /**
- * UVa1354
+ * UVa1354/LA3403
  * 天平难题
  */
 
@@ -8,7 +8,7 @@
 #include <iomanip>
 using namespace std;
 
-struct Node{
+struct Node {
     short w; set<pair<double, double> > l;
     Node(short w1): w(w1) {}
 };
@@ -70,19 +70,19 @@ void dfs(char cur) {
     }
 }
 
-int main()
-{
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("out.txt", "w", stdout);
     cout << setprecision(17); int n; cin>>n;
     while(n--) {
         m = -1; cin >> r >> s;
         for(char i=0; i<s; ++i) cin >> w[i];
-        if (s==1) cout << "0.000000000000000" << endl;
-        else if (r<1) cout << "-1.000000000000000" << endl;
-        else if (s == 2) cout << (r<1 ? "-1.000000000000000" : "1.000000000000000") << endl;
+        if (s==1) cout << 0 << endl;
+        else if (r<1) cout << -1 << endl;
+        else if (s == 2) cout << (r<1 ? -1 : 1) << endl;
         else {
             dfs(0);
-            if (m==-1) cout << "-1.000000000000000" << endl;
-            else cout << m << endl;
+            cout << m << endl;
         }
     }
     return 0;
