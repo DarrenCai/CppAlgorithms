@@ -1,33 +1,37 @@
 /**
- * UVa1451
+ * UVa1451/LA4726
  * 平均值
+ * Seoul 2009
+ * 关键思路：数形结合，凹形（斜率单调不降)，切点
  */
 
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
-#define N 100005
-int s[N]={0}, a[N]={0}, n, l; char d[N];
+#define N 100050
+int s[N], q[N], n, l;
 
-int main()
-{
+void solve() {
+    cin >> n >> l;
+    int a = 0, b = l, t = 0, p = 0;
+    for (int i=1; i<=n; ++i) {
+        int j = i-l; char c; cin >> c; s[i] = s[i-1] + c-'0';
+        if (j <= 0) continue;
+        while (p+1<=t && (s[j]-s[q[t]])*(j-q[t-1]) <= (s[j]-s[q[t-1]])*(j-q[t])) --t;
+        q[++t] = j;
+        while (p+1<=t && (s[i]-s[q[p]])*(i-q[p+1]) <= (s[i]-s[q[p+1]])*(i-q[p])) ++p;
+        int v = (s[i]-s[q[p]])*(b-a) - (s[b]-s[a])*(i-q[p]);
+        if (v>0 || (v==0 && i-q[p]<b-a)) a = q[p], b = i;
+    }
+    cout << a+1 << ' ' << b << endl;
+}
+
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    int k; cin >> k;
-    while (k--) {
-        cin >> n >> l >> d;
-        for (int i=0; i<n; ++i) s[i+1] = s[i] + d[i] - '0';
-        int t = 0, e = l, m = 1, ss = 0;
-        for (int i=l+1; i<=n; ++i) {
-            int j = i-l;
-            while (m>1 && (s[a[m-1]]-s[a[m-2]])*(j-a[m-2]) > (s[j]-s[a[m-2]])*(a[m-1]-a[m-2])) if (ss > --m) ss = m;
-            a[m++] = j;
-            if (s[i] == s[i-1]) continue;
-            while (ss+1<m && (s[i]-s[a[ss+1]])*(i-a[ss]) >= (s[i]-s[a[ss]])*(i-a[ss+1])) ++ss;
-            int p = (s[i]-s[a[ss]]) * (e - t), q = (s[e]-s[t]) * (i-a[ss]);
-            if (p>q || (p==q && i-a[ss] < e-t)) t = a[ss], e = i;
-        }
-        cout << t+1 << ' ' << e << endl;
-    }
+    ios::sync_with_stdio(false);
+    int k; cin >> k; q[0] = s[0] = 0;
+    while (k--) solve();
     return 0;
 }
