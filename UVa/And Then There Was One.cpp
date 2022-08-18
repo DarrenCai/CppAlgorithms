@@ -1,9 +1,13 @@
 /**
- * UVa1394
+ * UVa1394/LA3882
+ * Asia Tokyo 2007
  * 约瑟夫问题的变形
  * Josephus problem
- * int f(int n, int m) {
- *     return n==1 ? 1 : (f(n-1, m) + m-1) % n + 1;
+ * int f(int n, int m) {    // 编号从0起
+ *     return n==1 ? 0 : (f(n-1, m) + m) % n;
+ * }
+ * int f(int n, int m) {    // 编号从1起
+ *     return n==1 ? 1 : (f(n-1, m)-1 + m) % n + 1;
  * }
  */
 
