@@ -1,6 +1,7 @@
 /**
- * UVa1099
+ * UVa1099/LA4794
  * 分享巧克⼒
+ * World Finals 2010
  */
 
 #include <iostream>
