@@ -1,6 +1,7 @@
 /**
- * UVa1252
+ * UVa1252/LA4643
  * 20个问题
+ * Tokyo 2009
  */
 
 #include <iostream>
@@ -24,8 +25,7 @@ short dp(short s, short a) {
     return d[s][a];
 }
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     while (cin >> m >> n && m) {
