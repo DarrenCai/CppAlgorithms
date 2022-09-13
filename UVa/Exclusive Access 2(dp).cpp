@@ -1,6 +1,7 @@
 /**
- * UVa1439
+ * UVa1439/LA4593
  * 独占访问2
+ * NEERC 2009
  */
 
 #include <iostream>
@@ -11,8 +12,7 @@ using namespace std;
 #define M 200
 short e[M][2], a[N], c[N], n, d[1<<N]={0}; int ans[1<<N]; bool g[N][N], v[N], check[1<<N];
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     short m;

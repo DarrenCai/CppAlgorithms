@@ -1,6 +1,8 @@
 /**
- * UVa1439
+ * UVa1439/LA4593
  * 独占访问2
+ * NEERC 2009
+ * 很好的一道题目，可以转换成图的色数问题：对无向图G，把图中的结点染成尽量少的颜色，使得相邻结点颜色不同。
  */
 
 #include <iostream>
@@ -33,8 +35,7 @@ void dfs(short i) {
     }
 }
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     short m;
