@@ -1,6 +1,7 @@
 /**
- * UVa1443
+ * UVa1443/LA4625
  * 花环
+ * CERC 2009
  */
 
 #include <iostream>
@@ -22,10 +23,10 @@ bool check(int x) {
     return dp[n][m&1] <= m;
 }
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
+    ios::sync_with_stdio(false);
     short z; cin >> z;
     while (z--) {
         cin >> n >> m >> d; --m;
