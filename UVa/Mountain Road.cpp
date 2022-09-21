@@ -1,24 +1,17 @@
 /**
- * UVa12222
+ * UVa12222/LA4613
  * 山路
+ * NWERC 2009
  */
 
 #include <iostream>
 #include <cstring>
-// #include <algorithm>
 using namespace std;
 
 #define N 220
-struct node {
-    int t, d;
-    // bool operator< (const node& rhs) const {
-    //     return t < rhs.t;
-    // }
-} a[N], b[N];
-int la, lb, d[N][N][2];
+struct node {int t, d;} a[N], b[N]; int la, lb, d[N][N][2];
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     short c; cin >> c;
@@ -28,7 +21,6 @@ int main()
             char ch; cin >> ch;
             ch == 'A' ? cin >> a[++la].t >> a[la].d : cin >> b[++lb].t >> b[lb].d;
         }
-        // sort(a+1, a+la+1); sort(b+1, b+lb+1);
         memset(d, 0x33, sizeof(d));
         d[0][0][0] = d[0][0][1] = 0;
         for (short i=0; i<=la; ++i) for (short j=0; j<=lb; ++j) {
