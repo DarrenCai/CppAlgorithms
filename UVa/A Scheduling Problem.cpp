@@ -47,8 +47,7 @@ short add(short m) {
     return 0;
 }
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     while (true) {
