@@ -1,6 +1,7 @@
 /**
  * UVa1467
  * 安装服务
+ * Asia Daejeon 2010
  */
 
 #include <iostream>
