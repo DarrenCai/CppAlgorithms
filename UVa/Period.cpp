@@ -1,6 +1,7 @@
 /**
- * UVa1371
+ * UVa1371/LA3608
  * 周期
+ * Asia Seoul 2006
  */
 
 #include <iostream>
