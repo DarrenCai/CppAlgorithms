@@ -1,6 +1,7 @@
 /**
- * UVa1375
+ * UVa1375/LA3623
  * 给孩子起名
+ * Asia Japan 2006 in Yokohama
  */
 
 #include <iostream>
