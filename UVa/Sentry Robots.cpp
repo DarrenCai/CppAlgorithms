@@ -37,7 +37,7 @@ int main() {
         short t = 0, flow = 0;
         for (short i=1; i<=y; ++i) {
             bool f = true;
-            for (short j=1, k=1; j<=x; ++j) {
+            for (short j=1; j<=x; ++j) {
                 if (r[i][j]) {
                     if (f) f=false, addEdge(0, ++t, 1);
                     u[i][j] = t;
@@ -47,7 +47,7 @@ int main() {
         xi = t;
         for (short i=1; i<=x; ++i) {
             bool f = true;
-            for (short j=1, k=1; j<=y; ++j) {
+            for (short j=1; j<=y; ++j) {
                 if (r[j][i]) {
                     if (f) f=false, ++t;
                     addEdge(u[j][i], t, 1);
