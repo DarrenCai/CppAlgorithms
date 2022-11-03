@@ -1,6 +1,7 @@
 /**
- * UVa1322
+ * UVa1322/LA2930
  * 优化最大值电路
+ * CERC 2003
  */
 
 #include <iostream>
@@ -14,15 +15,15 @@ struct node {
         return n < rhs.n;
     }
 };
-set<node> q;
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
+    ios::sync_with_stdio(false);
     short t; cin >> t;
     while (t--) {
         int m, n; cin >> n >> m;
-        q.clear(); q.insert(node(0, 1));
+        set<node> q; q.insert(node(0, 1));
         for (int i=0; i<m; ++i) {
             int a, b; cin >> a >> b;
             set<node>::iterator it = q.lower_bound(node(0, a));
@@ -30,7 +31,7 @@ int main() {
                 node v(it->m+1, b);
                 ++ it;
                 while (it != q.end() && it->n <= b) it = q.erase(it);
-                q.insert(v);
+                if (it == q.end() || it->m > v.m) q.insert(v);
             }
         }
         cout << q.rbegin()->m << endl;
