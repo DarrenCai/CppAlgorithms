@@ -34,7 +34,7 @@ double calc(short i, short j) {
     if (ref >= 0.) return ref;
     short (&gg)[N] = g[i][j];
     if (gg[n] == 1) return ref = 0.;
-    short m0 = 0, mm = 0; double e = 0.;
+    short m0 = 0; double e = 0.;
     for (short k=1; k<=n; ++k) if (gg[k]>0) {
         m0 += k*(k-1)/2*gg[k];
         for (short l=k; l<=n; ++l) if ((l==k && gg[l]>1) || (l>k && gg[l]>0)) {
@@ -46,7 +46,6 @@ double calc(short i, short j) {
             if (idx == -1) memcpy(g[i+1][idx = t[i+1]++], gg, sizeof(gg));
             --gg[k+l]; ++gg[k]; ++gg[l];
             e += (k==l ? gg[k]*(gg[k]-1)/2*k : gg[k]*gg[l]*l) * k * calc(i+1, idx);
-            mm += (k==l ? gg[k]*(gg[k]-1)/2*k : gg[k]*gg[l]*l) * k;
         }
     }
     return ref = (e+m) / (m-m0);
