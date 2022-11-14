@@ -6,31 +6,24 @@
 
 #include <iostream>
 #include <cstring>
-#include <string>
 using namespace std;
 
 #define N 110
 #define M 3010
-string d[N][M], s[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-bool vis[N][M]; int c[] = {6, 2, 5, 5, 4, 5, 6, 3, 7, 6}, n, m, kase = 0;
-
-void update(int i, int j, const string& s) {
-    if (!vis[i][j]) d[i][j] = s, vis[i][j] = true;
-    else if (s.size() > d[i][j].size() || (s.size() == d[i][j].size() && d[i][j] < s)) d[i][j] = s;
-}
+int c[] = {6, 2, 5, 5, 4, 5, 6, 3, 7, 6}, b[M][N], d[M][N], n, m, kase = 0;
 
 void solve() {
-    memset(vis, 0, sizeof(vis));
-    for (int i=1; i<10; ++i) if (c[i] <= n) update(c[i], i%m, s[i]);
-    for (int i=1; i<=n; ++i) for (int j=0; j<m; ++j) if (vis[i][j])
-        for (int k=0, x; k<10; ++k) if ((x = i+c[k]) <= n) update(x, (j*10+k)%m, d[i][j]+s[k]);
-    string ans = "-1";
-    for (int i=1; i<=n; ++i) if (vis[i][0]) {
-        const string& s = d[i][0];
-        if (ans[0] == '-' || s.size() > ans.size() || (s.size() == ans.size() && ans < s)) ans = s;
+    memset(d, -1, sizeof(d)); memset(d[0], 0, sizeof(d[0]));
+    for (int i=1; i<=n; ++i) for (int j=0; j<m; ++j) for (int k=9; k>=0; --k) if (c[k] <= i) {
+        short t = d[(10*j+k)%m][i-c[k]];
+        if (t >= 0 && t+1 > d[j][i]) d[j][i] = t+1, b[j][i] = k;
     }
-    if (n >= c[0] && ans[0] == '-') ans = s[0];
-    cout << "Case " << ++kase << ": " << ans << endl;
+    cout << "Case " << ++kase << ": ";
+    if (d[0][n] > 0) {
+        while (!b[0][n] && d[0][n]>1) n -= c[0];
+        for (int j=0, k; d[j][n]; n-=c[k], j=(10*j+k)%m) cout << (k = b[j][n]);
+    } else cout << -1;
+    cout << endl;
 }
 
 int main() {
