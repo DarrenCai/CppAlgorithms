@@ -1,7 +1,6 @@
 /**
  * UVa12325
  * 宝箱
- * 注意: int*int的结果可能不会直接变成long long，而是溢出，所有要先把其中一个乘数转型成long long，避免溢出
  */
 
 #include <iostream>
@@ -35,19 +34,17 @@ int main()
     while (k < t) {
         cout << "Case #" << ++k << ": ";
         cin >> n >> s[0] >> v[0] >> s[1] >> v[1];
-        int nds1 = n/s[0], nds2 = n/s[1], g = gcd(s[0], s[1]), ss1 = s[0]/g, ss2 = s[1]/g;
+        int g = gcd(s[0], s[1]), ss1 = s[0]/g, ss2 = s[1]/g;
+        long long lcm = (long long)ss1*s[1], ss1v2 = (long long)ss1*v[1], ss2v1 = (long long)ss2*v[0];
+        int d = n/lcm; if (d) {-- d; n -= d*lcm;}
+        long long va = ss1v2 > ss2v1 ? (long long)d*ss1v2 : (long long)d*ss2v1;
+        int nds1 = n/s[0], nds2 = n/s[1];
         if (nds1 < nds2 && nds1 < ss1 && nds1 < ss2) {
-            cout << calc(0, nds1) << endl;
+            cout << va + calc(0, nds1) << endl;
         } else if (nds2 < nds1 && nds2 < ss1 && nds2 < ss2) {
-            cout << calc(1, nds2) << endl;
-        } else {
-            long long ss1v2 = (long long)ss1*v[1], ss2v1 = (long long)ss2*v[0];
-            if ((ss1v2 == ss2v1 && ss1 > ss2) || ss1v2 > ss2v1) {
-                cout << calc(0, ss2-1) << endl;
-            } else {
-                cout << calc(1, ss1-1) << endl;
-            }
-        }
+            cout << va + calc(1, nds2) << endl;
+        } else
+            cout << va + ((ss1v2 == ss2v1 && ss1 > ss2) || ss1v2 > ss2v1 ? calc(0, ss2-1) : calc(1, ss1-1)) << endl;
     }
     return 0;
 }

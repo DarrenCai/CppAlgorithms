@@ -6,29 +6,31 @@
 #include <iostream>
 using namespace std;
 
-#define INF 1000000000000000ll
-long long d[110];
+#define N 100100
+long long r[N], s[N]; int w[N]; struct node {int i; long long d;} q[N];
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     ios::sync_with_stdio(false);
-    int t; cin >> t;
+    int t; cin >> t; s[0] = w[0] = q[0].i = q[0].d = 0;
     while (t--) {
-        int x0 = 0, y0 = 0, x, y, n; short c, w;
-        cin >> c >> n;
-        d[c] = 0; for (short v=0; v<c; ++v) d[v] = INF;
-        for (int i=0; i<n; ++i) {
-            cin >> x >> y >> w;
-            d[c] += x+y;
-            short cc = c-w; long long mx = INF;
-            for (short v=0; v<cc; ++v) mx = min(mx, d[v] = d[v+w] + abs(x-x0) + abs(y-y0));
-            mx = min(mx, d[cc] = d[c]);
-            while (++cc < c) d[cc] = INF;
-            d[c] = mx + x+y;
-            x0 = x; y0 = y;
+        int n, c, head = 0, tail = 0; long long x0 = 0, y0 = 0;
+        cin >> c >> n; r[n+1] = s[n+1] = 0;
+        for (int i=1; i<=n; ++i) {
+            long long x, y; cin >> x >> y >> w[i]; w[i] += w[i-1];
+            r[i] = abs(x) + abs(y); s[i] = s[i-1] + abs(x-x0) + abs(y-y0); x0 = x; y0 = y;
         }
-        cout << d[c] << endl;
+        for (int i=1; i<=n; ++i) {
+            while (head <= tail) {
+                if (w[i] - w[q[head].i] <= c) break;
+                ++head;
+            }
+            long long d = q[head].d + r[i] + r[i+1] + s[i] - s[i+1];
+            while (q[tail].d >= d) --tail;
+            q[++tail].i = i; q[tail].d = d;
+        }
+        cout << q[tail].d << endl;
         if (t) cout << endl;
     }
     return 0;

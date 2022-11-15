@@ -1,54 +1,25 @@
 /**
  * UVa11054
  * Gergovia的酒交易
+ * University of Ulm Local Contest 2006
  */
 
 #include <iostream>
-#include <queue>
 using namespace std;
 
-struct village {
-    int p; short a;
-    village(int p, short a):p(p),a(a){};
-};
-queue<village> buy, sale;
-
-int main()
-{
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    ios::sync_with_stdio(false);
     int n;
-    while (cin >> n && n) {
-        long long t = 0; short a;
-        for (int i=0; i<n; ++i) {
-            cin >> a;
-            if (a > 0) {
-                while (!sale.empty()) {
-                    village &v = sale.front();
-                    a += v.a;
-                    if (a < 0) {
-                        t -= (v.a - a) * (i - v.p); v.a = a;
-                        break;
-                    } else {
-                        t -= v.a * (i - v.p);
-                        sale.pop();
-                    }
-                }
-                if (a > 0) buy.push(village(i, a));
-            } else {
-                while (!buy.empty()) {
-                    village &v = buy.front();
-                    a += v.a;
-                    if (a > 0) {
-                        t += (v.a - a) * (i - v.p); v.a = a;
-                        break;
-                    } else {
-                        t += v.a * (i - v.p);
-                        buy.pop();
-                    }
-                }
-                if (a < 0) sale.push(village(i, a));
-            }
+    while (cin>>n && n) {
+        long long ans = 0, v; cin >> v;
+        for (int i=1; i<n; ++i) {
+            int p; cin >> p;
+            ans += abs(v);
+            v += p;
         }
-        cout << t << endl;
+        cout << ans << endl;
     }
     return 0;
 }

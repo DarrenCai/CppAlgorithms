@@ -4,21 +4,19 @@
  */
 
 #include <iostream>
-#include <functional>
-#include <vector>
-#include <queue>
+#include <set>
 using namespace std;
 
 int main()
 {
     int n;
     while (cin >> n && n) {
-        priority_queue<int, vector<int>, greater<int> > q; int c, m=0;
-        for (int i=0; i<n; ++i) cin >> c, q.push(c);
-        while (q.size() > 1) {
-            int a = q.top(); q.pop();
-            int b = q.top(); q.pop();
-            m += a + b; q.push(a+b);
+        multiset<int> s; int c, m=0;
+        for (int i=0; i<n; ++i) cin >> c, s.insert(c);
+        while (s.size() > 1) {
+            int a = *s.begin(); s.erase(s.begin());
+            int b = *s.begin(); s.erase(s.begin());
+            m += a + b; s.insert(a+b);
         }
         cout << m << endl;
     }

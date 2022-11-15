@@ -4,60 +4,59 @@
  */
 
 #include <iostream>
-#include <queue>
 using namespace std;
 
-short n, t[8][8]; char ans[7][8];
+short n, s[8][8], t[8][8], q[49]; char ans[7][8];
 
 bool cycle(short r, short c) {
     if (c > 0 && ans[r][c-1] == '\\') {
         bool visit[7][7] = {0}; visit[r][c] = visit[r][c-1] = true;
-        queue<short> q; q.push(r<<3 | c-1);
-        while (!q.empty()) {
-            short e = q.front(), rr = e>>3, cc = e&7; q.pop();
+        short head=0, tail=0; q[tail++] = r<<3 | c-1;
+        while (head != tail) {
+            short e = q[head++], rr = e>>3, cc = e&7;
             if (ans[rr][cc]=='\\') {
                 if (rr && cc && !visit[rr-1][cc-1] && ans[rr-1][cc-1]=='\\') {
-                    visit[rr-1][cc-1] = true; q.push((rr-1)<<3 | cc-1);
+                    visit[rr-1][cc-1] = true; q[tail++] = (rr-1)<<3 | cc-1;
                 }
                 if (rr && !visit[rr-1][cc] && ans[rr-1][cc]=='/') {
-                    visit[rr-1][cc] = true; q.push((rr-1)<<3 | cc);
+                    visit[rr-1][cc] = true; q[tail++] = (rr-1)<<3 | cc;
                 }
                 if (cc && !visit[rr][cc-1] && ans[rr][cc-1]=='/') {
                     if (rr+1==r && cc-2==c) return true;
-                    visit[rr][cc-1] = true; q.push(rr<<3 | cc-1);
+                    visit[rr][cc-1] = true; q[tail++] = rr<<3 | cc-1;
                 }
                 if (rr<n && cc<n && !visit[rr+1][cc+1] && ans[rr+1][cc+1]=='\\') {
                     if (rr+2==r && cc+1==c) return true;
-                    visit[rr+1][cc+1] = true; q.push((rr+1)<<3 | cc+1);
+                    visit[rr+1][cc+1] = true; q[tail++] = (rr+1)<<3 | cc+1;
                 }
                 if (rr<n && !visit[rr+1][cc] && ans[rr+1][cc]=='/') {
                     if (rr+2==r && cc-1==c) return true;
-                    visit[rr+1][cc] = true; q.push((rr+1)<<3 | cc);
+                    visit[rr+1][cc] = true; q[tail++] = (rr+1)<<3 | cc;
                 }
                 if (cc<n && !visit[rr][cc+1] && ans[rr][cc+1]=='/') {
-                    visit[rr][cc+1] = true; q.push(rr<<3 | cc+1);
+                    visit[rr][cc+1] = true; q[tail++] = rr<<3 | cc+1;
                 }
             } else if (ans[rr][cc]=='/') {
                 if (rr && cc<n && !visit[rr-1][cc+1] && ans[rr-1][cc+1]=='/') {
-                    visit[rr-1][cc+1] = true; q.push((rr-1)<<3 | cc+1);
+                    visit[rr-1][cc+1] = true; q[tail++] = (rr-1)<<3 | cc+1;
                 }
                 if (rr && !visit[rr-1][cc] && ans[rr-1][cc]=='\\') {
-                    visit[rr-1][cc] = true; q.push((rr-1)<<3 | cc);
+                    visit[rr-1][cc] = true; q[tail++] = (rr-1)<<3 | cc;
                 }
                 if (cc<n && !visit[rr][cc+1] && ans[rr][cc+1]=='\\') {
                     if (rr+1==r && cc+1==c) return true;
-                    visit[rr][cc+1] = true; q.push(rr<<3 | cc+1);
+                    visit[rr][cc+1] = true; q[tail++] = rr<<3 | cc+1;
                 }
                 if (rr<n && !visit[rr+1][cc-1] && cc && ans[rr+1][cc-1]=='/') {
                     if (rr+2==r && cc-2==c) return true;
-                    visit[rr+1][cc-1] = true; q.push((rr+1)<<3 | cc-1);
+                    visit[rr+1][cc-1] = true; q[tail++] = (rr+1)<<3 | cc-1;
                 }
                 if (rr<n && !visit[rr+1][cc] && ans[rr+1][cc]=='\\') {
                     if (rr+2==r && cc==c) return true;
-                    visit[rr+1][cc] = true; q.push((rr+1)<<3 | cc);
+                    visit[rr+1][cc] = true; q[tail++] = (rr+1)<<3 | cc;
                 }
                 if (cc && !visit[rr][cc-1] && ans[rr][cc-1]=='\\') {
-                    visit[rr][cc-1] = true; q.push(rr<<3 | cc-1);
+                    visit[rr][cc-1] = true; q[tail++] = rr<<3 | cc-1;
                 }
             }
         }
@@ -92,16 +91,16 @@ bool dfs(short r=0, short c=0) {
 
 int main()
 {
-    // freopen("in.txt", "r", stdin);
-    // freopen("ou.txt", "w", stdout);
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
     short k; cin>>k;
     while (k--) {
         cin >> n;
         for (short r=0; r<=n; ++r) {
             for (short c=0; c<=n; ++c) {
                 ans[r][c] = 0; char ch; cin >> ch;
-                if (ch == '.') t[r][c] = 9;
-                else t[r][c] = ch - '0';
+                if (ch == '.') s[r][c] = t[r][c] = 9;
+                else s[r][c] = t[r][c] = ch - '0';
             }
             ans[r][n] = 0;
         }
