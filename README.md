@@ -13,3 +13,5 @@ UVa11589 [Save the President](https://onlinejudge.org/index.php?option=com_onlin
 # 一些问题解法优化的读物
 [矩阵链乘，时间复杂度O(nlogn)](https://github.com/junodeveloper/Hu-Shing)
 <br/><br/>
+[矩阵乘法目前的最小时间复杂度O(n^2.376)](./papers/The%20Coppersmith-Winograd%20Matrix%20Multiplication%20Algorithm.pdf)
+<br><br>
