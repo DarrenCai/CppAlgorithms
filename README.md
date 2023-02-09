@@ -15,3 +15,6 @@ UVa11589 [Save the President](https://onlinejudge.org/index.php?option=com_onlin
 <br/><br/>
 [矩阵乘法目前的最小时间复杂度O(n^2.376)](./papers/The%20Coppersmith-Winograd%20Matrix%20Multiplication%20Algorithm.pdf)
 <br><br>
+
+# 值得深入研究的问题
+[UVa1489/LA5101](UVa/pdf/1489.pdf) 比较难想到的数位dp，看到了两种分析思路，像这种好题值得研究一题多解。
