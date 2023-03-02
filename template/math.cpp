@@ -8,6 +8,7 @@ int gcd(int a, int b) {
     if (a > b) return gcd(b, a);
     if (a < 0) return gcd(-a, b);
     if (a == 0) return b;
+    if (a == 1) return 1;
     if (a & 1) {
         if (b & 1) return gcd(a, (b-a)>>1);
         return gcd(a, b >> 1);
@@ -33,6 +34,14 @@ int gcd(int a, int b, int& x, int& y) {
         y -= a/b*x;
         return g;
     }
+}
+
+/**
+ * 求a模n的逆，逆不存在时返回-1
+ */
+int inv(int a, int n) {
+    int x, y;
+    return gcd(a, n, x, y) == 1 ? (x + n) % n : -1;
 }
 
 /**
