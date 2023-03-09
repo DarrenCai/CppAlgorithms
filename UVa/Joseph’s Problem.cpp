@@ -1,13 +1,13 @@
 /**
- * UVa1363
+ * UVa1363/LA3521
  * 约瑟夫的数论问题
+ * NEERC 2005
  */
 
 #include <iostream>
 using namespace std;
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     int n, k;
