@@ -41,6 +41,13 @@ int find(int d, int r) {
     return x;
 }
 
+bool cmp(const string& ans, int phi, int x, int y, int r) {
+    if (ans.size() == 0) return true;
+    for (int s = least[y][r%n], i=s-1; i>0 && r; i = least[y][r = (r - pow(s-1, phi)*y%n + n) % n] - 1)
+        if (x+'0' < ans[s-i]) return true;
+    return false;
+}
+
 void sol() {
     memset(least, 0, sizeof(least));
     int d = 0, p = phi(), sr = 1; string ans;
@@ -60,7 +67,7 @@ void sol() {
             for (int k=1, x; k<n; ++k) if (least[0][k] && !least[0][x=(k+v)%n]) least[j][x] = i;
         }
         for (int j=1, x = d ? d+1 : 10; j<x; ++j) for (int k=0, v, y; k<j; ++k)
-        if (least[y = j-k][(v = n-sr*k%n) % n] == i) {
+        if (least[y = j-k][(v = n-sr*k%n) % n] == i && cmp(ans, p, k, y, v)) {
             char ch = '0' + k;
             if (d) for (int q=0; q<i; ++q) ans[q] = ch;
             else for (int q=0; q<i; ++q) ans += ch;
