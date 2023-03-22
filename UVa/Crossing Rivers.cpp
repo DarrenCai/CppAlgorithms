@@ -1,14 +1,14 @@
 /**
- * UVa12230
+ * UVa12230/LA4485
  * 过河
+ * Wuhan 2009
  */
 
 #include <iostream>
 #include <iomanip>
 using namespace std;
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     cout << fixed << setprecision(3);
