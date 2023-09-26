@@ -56,8 +56,7 @@ bool IDAStar(const char *s, char sp, char d=0, char pre=-1) {
     return false;
 }
 
-int main()
-{
+int main() {
     int n; cin>>n;
     while (n--) {
         char sp = 0;

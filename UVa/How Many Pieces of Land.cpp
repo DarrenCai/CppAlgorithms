@@ -13,8 +13,7 @@
 #include <iomanip>
 using namespace std;
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     const long long m=1e9, p=1e18;

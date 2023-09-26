@@ -6,8 +6,7 @@
 #include <iostream>
 #include <vector>
 
-int main()
-{
+int main() {
     using namespace std;
     short k;
     while(cin >> k) {

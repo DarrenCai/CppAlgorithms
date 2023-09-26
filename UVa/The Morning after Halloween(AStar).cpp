@@ -18,8 +18,7 @@ short h(int s, short n) {
     return max;
 }
 
-int main()
-{
+int main() {
     using namespace std;
     short w, h, n;
     while (cin >> w >> h >> n && w) {

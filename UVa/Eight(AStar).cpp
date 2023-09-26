@@ -95,8 +95,7 @@ void print(int t) {
     cout << c[(3+x[t]-x[parent[t]])>>1];
 }
 
-int main()
-{
+int main() {
     int n; cin>>n;
     while (n--) {
         char sp = 0;
