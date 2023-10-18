@@ -1,84 +1,36 @@
-#include <iostream>
-#include <cstring>
-#include <vector>
-using namespace std;
-
 #define N 1010
-int nxt[N];
+int nxt[N]; // 失配函数/后缀函数
 
-void getNext(const char (&p)[N]) {
+/* MP算法计算nxt数组
+ * 利用MP算法的nxt数组可以求字符串的循环节
+ */
+void getNext(const char (&p)[N], int n) {
     nxt[0] = -1;
-    int len = strlen(p), i = 0, j = -1;
-    while (i < len) {
-        if (j==-1 || p[i] == p[j]) {
-            if (p[++i] == p[++j]) {
-                nxt[i] = nxt[j];
-            } else nxt[i] = j;
-        } else j = nxt[j];
+    for (int i=0, j=-1; i<n; nxt[++i] = ++j) while (j>=0 && p[j]!=p[i]) j = nxt[j];
+}
+
+// KMP算法计算nxt数组
+void getNext(const char (&p)[N], int n) {
+    nxt[0] = -1;
+    for (int i=0, j=0; i<n;) {
+        while (j>=0 && p[j]!=p[i]) j = nxt[j];
+        ++i; ++j;
+        nxt[i] = p[i]==p[j] ? nxt[j] : j;
     }
 }
 
-int kmp(const char (&t)[N], const char (&p)[N]) {
-    getNext(p);
-    int tLen = strlen(t), pLen = strlen(p), i = 0, j = 0;
-    while (i<tLen && j<pLen) {
-        if (j==-1 || t[i] == p[j]) {
-            ++i; ++j;
-        } else {
-            j = nxt[j];
+int kmp(const char (&s)[N], const char (&p)[N], int m, int n) {
+    getNext(p, n);
+    for (int i=0, j=0; i<m; ++i) {
+        while (j>=0 && p[j]!=s[i]) j = nxt[j];
+        if (++j == n) {
+            // 匹配到了一个
+            return i+1 - j;
+            // 不return则可以继续寻找后续匹配，但一定要将j归0
+            j = 0;
+            // 如果统计模式串能重叠的所有匹配，则需要将i回退
+            i -= n-1;
         }
     }
-    if (j == pLen) return i-j;
     return -1;
-}
-
-void kmp(const char (&t)[N], const char (&p)[N], vector<int>& ans) {
-    getNext(p);
-    int tLen = strlen(t), pLen = strlen(p), i = 0, j = 0;
-    while (i<tLen) {
-        if (j==-1 || t[i] == p[j]) {
-            ++i; ++j;
-        } else {
-            j = nxt[j];
-        }
-        if (j == pLen) {
-            ans.push_back(i-j);
-            j = nxt[j];
-        }
-    }
-}
-
-int kmpCount(const char (&t)[N], const char (&p)[N]) {
-    getNext(p);
-    int ans = 0;
-    int tLen = strlen(t), pLen = strlen(p), i = 0, j = 0;
-    while (i<tLen) {
-        if (j==-1 || t[i] == p[j]) {
-            ++i; ++j;
-        } else {
-            j = nxt[j];
-        }
-        if (j == pLen) {
-            ++ ans;
-            j = nxt[j];
-        }
-    }
-    return ans;
-}
-
-int main() {
-    char t1[N] = "abcdefghlmngh";
-    char p1[N] = "gh";
-    vector<int> v1;
-    kmp(t1, p1, v1);
-    cout << t1 << ' ' << p1 << ':';
-    for (int i: v1) cout << ' ' << i;
-    cout << endl;
-    char t2[N] = "abcdefggggglmngg";
-    char p2[N] = "gg";
-    vector<int> v2;
-    kmp(t2, p2, v2);
-    cout << t2 << ' ' << p2 << ':';
-    for (int i: v2) cout << ' ' << i;
-    cout << endl;
 }
