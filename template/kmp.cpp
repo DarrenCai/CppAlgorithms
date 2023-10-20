@@ -25,11 +25,9 @@ int kmp(const char (&s)[N], const char (&p)[N], int m, int n) {
         while (j>=0 && p[j]!=s[i]) j = nxt[j];
         if (++j == n) {
             // 匹配到了一个
-            return i+1 - j;
-            // 不return则可以继续寻找后续匹配，但一定要将j归0
-            j = 0;
-            // 如果统计模式串能重叠的所有匹配，则需要将i回退
-            i -= n-1;
+            return i+1 - j;     // 不return则可以继续寻找后续匹配
+            // 如果统计模式串能重叠的所有匹配，则需要将j更新
+            j = nxt[j] + 1;
         }
     }
     return -1;
