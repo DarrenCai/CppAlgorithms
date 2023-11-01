@@ -31,7 +31,7 @@ void update(int o, int l, int r) {
             int lc = o<<1, rc = lc+1;
             s[i][o] = s[i][lc] + s[i][rc]; x[i][o] = min(x[i][lc], x[i][rc]); y[i][o] = max(y[i][lc], y[i][rc]);
             s[i][o] += a[i][o]*(r-l+1); x[i][o] += a[i][o]; y[i][o] += a[i][o];
-        } else s[i][o] = a[i][o]*(r-l+1), x[i][o] = a[i][o], y[i][o] = a[i][o];
+        } else s[i][o] = a[i][o], x[i][o] = a[i][o], y[i][o] = a[i][o];
     }
 }
 
