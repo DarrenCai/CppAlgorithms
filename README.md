@@ -20,3 +20,6 @@ UVa11589 [Save the President](https://onlinejudge.org/index.php?option=com_onlin
 # 群论相关的一些暂时没搞明白的题目
 LA7504 [Colorful Floor](https://vjudge.net/problem/UVALive-7504) [知乎题解](https://zhuanlan.zhihu.com/p/574461039) <br><br>
 洛谷P4778 [Counting swaps](https://www.luogu.com.cn/problem/P4778) [题解](https://www.luogu.com.cn/problem/solution/P4778) <br><br>
+
+# FFT相关的待学习内容
+UVa12327/LA5705 Shanghai 2011 [Xavier is Learning to Count](https://vjudge.net/problem/UVALive-12327) [洛谷题解](https://www.luogu.com.cn/problem/solution/UVA12327)
