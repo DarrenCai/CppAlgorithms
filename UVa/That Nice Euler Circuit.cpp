@@ -11,7 +11,7 @@ using namespace std;
 #define eps 1e-10
 struct Point {
     double x, y;
-    Point(double x = 0, double y = 0) : x(x), y(y){}
+    Point(double x = 0, double y = 0): x(x), y(y){}
 };
 typedef Point Vector;
 
