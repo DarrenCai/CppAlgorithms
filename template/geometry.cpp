@@ -69,13 +69,12 @@ Vector Normal(const Vector& A) {
 
 Point GetLineIntersection(const Point& P, const Vector& v, const Point& Q, const Vector& w) {
     Vector u = P - Q;
-    double t = Cross(w, u) / Cross(v, w);
-    return P + v * t;
+    return P + v * (Cross(w, u) / Cross(v, w));
 }
 
 Point GetLineProjection(const Point& P, const Point& A, const Point& B) {
     Vector v = B-A;
-    return A+v*(Dot(v, P-A) / Dot(v, v));
+    return A + v * (Dot(v, P-A) / Dot(v, v));
 }
 
 int sign(double x) {
@@ -103,28 +102,28 @@ double DistanceToLine(const Point& P, const Point& A, const Point& B) {
 }
 
 double DistanceToSegment(const Point& P, const Point& A, const Point& B) {
-    if(A == B) return Length(P-A);
+    if (A == B) return Length(P-A);
     Vector v1 = B - A, v2 = P - A, v3 = P - B;
-    if(dcmp(Dot(v1, v2)) < 0) return Length(v2);
-    else if(dcmp(Dot(v1, v3)) > 0) return Length(v3);
-    else return abs(Cross(v1, v2)) / Length(v1);
+    if (dcmp(Dot(v1, v2)) < 0) return Length(v2);
+    if (dcmp(Dot(v1, v3)) > 0) return Length(v3);
+    return abs(Cross(v1, v2)) / Length(v1);
 }
 
-double PolygonArea(Point* p, int n) { // 有向面积
+double PolygonArea(const Point* p, int n) { // 有向面积
     double area = 0;
-    for(int i=n-2; i>0; --i) area += Cross(p[i]-p[0], p[i+1]-p[0]);
+    for (int i=n-2; i>0; --i) area += Cross(p[i]-p[0], p[i+1]-p[0]);
     return area/2;
 }
 
-double PolygonArea(Point* p, int n) { // 有向面积
+double PolygonArea(const Point* p, int n) { // 有向面积
     double area = p[0].y * (p[n-1].x - p[1].x) + p[n-1].y * (p[n-2].x - p[0].x);
-    for(int i=n-2; i>0; --i) area += p[i].y * (p[i-1].x - p[i+1].x);
+    for (int i=n-2; i>0; --i) area += p[i].y * (p[i-1].x - p[i+1].x);
     return area/2;
 }
 
-int PointInPolygon(const Point& p, Point* poly, int n) {
+int PointInPolygon(const Point& p, const Point* poly, int n) {
     int wn = 0;
-    for(int i=0; i<n; ++i) {
+    for (int i=0; i<n; ++i) {
         if (OnSegment2(p, poly[i], poly[(i+1)%n])) return -1; // 在边界上
         int k = dcmp(Cross(poly[(i+1)%n]-poly[i], p-poly[i]));
         int d1 = dcmp(poly[i].y - p.y);
@@ -140,7 +139,7 @@ int PointInPolygon(const Point& p, Point* poly, int n) {
 // 输入不能有重复点。函数执行完之后输入点的顺序被破坏
 // 如果不希望在凸包的边上有输入点，把两个 <= 改成 <
 // 在精度要求高时建议用dcmp比较
-int ConvexHull(Point* p, int n, Point* ch) {
+int ConvexHull(const Point* p, int n, Point* ch) {
     sort(p, p+n); //先比较x坐标，再比较y坐标
     int m = 0;
     for (int i=0; i<n; ++i) {
@@ -156,7 +155,7 @@ int ConvexHull(Point* p, int n, Point* ch) {
 }
 
 // 用有向直线 A->B 切割多边形p，返回“左侧”。如果退化，可能会返回单点或者线段
-int CutPolygon(Point* p, int n, Point A, Point B, Point* q) {
+int CutPolygon(const Point* p, int n, Point A, Point B, Point* q) {
     int m = 0; Vector v = B-A;
     for (int i=0; i<n; ++i) {
         Point C = p[i], D = p[(i+1)%n];
@@ -181,7 +180,7 @@ struct Line {
     }
 };
 
-// 点p 在有向直线L 的左边（线上不算）
+// 点p在有向直线L的左边（线上不算）
 bool OnLeft(const Line& L, const Point& p) {
     return Cross(L.v, p-L.P) > 0;
 }
