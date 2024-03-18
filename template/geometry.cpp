@@ -3,7 +3,7 @@
 #define eps 1e-10
 struct Point {
     double x, y;
-    Point(double x = 0, double y = 0): x(x), y(y) {}
+    Point(double x = 0., double y = 0.): x(x), y(y) {}
     void Normalize() {
         double l = sqrt(x*x + y*y); x /= l; y /= l;
     }
@@ -43,7 +43,7 @@ double Dot(const Vector& A, const Vector& B) {
 }
 
 double Length(const Vector& A) {
-    return sqrt(Dot(A, A));
+    return sqrt(A.x*A.x + A.y*A.y);
 }
 
 double Angle(const Vector& A, const Vector& B) {
@@ -128,8 +128,8 @@ int PointInPolygon(const Point& p, const Point* poly, int n) {
         int k = dcmp(Cross(poly[(i+1)%n]-poly[i], p-poly[i]));
         int d1 = dcmp(poly[i].y - p.y);
         int d2 = dcmp(poly[(i+1)%n].y - p.y);
-        if (k > 0 && d1 <= 0 && d2 > 0) wn++;
-        if (k < 0 && d2 <= 0 && d1 > 0) wn--;
+        if (k > 0 && d1 <= 0 && d2 > 0) ++wn;
+        if (k < 0 && d2 <= 0 && d1 > 0) --wn;
     }
     if (wn != 0) return 1; // 内部
     return 0; // 外部
@@ -137,7 +137,7 @@ int PointInPolygon(const Point& p, const Point* poly, int n) {
 
 // Andrew算法计算凸包，输入点数组p，个数为n，输出点数组ch。函数返回凸包顶点数。
 // 输入不能有重复点。函数执行完之后输入点的顺序被破坏
-// 如果不希望在凸包的边上有输入点，把两个 <= 改成 <
+// 把两个 <= 改成 <，则凸包的顶点数可能变多，但实际形状一样
 // 在精度要求高时建议用dcmp比较
 int ConvexHull(const Point* p, int n, Point* ch) {
     sort(p, p+n); //先比较x坐标，再比较y坐标
