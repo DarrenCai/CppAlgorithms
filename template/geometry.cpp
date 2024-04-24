@@ -112,13 +112,13 @@ double DistanceToSegment(const Point& P, const Point& A, const Point& B) {
 double PolygonArea(const Point* p, int n) { // 有向面积
     double area = 0;
     for (int i=n-2; i>0; --i) area += Cross(p[i]-p[0], p[i+1]-p[0]);
-    return area/2;
+    return area/2.;
 }
 
 double PolygonArea(const Point* p, int n) { // 有向面积
     double area = p[0].y * (p[n-1].x - p[1].x) + p[n-1].y * (p[n-2].x - p[0].x);
     for (int i=n-2; i>0; --i) area += p[i].y * (p[i-1].x - p[i+1].x);
-    return area/2;
+    return area/2.;
 }
 
 int PointInPolygon(const Point& p, const Point* poly, int n) {
@@ -136,7 +136,7 @@ int PointInPolygon(const Point& p, const Point* poly, int n) {
 }
 
 // Andrew算法计算凸包，输入点数组p，个数为n，输出点数组ch。函数返回凸包顶点数。
-// 输入不能有重复点。函数执行完之后输入点的顺序被破坏
+// 函数执行完之后输入点的顺序被破坏
 // 把两个 <= 改成 <，则凸包的顶点数可能变多，但实际形状一样
 // 在精度要求高时建议用dcmp比较
 int ConvexHull(const Point* p, int n, Point* ch) {

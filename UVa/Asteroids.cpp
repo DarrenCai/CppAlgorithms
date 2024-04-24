@@ -55,7 +55,7 @@ struct Face{
     bool visible(Point3* P, int i) const {
         return Dot(P[i]-P[v[0]], normal(P)) > 0;
     }
-} ch[2][N*N];
+} ch[2][N<<1];
 
 bool vis[N][N]; int n;
 

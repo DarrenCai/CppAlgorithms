@@ -3,7 +3,7 @@
 #define eps 1e-10
 struct Point3 {
     double x, y, z;
-    Point3(double x = 0, double y = 0, double z = 0): x(x), y(y), z(z) {}
+    Point3(double x = 0., double y = 0., double z = 0.): x(x), y(y), z(z) {}
     void Normalize() {
         double l = sqrt(x*x + y*y + z*z); x /= l; y /= l; z /= l;
     }
@@ -109,10 +109,10 @@ Point3 LinePlaneIntersection(Point3 p1, Point3 p2, Point3 p0, Vector3 n) {
     return p1 + v*t; //如果是线段，判断t 是不是在0 和1 之间
 }
 
-//点P 在△P0P1P2 中
-bool PointInTri(const Point3& p, const Point3& p0, const Point3& p1, const Point3& p2) {
-    double s = Length(Cross(p-p0, p1-p0)) + Length(Cross(p-p0, p2-p0)) + Length(Cross(p-p1, p2-p1));
-    return dcmp(s - Length(Cross(p1-p0, p2-p0))) == 0;
+//点P在△ABC中
+bool PointInTri(const Point3& P, const Point3& A, const Point3& B, const Point3& C) {
+    double s = Length(Cross(P-A, B-A)) + Length(Cross(P-B, C-B)) + Length(Cross(P-C, A-C));
+    return dcmp(s - Length(Cross(B-A, C-A))) == 0;
 }
 
 //△P0P1P2 是否和线段AB相交
@@ -127,6 +127,12 @@ bool TriSegIntersection(const Point3& P0, const Point3& P1, const Point3& P2, co
     }
 }
 
+Vector3 Area2(const Point3* p, int n) { // 面积向量
+    Vector3 s;
+    for (int i=n-2; i>0; --i) s = s + Cross(p[i]-p[0], p[i+1]-p[0]);
+    return s;
+}
+
 struct Face{
     int v[3];
     Vector3 normal(Point3 *P) const {
@@ -137,15 +143,15 @@ struct Face{
     }
 };
 
-double rand01() { return rand() / (double)RAND_MAX; } // 0-1 的随机数
+double rand01() { return rand() / 32767.; } // 0-1 的随机数
 double randeps() { return (rand01() - 0.5) * eps; } // -eps/2 到 eps/2 的随机数
-Point3 add_noise(Point3 p) { // 添加微小扰动
+Point3 add_noise(const Point3& p) { // 添加微小扰动
     return Point3(p.x + randeps(), p.y + randeps(), p.z + randeps());
 }
 
 // 增量法求三维凸包。
 // 没有考虑各种特殊情况（如4点共面）。实践中，在调用前对输入点输入点应先去重再进行微小扰动
-// Face ch[N], next[N]; bool vis[N][N];
+// Face ch[N<<1], next[N<<1]; bool vis[N][N];
 int ConvexHull(Point3* P, int n, Face* ch) {
     // 由于已经进行扰动，前3个点不共线
     ch[0] = (Face){0, 1, 2}; ch[0] = (Face){2, 1, 0};
