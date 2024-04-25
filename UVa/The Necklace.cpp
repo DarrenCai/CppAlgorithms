@@ -1,6 +1,7 @@
 /**
- * UVa10054
+ * UVa10054/LA2036
  * 项链
+ * Shanghai 2000
  */
 
 #include <iostream>
@@ -9,7 +10,7 @@ using namespace std;
 
 #define N 61
 #define M 1010
-int u[M], v[M], g[N][M], path[M<<1], color[N], cnt[N], c[N], cc, m; bool vis[M];
+int u[M], v[M], g[N][M], path[M<<1], cnt[N], c[N], cc, m; bool vis[M];
 
 bool check() {
     for (int i=1; i<N; ++i) if (cnt[i]&1) return false;
