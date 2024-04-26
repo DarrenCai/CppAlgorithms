@@ -1,6 +1,7 @@
 /**
- * UVa1423
- * Guess
+ * UVa1423/LA4255
+ * 猜序列
+ * Seoul 2008
  */
 
 #include <iostream>
@@ -14,8 +15,7 @@ bool cmp(short x, short y) {
     return y>x ? m[x+1][y]>0 : m[y+1][x]<0;
 }
 
-int main()
-{
+int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     int t; cin >> t;
@@ -30,10 +30,9 @@ int main()
         for (short i=0; i<n; ++i) if (a[i] == 0) k = i;
         for (short i=k+1; i<n; ++i) b[a[i]] = b[a[i-1]] + (cmp(a[i-1], a[i]) ? 1 : (cmp(a[i], a[i-1]) ? -1 : 0));
         for (short i=k; i>0; --i) b[a[i-1]] = b[a[i]] + (cmp(a[i-1], a[i]) ? -1 : (cmp(a[i], a[i-1]) ? +1 : 0));
-        --n;
-        for (short i=1; i<=n; ++i) {
+        for (short i=1, m=n-1; i<n; ++i) {
             cout << b[i]-b[i-1];
-            i<n ? cout << ' ' : cout << endl;
+            i<m ? cout << ' ' : cout << endl;
         }
     }
     return 0;
