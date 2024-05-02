@@ -86,8 +86,8 @@ long long calc(set<int, cmpl>& sl, set<int, cmpr>& sr, int xl=0, int xr=0) {
 }
 
 int main() {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     int lx, rx;
     while (cin >> lx >> rx && lx && rx) {
         int l = (1-lx)>>1, r = (rx+1)>>1;

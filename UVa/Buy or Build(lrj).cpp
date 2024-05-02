@@ -23,7 +23,7 @@ short find(short x) {
 }
 
 int main() {
-    freopen("in.txt", "r", stdin);
+    // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     short t; cin >> t;
     while (t--) {

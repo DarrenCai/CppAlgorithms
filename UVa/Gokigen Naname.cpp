@@ -91,8 +91,8 @@ bool dfs(short r=0, short c=0) {
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    freopen("ou.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     short k; cin>>k;
     while (k--) {
         cin >> n;

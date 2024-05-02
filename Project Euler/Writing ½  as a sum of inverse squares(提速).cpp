@@ -93,7 +93,7 @@ void dfs(short i, long long n, long long d) {
 }
 
 int main() {
-    freopen("out.txt", "w", stdout);
+    // freopen("out.txt", "w", stdout);
     bool flag[N] = {false};
     for (short i=0; i<16; ++i) for (short j=N/p[i]; j>0; --j) flag[p[i]*j] = true;
     for (short i=2; i>=0; --i) for (short j=q[i]; j<N; j+=q[i]) if (!flag[j]) {

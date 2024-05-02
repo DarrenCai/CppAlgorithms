@@ -54,7 +54,7 @@ void dfs(long long n, long long d, short i) {
 }
 
 int main() {
-    freopen("out.txt", "w", stdout);
+    // freopen("out.txt", "w", stdout);
     s[N].n = 1; s[N].d = p[N]*p[N];
     for (short i=N-1; i>=0; --i) {
         long long n = s[i+1].n*p[i]*p[i] + s[i+1].d, d = s[i+1].d*p[i]*p[i], g = gcd(n, d);
