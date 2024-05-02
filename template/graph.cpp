@@ -146,3 +146,56 @@ namespace two_sat
         return true;
     }
 }
+
+// Dijkstra求单源最短路（Single-Source Shortest Paths, SSSP）
+namespace dijkstra {
+    #include <cstring>
+    #include <queue>
+    using namespace std;
+
+    #define N 1010
+    struct {int v, w;} g[N][N]; int c[N], d[N], f[N];
+    struct node {
+        int d, u;
+        bool operator< (const node& rhs) const {
+            return d>rhs.d;
+        }
+    };
+
+    void dijkstra(int s) {
+        memset(d, 0x3f, sizeof(d)); memset(f, 0, sizeof(f));
+        d[s] = 0; priority_queue<node> q; q.push({d[s], s});
+        while (!q.empty()) {
+            int u = q.top().u; q.pop();
+            if (f[u]) continue;
+            f[u] = 1;
+            for (int i=0; i<c[u]; ++i) {
+                int v = g[u][i].v, d1 = d[u] + g[u][i].w;
+                if (d[v] > d1) d[v] = 1, q.push({d[v], v});
+            }
+        }
+    }
+}
+
+// Bellman-Ford算法找负圈
+namespace bellman_ford {
+    #define N 1010
+    struct {int v, w;} g[N][N]; int c[N], d[N], f[N], cnt[N], q[N*N], n;
+
+    bool cycle() {
+        int head = 0, tail = n;
+        for (int i=0; i<n; ++i) cnt[i] = d[i] = 0, f[i] = 1, q[i] = i;
+        while (head < tail) {
+            int u = q[head++]; f[u] = 0;
+            for (int i=0; i<c[u]; ++i) {
+                int v = g[u][i].v, d1 = d[u] + g[u][i].w;
+                if (d[v] > d1) {
+                    d[v] = d1;
+                    if (++cnt[v] >= n) return true;
+                    if (!f[v]) q[tail++] = v, f[v] = 1;
+                }
+            }
+        }
+        return false;
+    }
+}
