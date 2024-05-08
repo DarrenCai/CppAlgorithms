@@ -53,4 +53,5 @@ int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     while (cin >> n >> m) solve();
+    return 0;
 }
