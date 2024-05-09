@@ -1,6 +1,6 @@
 /**
  * 图论相关
- **/
+ */
 
 // 二分图判定
 // 二分图的重要性质：1、二染色；2、二分图不存在长度为奇数的环（因为每一条边都是从一个集合走到另一个集合，只有走偶数次才可能回到同一个集合的同个点。）
@@ -197,5 +197,91 @@ namespace bellman_ford {
             }
         }
         return false;
+    }
+}
+
+// 最小生成树（Minimum Spanning Tree）
+namespace mst {
+    #define M 100010
+    #define N 1010
+    int f[N], use[M], m, n;
+    struct edge {
+        int u, v, w;
+        bool operator< (const edge& rhs) const {
+            return w < rhs.w;
+        }
+    } e[M]; 
+
+    int find(int x) {
+        return x==f[x] ? x : f[x] = find(f[x]);
+    }
+
+    int kruskal() {
+        sort(e, e+m); memset(use, 0, sizeof(use));
+        for (int i=0; i<n; ++i) f[i] = i;
+        int cc = 0;
+        for (int i=0, c=0; i<m; ++i) {
+            int u = find(e[i].u), v = find(e[i].v);
+            if (u == v) continue;
+            f[u] = v; cc += e[i].w; use[i] = 1;
+            if (++c == n-1) break;
+        }
+        return cc;
+    }
+}
+
+/**
+ * 最小有向生成树（Directed Minimum Spanning Tree）或最小树形图
+ * 有向生成树（directed spanning tree）也叫树形图（arborescence）
+ */
+namespace dmst {
+    #define M 10200
+    #define N 102
+    int g[N][M], c[N],      // 根据有向边信息建立邻接表
+        f[N],               // 记录每个结点的前向结点
+        w[N],               // 记录每个结点的前向边权
+        id[N],              // 记录每个结点(缩圈后)的新编号
+        vis[N],             // 访问标识：每个结点所在圈（或链）最后一个结点的编号，辅助于找环并在对缩点后的所有结点重新编号的流程
+        m, n, ans;          // 边数，点数以及（存在最小树形图时的）答案
+    struct edge {int u, v, w;} e0[M], e[M];
+
+    /**
+     * 朱-刘算法，时间复杂度O(VE)
+     * 如果对同一组数据要多次求dmst，则需要备份原始边数据
+     * Tarjan提出了一种能够在O(E+VlogV)时间内解决最小树形图问题的算法，参见https://oi-wiki.org/graph/dmst/
+     */
+    bool dmst(int root) {
+        // memcpy(e, e0, sizeof(e));
+        ans = 0;    // todo 初始化最小树形图的权值答案
+        int k = n;  // 复制点数，不修改全局的点数
+        while (true) {
+            for (int i=0; i<k; ++i) f[i] = i;
+            for (int i=0; i<m; ++i) if (e[i].u != e[i].v) { // 排除自环
+                int u = e[i].u, v = e[i].v;
+                if (f[v] == v || e[i].w < w[v]) f[v] = u, w[v] = e[i].w; // 选择边权最小的前向边
+            }
+            w[root] = 0;    // todo 根结点无前向边，故其前向边权为0
+            int t = 0;      // 连通分量数
+            for (int i=0; i<k; ++i) {
+                if (i != root && f[i] == i) return false; // 有孤点（可能是缩圈后形成的），所以根结点为root的最小树形图不存在
+                id[i] = vis[i] = -1;
+            }
+            for (int i=0, v; i<k; ++i) {
+                ans += w[i];
+                for (v = i; vis[v] != i && id[v] < 0; v = f[v]) vis[v] = i;
+                if (id[v] < 0 && v != root) {
+                    for (int u = f[v]; u != v; u = f[u]) id[u] = t;
+                    id[v] = t++;    // 找到了一个环，直接分配新编号
+                }
+            }
+            if (t == 0) return true; // 无圈，已经找到了根结点为root的最小树形图
+            for (int i=0; i<k; ++i) if (id[i] < 0) id[i] = t++; // 对剩下的点也分配新编号
+            for (int i=0; i<m; ++i) {
+                int u = e[i].u, v = e[i].v;
+                e[i].u = id[u]; e[i].v = id[v]; e[i].w -= w[v]; // 修改边权
+            }
+            k = t; root = id[root]; // 更新点数和根结点编号
+        }
+        return true;
     }
 }
