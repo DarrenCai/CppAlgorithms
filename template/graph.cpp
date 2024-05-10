@@ -107,6 +107,28 @@ namespace scc
     }
 }
 
+/**
+ * 找欧拉道路/回路
+ */
+namespace euler
+{
+    #define M 1010
+    #define N 52
+    struct edge {int u, v;} e[M];
+    int g[N][M], c[N], path[M<<1], cc, m, n; bool vis[M];
+    /**
+     * 求欧拉道路时，一定要从奇点调用，求回路从任意点调用都可以
+     * 如果深搜结束时cc != 2*m，说明欧拉道路/回路不存在
+     */
+    void euler(int u) {
+        for (int i=0, j; i<c[u]; ++i) if (!vis[j = g[u][i]]) {
+            const edge &eg = e[j]; int v = eg.u + eg.v - u;
+            vis[j] = true; euler(v);
+            path[cc++] = v; path[cc++] = u;
+        }
+    }
+}
+
 // 2-SAT问题
 namespace two_sat
 {
