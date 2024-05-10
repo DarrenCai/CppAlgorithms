@@ -5,17 +5,17 @@ using namespace std;
 #define maxC 1000
 #define maxR 1000
 
-//列编号为1～n,节点0是表头节点;节点1～n是各列顶部的虚拟节点
-int n, sz;                                              //列数，节点总数
-int S[maxC], H[maxR];                                   //各列节点数，各行头节点
+//列编号为1～n,结点0是表头结点;结点1～n是各列顶部的虚拟结点
+int n, sz;                                              //列数，结点总数
+int S[maxC], H[maxR];                                   //各列结点数，各行头结点
 
-int row[maxNode], col[maxNode];                         //各节点行列编号
+int row[maxNode], col[maxNode];                         //各结点行列编号
 int L[maxNode], R[maxNode], U[maxNode], D[maxNode];     //4方向循环链表
 
 int ansd, ans[maxR];                                    //解
 
 void init() {
-    //虚拟节点
+    //虚拟结点
     for (int i=0; i<=n; ++i) {
         S[i] = 0; U[i] = D[i] = i; L[i] = i-1; R[i] = i+1;
     }
@@ -56,7 +56,7 @@ bool dfs(int d=0) {
         return true;
     }
 
-    //找节点数最少的列c
+    //找结点数最少的列c
     int c = R[0];                                       //第一个未删除的列
     for (int i=R[0]; i!=0; i=R[i])
         if (S[i] < S[c]) c = i;
@@ -64,9 +64,9 @@ bool dfs(int d=0) {
     remove(c);                                          //删除第c列
     for (int i=D[c]; i!=c; i=D[i]) {
         ans[d] = row[i];
-        for (int j=R[i]; j!=i; j=R[j]) remove(col[j]);  //删除节点i所在行能覆盖的所有其他列
+        for (int j=R[i]; j!=i; j=R[j]) remove(col[j]);  //删除结点i所在行能覆盖的所有其他列
         if (dfs(d+1)) return true;
-        for (int j=L[i]; j!=i; j=L[j]) restore(col[j]); //恢复节点i所在行能覆盖的所有其他列
+        for (int j=L[i]; j!=i; j=L[j]) restore(col[j]); //恢复结点i所在行能覆盖的所有其他列
     }
     restore(c);                                         //恢复第c列
 
