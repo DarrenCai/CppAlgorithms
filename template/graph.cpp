@@ -20,6 +20,65 @@ namespace bipartite
         }
         return true;
     }
+
+    namespace augment_path {
+        // 求二分图最大匹配，增广路算法，复杂度O(VE)
+        int g[N][N], c[N], px[N], py[N], vis[N], nx, ny, clk;
+        bool dfs(int u) {
+            vis[u] = clk;
+            for (int i=0, v; i<c[u]; ++i) if (py[v = g[u][i]] < 0 || (vis[py[v]]!=clk && dfs(py[v]))) {
+                px[u] = v; py[v] = u;
+                return true;
+            }
+            return false;
+        }
+        int max_match() {
+            memset(px, -1, sizeof(px)); memset(py, -1, sizeof(py)); memset(vis, -1, sizeof(vis));
+            int cc = 0;
+            for (int i=1; i<=nx; ++i) if (px[i] < 0 && dfs(clk = i)) ++cc;
+            return cc;
+        }
+    }
+
+    namespace hk {
+        // 求二分图最大匹配，Hopcroft-Karp算法，复杂度O(V^0.5 E)
+        #define N 50050
+        int dx[N], dy[N], px[N], py[N], vis[N], q[N], nx, ny, clk, d, INF = N<<1; vector<int> g[N];
+        bool search() {
+            memset(dx, -1, sizeof(dx)); memset(dy, -1, sizeof(dy)); d = INF;
+            int head = 0, tail = 0;
+            for (int i=1; i<=nx; ++i) if (px[i] < 0) q[tail++] = i, dx[i] = 0;
+            while (head < tail) {
+                int u = q[head++];
+                if (dx[u] > d) break;
+                for (int i=g[u].size()-1, v; i>=0; --i) if (dy[v = g[u][i]] < 0) {
+                    dy[v] = dx[u] + 1;
+                    py[v] < 0 ? d = dy[v] : (dx[py[v]] = dy[v] + 1, q[tail++] = py[v]);
+                }
+            }
+            return d != INF;
+        }
+        bool dfs(int u) {
+            for (int i=g[u].size()-1, v; i>=0; --i) if (vis[v = g[u][i]] != clk && dy[v] == dx[u]+1) {
+                vis[v] = clk;
+                if (py[v] >= 0 && dy[v] == d) continue;
+                if (py[v] < 0 || dfs(py[v])) {
+                    px[u] = v; py[v] = u;
+                    return true;
+                }
+            }
+            return false;
+        }
+        int max_match() {
+            memset(px, -1, sizeof(px)); memset(py, -1, sizeof(py)); memset(vis, -1, sizeof(vis));
+            int cc = clk = 0;
+            while (search()) {
+                ++clk;
+                for (int i=1; i<=nx; ++i) if (px[i] < 0 && dfs(i)) ++cc;
+            }
+            return cc;
+        }
+    }
 }
 
 // 割点（cut vertex）和桥（bridge）
