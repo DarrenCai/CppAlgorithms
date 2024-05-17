@@ -41,7 +41,7 @@ namespace bipartite
     }
 
     namespace hk {
-        // 求二分图最大匹配，Hopcroft-Karp算法，复杂度O(V^0.5 E)
+        // 求二分图最大匹配，Hopcroft-Karp算法，复杂度O(E V^1/2)
         #define N 50050
         int dx[N], dy[N], px[N], py[N], vis[N], q[N], nx, ny, clk, d, INF = N<<1; vector<int> g[N];
         bool search() {
