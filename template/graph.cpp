@@ -182,27 +182,29 @@ namespace cut_vertex_bridge
 // 无向图（点）双连通分量（Biconnected Component）
 namespace bcc
 {
-    #define N 1010
-    int s[N*N][2], bcc[N][N], g[N][N], c[N], t[N], pre[N], bn[N], clk, cc, n, p;
-    // 调用前初始化memset(pre, clk = 0, sizeof(pre)); memset(bn, cc = p = 0, sizeof(bn));
-    // 注意双某个双连通分量bcc[i]可能只有两个顶点，不是环。
+    #define M 110010
+    #define N 10010
+    int pre[N], s[M], bn[M], x[M], y[M], clk, cc, n, p; bool vis[M]; vector<int> g[N];
+    // 考虑到可能有重复边，用x、y数组记录每条边的两个端点，以及vis数组区分特定边是否访问过。
+    // 调用前初始化memset(pre, clk = 0, sizeof(pre)); memset(bn, cc = p = 0, sizeof(bn)); memset(vis, 0, sizeof(vis));
+    // 注意某个双连通分量可能只有一条边，不含圈。
     // for (int u=0; u<n; ++u) if (!pre[u]) dfs(u);
     int dfs(int u, int fa = -1) {
         int low = pre[u] = ++clk;
-        for (int i=0, v; i<c[u]; ++i) if (!pre[v = g[u][i]]) {
-            s[p][0] = u; s[p++][1] = v;
-            int lowv = dfs(v, u); low = min(low, lowv);
-            if (lowv >= pre[u]) {
-                t[++cc] = 0;
-                while (true) {
-                    int x = s[--p][0], y = s[p][1];
-                    if (bn[x] != cc) bcc[cc][t[cc]++] = x, bn[x] = cc;
-                    if (bn[y] != cc) bcc[cc][t[cc]++] = y, bn[y] = cc;
-                    if (x == u && y == v) break;
+        for (int i=g[u].size()-1; i>=0; --i) {
+            int e = g[u][i], v = x[e] + y[e] - u;
+            if (vis[e]) continue;
+            vis[e] = true; s[p++] = e;
+            if (!pre[v]) {
+                int lowv = dfs(v, u); low = min(low, lowv);
+                if (lowv >= pre[u]) {
+                    ++cc;
+                    while (true) {
+                        bn[s[--p]] = cc;
+                        if (s[p] == e) break;
+                    }
                 }
-            }
-        } else if (pre[v] < pre[u] && v != fa) {
-            s[p][0] = u; s[p++][1] = v; low = min(low, pre[v]);
+            } else if (pre[v] < pre[u] && v != fa) low = min(low, pre[v]);
         }
         return low;
     }
@@ -211,11 +213,23 @@ namespace bcc
 // 无向图的边双连通分量（edge-biconnected component）
 namespace edge_bcc
 {
-/**
- * 边-双连通分量可以用更简单的方法求出，分两个步骤，先做一次dfs标记出所有的桥，
- * 然后再做一次dfs找出边-双连通分量。因为边-双连通分量是没有公共结点的，所以只要在
- * 第二次dfs的时候保证不经过桥即可。
- */
+    #define N 1010
+    int bcc[N][N], g[N][N], c[N], t[N], pre[N], bn[N], clk, cc, n; bool is_bridge[N][N];
+    // 调用前初始化memset(is_bridge, 0, sizeof(is_bridge)); memset(pre, clk = 0, sizeof(pre)); memset(bn, cc = 0, sizeof(bn));
+    // for (int u=0; u<n; ++u) if (!pre[u]) dfs(u, -1);
+    // for (int u=0; u<n; ++u) if (!bn[u]) t[++cc] = 0, dfs(u);
+    int dfs(int u, int fa) {
+        int low = pre[u] = ++clk;
+        for (int i=0, v; i<c[u]; ++i) if (!pre[v = g[u][i]]) {
+            int lowv = dfs(v, u); low = min(low, lowv);
+            if (lowv > pre[u]) is_bridge[u][v] = is_bridge[v][u] = true;
+        } else if (pre[v] < pre[u] && v != fa) low = min(low, pre[v]);
+        return low;
+    }
+    void dfs(int u) {
+        bn[u] = cc; bcc[cc][t[cc]++] = u;
+        for (int i=0, v; i<c[u]; ++i) if (!bn[v = g[u][i]] && !is_bridge[u][v]) dfs(v);
+    }
 }
 
 // 有向图强连通分量（Strongly Connected Component）
