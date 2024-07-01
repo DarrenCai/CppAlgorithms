@@ -341,7 +341,7 @@ namespace dijkstra {
             f[u] = 1;
             for (int i=0; i<c[u]; ++i) {
                 int v = g[u][i].v, d1 = d[u] + g[u][i].w;
-                if (d[v] > d1) d[v] = d1, q.push({d[v], v});
+                if (d[v] > d1) q.push({d[v] = d1, v});
             }
         }
     }

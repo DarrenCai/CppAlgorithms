@@ -8,130 +8,44 @@
 #include <queue>
 using namespace std;
 
-#define min(a,b) (a<b ? a:b)
+#define N 202
+int f[3][2][N], c[3], v[3], d, ans, p; bool inq[3][2][N];
+struct node {
+    int s, f, w;
+    void decode() {
+        int x = s<2 ? s+1 : 0;
+        v[s] = f ? c[s] : 0; v[x] = w; v[3-s-x] = c[2] - v[s] - v[x];
+    }
+};
 
-short water[40402], a, b, c, d, a1, b1, c1, m, w; queue<int> q;
-
-void bfs() {
-    while (!q.empty()) {
-        int t = q.front(); q.pop();
-        a1 = t/201; b1 = t%201; c1 = c-a1-b1;
-        if (a1) {
-            short w1 = min(a1, b-b1);
-            if (w1) {
-                short a2 = a1-w1, b2 = b1+w1;
-                int t1 = a2*201 + b2;
-                short w2 = water[t] + w1;
-                if (t1!=c && (!water[t1] || water[t1]>w2)) {
-                    if (a2<=d && (a2>m || (a2==m && w2<w))) {
-                        m = a2; w = w2;
-                    }
-                    if (b2<=d && (b2>m || (b2==m && w2<w))) {
-                        m = b2; w = w2;
-                    }
-                    water[t1] = w2;
-                    q.push(t1);
-                }
-            }
-            w1 = min(a1, c-c1);
-            if (w1) {
-                short a2 = a1-w1, c2 = c1+w1;
-                int t1 = a2*201 + b1;
-                short w2 = water[t] + w1;
-                if (t1!=c && (!water[t1] || water[t1]>w2)) {
-                    if (a2<=d && (a2>m || (a2==m && w2<w))) {
-                        m = a2; w = w2;
-                    }
-                    if (c2<=d && (c2>m || (c2==m && w2<w))) {
-                        m = c2; w = w2;
-                    }
-                    water[t1] = w2;
-                    q.push(t1);
-                }
-            }
-        }
-        if (b1) {
-            short w1 = min(b1, a-a1);
-            if (w1) {
-                short a2 = a1+w1, b2 = b1-w1;
-                int t1 = a2*201 + b2;
-                short w2 = water[t] + w1;
-                if (t1!=c && (!water[t1] || water[t1]>w2)) {
-                    if (a2<=d && (a2>m || (a2==m && w2<w))) {
-                        m = a2; w = w2;
-                    }
-                    if (b2<=d && (b2>m || (b2==m && w2<w))) {
-                        m = b2; w = w2;
-                    }
-                    water[t1] = w2;
-                    q.push(t1);
-                }
-            }
-            w1 = min(b1, c-c1);
-            if (w1) {
-                short b2 = b1-w1, c2 = c1+w1;
-                int t1 = a1*201 + b2;
-                short w2 = water[t] + w1;
-                if (t1!=c && (!water[t1] || water[t1]>w2)) {
-                    if (b2<=d && (b2>m || (b2==m && w2<w))) {
-                        m = b2; w = w2;
-                    }
-                    if (c2<=d && (c2>m || (c2==m && w2<w))) {
-                        m = c2; w = w2;
-                    }
-                    water[t1] = w2;
-                    q.push(t1);
-                }
-            }
-        }
-        if (c1) {
-            short w1 = min(c1, a-a1);
-            if (w1) {
-                short a2 = a1+w1, c2 = c1-w1;
-                int t1 = a2*201 + b1;
-                short w2 = water[t] + w1;
-                if (t1!=c && (!water[t1] || water[t1]>w2)) {
-                    if (a2<=d && (a2>m || (a2==m && w2<w))) {
-                        m = a2; w = w2;
-                    }
-                    if (c2<=d && (c2>m || (c2==m && w2<w))) {
-                        m = c2; w = w2;
-                    }
-                    water[t1] = w2;
-                    q.push(t1);
-                }
-            }
-            w1 = min(c1, b-b1);
-            if (w1) {
-                short b2 = b1+w1, c2 = c1-w1;
-                int t1 = a1*201 + b2;
-                short w2 = water[t] + w1;
-                if (t1!=c && (!water[t1] || water[t1]>w2)) {
-                    if (b2<=d && (b2>m || (b2==m && w2<w))) {
-                        m = b2; w = w2;
-                    }
-                    if (c2<=d && (c2>m || (c2==m && w2<w))) {
-                        m = c2; w = w2;
-                    }
-                    water[t1] = w2;
-                    q.push(t1);
+void solve() {
+    cin >> c[0] >> c[1] >> c[2] >> d;
+    ans = c[2] <= d ? c[2] : 0; p = 0;
+    if (c[2] != d) {
+        memset(f, -1, sizeof(f)); memset(inq, 0, sizeof(inq));
+        queue<node> q; f[2][1][0] = 0; q.push({2, 1, 0});
+        while (!q.empty()) {
+            node t = q.front(); int &r = f[t.s][t.f][t.w]; t.decode(); q.pop(); inq[t.s][t.f][t.w] = false;
+            for (int i=0; i<3; ++i) if (v[i]) for (int j=0; j<3; ++j) if (i != j) {
+                int g, x, y, w[] = {v[0], v[1], v[2]};
+                if (v[i] + v[j] > c[j]) g = r + c[j]-v[j], w[i] -= c[j]-v[j], w[j] = c[j], x = j, y = 1;
+                else g = r + v[i], w[j] += v[i], w[i] = 0, x = i, y = 0;
+                int z = w[x<2 ? x+1 : 0], &e = f[x][y][z];
+                if (e < 0 || g < e) {
+                    e = g;
+                    for (int k=0; k<3; ++k) if (w[k]<=d && (w[k] > ans || (w[k]==ans && g<p))) ans = w[k], p = g;
+                    if (!inq[x][y][z]) q.push({x, y, z}), inq[x][y][z] = true;
                 }
             }
         }
     }
+    cout << p << ' ' << ans << endl;
 }
 
-int main()
-{
-    int n; cin>>n;
-    while (n--) {
-        cin >> a >> b >> c >> d;
-        memset(water, 0, sizeof(water));
-        m = 0; w = 0;
-        if (c>m && c<=d) m = c;
-        q.push(0);
-        bfs();
-        cout << w << ' ' << m << endl;
-    }
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    int t; cin >> t;
+    while (t--) solve();
     return 0;
 }
