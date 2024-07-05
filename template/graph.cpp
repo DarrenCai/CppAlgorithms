@@ -370,7 +370,10 @@ namespace bellman_ford {
     }
 }
 
-// 最小生成树（Minimum Spanning Tree）
+/*
+ * 最小生成树（Minimum Spanning Tree）
+ * 一般情况下使用kruskal算法来求，对于稠密图则可以使用prim算法来求（和Dijkstra写法基本一样）
+ */
 namespace mst {
     #define M 100010
     #define N 1010
@@ -390,11 +393,11 @@ namespace mst {
         sort(e, e+m); memset(use, 0, sizeof(use));
         for (int i=0; i<n; ++i) f[i] = i;
         int cc = 0;
-        for (int i=0, c=0; i<m; ++i) {
+        for (int i=0, c=n; i<m; ++i) {
             int u = find(e[i].u), v = find(e[i].v);
             if (u == v) continue;
             f[u] = v; cc += e[i].w; use[i] = 1;
-            if (++c == n-1) break;
+            if (--c == 1) break;
         }
         return cc;
     }
@@ -413,7 +416,7 @@ namespace dmst {
         id[N],              // 记录每个结点(缩圈后)的新编号
         vis[N],             // 访问标识：每个结点所在圈（或链）最后一个结点的编号，辅助于找环并在对缩点后的所有结点重新编号的流程
         m, n, ans;          // 边数，点数以及（存在最小树形图时的）答案
-    struct edge {int u, v, w;} e0[M], e[M];
+    struct edge {int u, v, w;} e[2][M];
 
     /**
      * 朱-刘算法，时间复杂度O(VE)
@@ -421,14 +424,14 @@ namespace dmst {
      * Tarjan提出了一种能够在O(E+VlogV)时间内解决最小树形图问题的算法，参见https://oi-wiki.org/graph/dmst/
      */
     bool dmst(int root) {
-        // memcpy(e, e0, sizeof(e));
+        // memcpy(e, e0, sizeof(e));   //如果同一组数据要多次求dmst，则需要备份原始边数据
         ans = 0;    // todo 初始化最小树形图的权值答案
-        int k = n;  // 复制点数，不修改全局的点数
+        int k = n, r = 0;  // 复制点数，不修改全局的点数
         while (true) {
             for (int i=0; i<k; ++i) f[i] = i;
-            for (int i=0; i<m; ++i) if (e[i].u != e[i].v) { // 排除自环
-                int u = e[i].u, v = e[i].v;
-                if (f[v] == v || e[i].w < w[v]) f[v] = u, w[v] = e[i].w; // 选择边权最小的前向边
+            for (int i=0; i<m; ++i) if (e[r][i].u != e[r][i].v) { // 排除自环
+                int u = e[r][i].u, v = e[i][r].v;
+                if (f[v] == v || e[r][i].w < w[v]) f[v] = u, w[v] = e[r][i].w; // 选择边权最小的前向边
             }
             w[root] = 0;    // todo 根结点无前向边，故其前向边权为0
             int t = 0;      // 连通分量数
@@ -446,11 +449,12 @@ namespace dmst {
             }
             if (t == 0) return true; // 无圈，已经找到了根结点为root的最小树形图
             for (int i=0; i<k; ++i) if (id[i] < 0) id[i] = t++; // 对剩下的点也分配新编号
+            int cc = 0, s = r^1;
             for (int i=0; i<m; ++i) {
-                int u = e[i].u, v = e[i].v;
-                e[i].u = id[u]; e[i].v = id[v]; e[i].w -= w[v]; // 修改边权
+                int u = e[r][i].u, v = e[r][i].v;
+                if (id[u] != id[v]) e[s][cc++] = {id[u], id[v], e[r][i].w - w[v]}; // 修改边权
             }
-            k = t; root = id[root]; // 更新点数和根结点编号
+            m = cc; r = s; k = t; root = id[root]; // 更新点数和根结点编号
         }
         return true;
     }

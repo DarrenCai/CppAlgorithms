@@ -1,6 +1,7 @@
 /**
- * UVa1395
- * 苗条的生成树
+ * UVa1395/LA3887
+ * 生成树的苗条度
+ * Japan 2007
  */
 
 #include <iostream>
