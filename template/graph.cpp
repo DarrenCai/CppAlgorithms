@@ -105,7 +105,7 @@ namespace bipartite
         void km() {
             for (int i=1; i<=n; ++i) {
                 p[i] = 0; lx[i] = 0.; ly[i] = 0.;
-                for (int j=1; j<=n; ++j) lx[i] = max(lx[i], w[i][j]);
+                for (int j=1; j<=n; ++j) lx[i] = max(lx[i], w[i][j]);   // 也可以拿掉
             }
             for (int i=1; i<=n; ++i) {
                 for (int j=1; j<=n; ++j) slack[j] = INF;
@@ -149,7 +149,7 @@ namespace bipartite
             lx[0] = ly[0] = 0.; vis[0] = 0;
             for (int i=1; i<=n; ++i) {
                 p[i] = 0; lx[i] = -INF; ly[i] = 0.; vis[i] = 0;
-                for (int j=1; j<=n; ++j) lx[i] = max(lx[i], w[i][j]);
+                for (int j=1; j<=n; ++j) lx[i] = max(lx[i], w[i][j]);   // 也可以拿掉
             }
             for (int i=1; i<=n; ++i) bfs(clk = i);
         }

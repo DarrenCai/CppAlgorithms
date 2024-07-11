@@ -1,6 +1,8 @@
 /**
- * UVa1349
+ * UVa1349/LA3353
  * 最优巴士路线设计
+ * Taipei 2005
+ * 解法：由于有解时一定满流,直接建网络求最小费用流即可
  */
 
 #include <iostream>
@@ -10,32 +12,28 @@ using namespace std;
 #define N 125
 #define INF 15000
 struct edge {short u, v, cap, flow, cost;} e[4*N*N];
-short a[3*N], d[3*N], cnt[3*N], n; int g[3*N][2*N], q[12*N*N*N], p[3*N]; bool visit[3*N];
+short a[3*N], d[3*N], cnt[3*N], n; int g[3*N][2*N], q[12*N*N*N], p[3*N]; bool visit[3*N]; int c;
+
+void addEdge(short u, short v, short cap, short cost) {
+    e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; e[c].cost = cost; g[u][cnt[u]++] = c++;
+    e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; e[c].cost = -cost; g[v][cnt[v]++] = c++;
+}
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     while (cin>>n && n) {
-        short t = 3*(n+1), f = 0, cost = 0; int c = 0;
+        short f = 0, cost = 0; c = 0;
         memset(cnt, 0, sizeof(cnt));
-        e[c].u = 0; e[c].v = 1; e[c].cap = N; e[c].flow = 0; e[c].cost = 0; g[0][cnt[0]++] = c++;
-        e[c].u = 1; e[c].v = 0; e[c].cap = 0; e[c].flow = 0; e[c].cost = 0; g[1][cnt[1]++] = c++;
-        e[c].u = t-1; e[c].v = t; e[c].cap = N; e[c].flow = 0; e[c].cost = 0; g[t-1][cnt[t-1]++] = c++;
-        e[c].u = t; e[c].v = t-1; e[c].cap = 0; e[c].flow = 0; e[c].cost = 0; g[t][cnt[t]++] = c++;
         for (short i=1; i<=n; ++i) {
             short s = 3*i-1, j, cc;
-            e[c].u = 1; e[c].v = s; e[c].cap = 1; e[c].flow = 0; e[c].cost = 0; g[1][cnt[1]++] = c++;
-            e[c].u = s; e[c].v = 1; e[c].cap = 0; e[c].flow = 0; e[c].cost = 0; g[s][cnt[s]++] = c++;
-            e[c].u = s; e[c].v = s+1; e[c].cap = 1; e[c].flow = 0; e[c].cost = 0; g[s][cnt[s]++] = c++;
-            e[c].u = s+1; e[c].v = s; e[c].cap = 0; e[c].flow = 0; e[c].cost = 0; g[s+1][cnt[s+1]++] = c++;
-            e[c].u = s+2; e[c].v = t-1; e[c].cap = 1; e[c].flow = 0; e[c].cost = 0; g[s+2][cnt[s+2]++] = c++;
-            e[c].u = t-1; e[c].v = s+2; e[c].cap = 0; e[c].flow = 0; e[c].cost = 0; g[t-1][cnt[t-1]++] = c++;
+            addEdge(0, s, 1, 0);
+            addEdge(s, s+1, 1, 0);
+            addEdge(s+2, 1, 1, 0);
             while (cin>>j && j) {
                 cin >> cc; j = 3*j-1;
-                e[c].u = s+1; e[c].v = j; e[c].cap = 1; e[c].flow = 0; e[c].cost = cc; g[s+1][cnt[s+1]++] = c++;
-                e[c].u = j; e[c].v = s+1; e[c].cap = 0; e[c].flow = 0; e[c].cost = -cc; g[j][cnt[j]++] = c++;
-                e[c].u = s+1; e[c].v = j+2; e[c].cap = 1; e[c].flow = 0; e[c].cost = cc; g[s+1][cnt[s+1]++] = c++;
-                e[c].u = j+2; e[c].v = s+1; e[c].cap = 0; e[c].flow = 0; e[c].cost = -cc; g[j+2][cnt[j+2]++] = c++;
+                addEdge(s+1, j, 1, cc);
+                addEdge(s+1, j+2, 1, cc);
             }
         }
         while (true) {
@@ -54,12 +52,12 @@ int main() {
                     }
                 }
             }
-            if (d[t] >= INF) break;
-            cost += d[t]*a[t];
-            for (short u=t; u!=0; u=e[p[u]].u) {
-                e[p[u]].flow += a[t];
-                if (u<t && e[p[u]].u+1 == u && u%3 == 0) ++f;
-                e[p[u]^1].flow -= a[t];
+            if (d[1] >= INF) break;
+            cost += d[1]*a[1];
+            for (short u=1; u!=0; u=e[p[u]].u) {
+                e[p[u]].flow += a[1];
+                if (e[p[u]].u+1 == u && u%3 == 0) ++f;
+                e[p[u]^1].flow -= a[1];
             }
         }
         f==n ? cout << cost << endl : cout << 'N' << endl;
