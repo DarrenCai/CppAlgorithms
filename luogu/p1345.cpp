@@ -1,15 +1,15 @@
 /**
- * P2774 方格取数问题
+ * P1345 [USACO5.4] 奶牛的电信Telecowmunication
  */
 
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-#define INF 2000000000
-#define N 10010
-struct edge {int u, v, cap, flow;} e[6*N];
-int g[N][N>>1], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, m, n; bool vis[N];
+#define INF 2000
+#define N 202
+struct edge {int u, v, cap, flow;} e[13*N];
+int g[N][N>>1], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, m, n, c1, c2; bool vis[N];
 
 void add_edge(int u, int v, int cap) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
@@ -31,26 +31,24 @@ bool bfs(int s, int t) {
 
 int solve() {
     memset(cnt, c = 0, sizeof(cnt));
-    int s = 0, t = m*n+1, cc = 0;
-    for (int i=1, k=1; i<=m; ++i) for (int j=1; j<=n; ++j, ++k) {
-        int a, f = (i+j)&1; cin >> a; cc += a;
-        f ? add_edge(s, k, a) : add_edge(k, t, a);
-        if (!f) continue;
-        if (i > 1) add_edge(k, k-n, INF);
-        if (i < m) add_edge(k, k+n, INF);
-        if (j > 1) add_edge(k, k-1, INF);
-        if (j < n) add_edge(k, k+1, INF);
+    int s = c1, t = c2+n, cc = 0;
+    for (int i=1; i<=n; ++i) add_edge(i, i+n, i==c1 || i==c2 ? INF : 1);
+    while (m--) {
+        int a, b; cin >> a >> b;
+        if (b != c1) add_edge(a+n, b, 1);
+        if (b != c2) add_edge(b+n, a, 1);
     }
+    n <<= 1;
     if (!bfs(s, t)) return cc;
     memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));
-    for (int i=0; i<=t; ++i) ++num[d[i]];
+    for (int i=1; i<=n; ++i) ++num[d[i]];
     int u = s;
-    while (d[s] <= t) {
+    while (d[s] < n) {
         if (u == t) {
             int a = INF;
             for (int v=t; v!=s; v = e[p[v]].u) a = min(a, e[p[v]].cap - e[p[v]].flow);
             for (int v=t; v!=s; v = e[p[v]].u) e[p[v]].flow += a, e[p[v]^1].flow -= a;
-            cc -= a; u = s;
+            cc += a; u = s;
         }
         int ok = 0;
         for (int i=cur[u]; i<cnt[u]; ++i) {
@@ -61,7 +59,7 @@ int solve() {
             }
         }
         if (!ok) {
-            int m = t;
+            int m = n-1;
             for (int i=0; i<cnt[u]; i++) {
                 const edge& ee = e[g[u][i]];
                 if (ee.cap > ee.flow) m = min(m, d[ee.v]);
@@ -78,6 +76,6 @@ int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-    while (cin >> m >> n) cout << solve() << endl;
+    while (cin >> n >> m >> c1 >> c2) cout << solve() << endl;
     return 0;
 }

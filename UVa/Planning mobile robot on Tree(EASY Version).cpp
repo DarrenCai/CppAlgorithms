@@ -22,13 +22,10 @@ int bfs() {
                 p[cc] = c; c = cc;
                 return step+1;
             }
-            for (int u=1; u<=n; ++u)
-                if (c&1<<u || u==s)
-                    for (int v=1; v<=n; ++v)
-                        if (g[u][v] && !(c&1<<v) && v!=s) {
-                            int cc = u==s ? (c&0xffff) | v<<16 : (c & ~(1<<u)) | 1<<v;
-                            if (!p.count(cc)) p[cc] = c, q.push(cc);
-                        }
+            for (int u=1; u<=n; ++u) if (c&1<<u || u==s) for (int v=1; v<=n; ++v) if (g[u][v] && !(c&1<<v) && v!=s) {
+                int cc = u==s ? (c&0xffff) | v<<16 : (c & ~(1<<u)) | 1<<v;
+                if (!p.count(cc)) p[cc] = c, q.push(cc);
+            }
         }
         ++ step;
     }
@@ -52,8 +49,9 @@ void printPath(int c) {
     }
 }
 
-int main()
-{
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     cin >> T;
     for (int k=1; k<=T; ++k) {
         memset(g, 0, sizeof(g));

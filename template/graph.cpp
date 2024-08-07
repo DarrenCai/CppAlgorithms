@@ -82,7 +82,7 @@ namespace bipartite
 
     namespace km {
         /**
-         * 二分图最大权匹配，匈牙利算法（KM，Kuhn–Munkres 算法），复杂度O(n^3)。
+         * 二分图最大权完美匹配，匈牙利算法（KM，Kuhn–Munkres 算法），复杂度O(n^3)。
          */
         #define INF 1e30
         #define eps 1e-9
@@ -125,7 +125,7 @@ namespace bipartite
 
     namespace km2 {
         /**
-         * 二分图最大权匹配，匈牙利算法（KM，Kuhn–Munkres 算法），复杂度O(n^3)。
+         * 二分图最大权完美匹配，匈牙利算法（KM，Kuhn–Munkres 算法），复杂度O(n^3)。
          * bfs实现方式
          */
         #define INF 1e30

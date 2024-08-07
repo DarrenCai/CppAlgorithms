@@ -1,6 +1,7 @@
 /**
- * UVa658
+ * UVa658/LA5629
  * 这不是bug,而是特性
+ * SWERC 1998
  */
 
 #include <iostream>

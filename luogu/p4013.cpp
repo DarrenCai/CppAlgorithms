@@ -1,80 +1,69 @@
 /**
- * p4013 数字梯形问题
+ * P4013 数字梯形问题
  */
 
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-#define M 50
-#define N 3000
-struct edge {short u, v, cap, flow; int cost;} e[N<<2];
-short g[N][M], q[N*N<<2], a[N], p[N], cnt[N], m, n, c; int w[M][M], d[N]; bool visit[N];
+#define N 1182
+struct edge {int u, v, cap, flow, cost;} e[3*N]; 
+int g[N][N>>1], q[3*N*N], a[N], d[N], p[N], cnt[N], c, m, n; bool vis[N];
 
-void addEdge(short u, short v, short cap, int cc) {
+void add_edge(int u, int v, int cap, int cc) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; e[c].cost = cc; g[u][cnt[u]++] = c++;
     e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; e[c].cost = -cc; g[v][cnt[v]++] = c++;
 }
 
-int mcmf(short t) {
-    int cc = 0;
-    while (true) {
-        memset(d, 1, sizeof(d)); memset(visit, 0, sizeof(visit));
-        d[0] = 0; q[0] = 0; a[0] = 1;
+int mcmf(int s, int t) {
+    int cc = 0, f = 0;
+    while (f < m) {
+        memset(d, 1, sizeof(d)); memset(vis, 0, sizeof(vis));
+        d[s] = 0; q[0] = s; a[s] = m;
         int head = 0, tail = 1;
         while (head < tail) {
-            short u = q[head++]; visit[u] = false;
-            for (short i=0; i<cnt[u]; ++i) {
+            int u = q[head++]; vis[u] = false;
+            for (int i=0; i<cnt[u]; ++i) {
                 const edge& ee = e[g[u][i]];
                 if (ee.cap > ee.flow && d[ee.v] > d[u]+ee.cost) {
                     d[ee.v] = d[u]+ee.cost;
                     p[ee.v] = g[u][i];
-                    a[ee.v] = min(a[u], short(ee.cap-ee.flow));
-                    if (!visit[ee.v]) visit[q[tail++] = ee.v] = true;
+                    a[ee.v] = min(a[u], ee.cap-ee.flow);
+                    if (!vis[ee.v]) vis[q[tail++] = ee.v] = true;
                 }
             }
         }
-        if (d[t] >= 0) return cc;
-        cc -= d[t];
-        for (short u=t; u!=0; u=e[p[u]].u) {
-            e[p[u]].flow += a[t];
-            e[p[u]^1].flow -= a[t];
-        }
+        f += a[t]; cc -= d[t] * a[t];
+        for (int u=t; u!=s; u=e[p[u]].u) e[p[u]].flow += a[t], e[p[u]^1].flow -= a[t];
     }
     return cc;
+}
+
+void solve() {
+    int s = 0, q = m*n+n*(n-1)/2, t = 2*q+1; memset(cnt, c = 0, sizeof(cnt));
+    for (int i=1, x; i<=m; ++i) cin >> x, add_edge(s, i+q, 1, -x);
+    for (int i=t-m-n+1; i<t; ++i) add_edge(i, t, m, 0);
+    for (int i=1, u=m+1; i<n; ++i) for (int j=0, k=m+i; j<k; ++j, ++u) {
+        int x; cin >> x; add_edge(u, u+q, 1, 0);
+        if (j) add_edge(u-k+q, u, 1, -x);
+        if (j+1 < k) add_edge(u-k+1+q, u, 1, -x);
+    }
+    cout << mcmf(s, t) << endl;
+    for (int i=0; i<c; ++i) {
+        e[i].flow = 0;
+        if (e[i].u != s && e[i].v !=t && e[i].v == e[i].u + q) e[i].cap = m;
+    }
+    cout << mcmf(s, t) << endl;
+    for (int i=0; i<c; ++i) {
+        e[i].flow = 0;
+        if (e[i].u != s && ~i&1) e[i].cap = m;
+    }
+    cout << mcmf(s, t) << endl;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    while (cin >> m >> n) {
-        for (short i=0, t=m; i<n; ++i, ++t) for (short j=0; j<t; ++j) cin >> w[i][j];
-        short t = (2*m+n-1)*n/2;
-        memset(cnt, c = 0, sizeof(cnt));
-        for (short i=1; i<=m; ++i) addEdge(0, i+t, 1, -w[0][i-1]);
-        for (short i=1, tt=m+1, cc = m+1; i<n; ++i, ++tt) for (short j=0; j<tt; ++j, ++cc) {
-            addEdge(cc, cc+t, 1, 0);
-            if (j>0) addEdge(cc-tt+t, cc, 1, -w[i][j]);
-            if (j+1<tt) addEdge(cc-tt+t+1, cc, 1, -w[i][j]);
-        }
-        for (short i=m+n-2; i>=0; --i) addEdge(t-i, 1+(t<<1), 1, 0);
-        cout << mcmf(1+(t<<1)) << endl;
-        memset(cnt, c = 0, sizeof(cnt));
-        for (short i=1; i<=m; ++i) addEdge(0, i, 1, -w[0][i-1]);
-        for (short i=1, tt=m+1, cc = m+1; i<n; ++i, ++tt) for (short j=0; j<tt; ++j, ++cc) {
-            if (j>0) addEdge(cc-tt, cc, 1, -w[i][j]);
-            if (j+1<tt) addEdge(cc-tt+1, cc, 1, -w[i][j]);
-        }
-        for (short i=m+n-2; i>=0; --i) addEdge(t-i, 1+t, M, 0);
-        cout << mcmf(1+t) << endl;
-        memset(cnt, c = 0, sizeof(cnt));
-        for (short i=1; i<=m; ++i) addEdge(0, i, 1, -w[0][i-1]);
-        for (short i=1, tt=m+1, cc = m+1; i<n; ++i, ++tt) for (short j=0; j<tt; ++j, ++cc) {
-            if (j>0) addEdge(cc-tt, cc, M, -w[i][j]);
-            if (j+1<tt) addEdge(cc-tt+1, cc, M, -w[i][j]);
-        }
-        for (short i=m+n-2; i>=0; --i) addEdge(t-i, 1+t, M, 0);
-        cout << mcmf(1+t) << endl;
-    }
+    while (cin >> m >> n) solve();
     return 0;
 }

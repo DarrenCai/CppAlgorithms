@@ -1,18 +1,17 @@
 /**
- * UVa1658/LA6266
- * 海军上将
- * NWERC 2012
+ * P2050 [NOI2012] 美食节
  */
 
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-#define INF 300000
-#define M 11020
-#define N 2020
-struct edge {int u, v, cap, flow, cost;} e[M<<1];
-int g[N][N], q[M*N<<1], a[N], d[N], p[N], cnt[N], c, m, n; bool vis[N];
+#define INF 900000
+#define N 42
+#define M 102
+#define P 1002
+struct edge {int u, v, cap, flow, cost, c;} e[N*P<<1];
+int g[P][P], x[N][M], y[M], q[N*P*P<<1], a[P], d[P], p[P], cnt[P], c, m, n; bool vis[P];
 
 void add_edge(int u, int v, int cap, int cc) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; e[c].cost = cc; g[u][cnt[u]++] = c++;
@@ -21,14 +20,14 @@ void add_edge(int u, int v, int cap, int cc) {
 
 int solve() {
     memset(cnt, c = 0, sizeof(cnt));
-    while (m--) {
-        int u, v, w; cin >> u >> v >> w; add_edge(u+n-1, v-1, 1, w);
-    }
-    int s = 0, t = 2*n-1, cc = 0;
-    for (int i=0; i<n; ++i) add_edge(i, i+n, i>0 && i+1<n ? 1 : 2, 0);
+    int s = 0, t = n+1, b = t, f, cc = 0;
+    for (int i=1, c; i<=n; ++i) cin >> c, add_edge(0, i, c, 0);
+    for (int i=1; i<=n; ++i) for (int j=1; j<=m; ++j)
+        cin >> x[i][j], add_edge(i, b+j, 1, x[i][j]);
+    for (int i=1; i<=m; ++i) y[i] = 1, e[c].c = i, add_edge(++b, t, 1, 0);
     while (true) {
-        memset(d, 0x7f, sizeof(d)); memset(vis, 0, sizeof(vis));
-        d[s] = 0; q[0] = s; a[s] = 2;
+        memset(d, 1, sizeof(d)); memset(vis, 0, sizeof(vis));
+        d[s] = 0; q[0] = s; a[s] = INF;
         int head = 0, tail = 1;
         while (head < tail) {
             short u = q[head++]; vis[u] = false;
@@ -43,8 +42,13 @@ int solve() {
             }
         }
         if (d[t] >= INF) return cc;
-        cc += d[t] * a[t];
-        for (short u=t; u!=s; u=e[p[u]].u) e[p[u]].flow += a[t], e[p[u]^1].flow -= a[t];
+        cc += d[t];
+        for (short u=t; u!=s; u=e[p[u]].u) {
+            e[p[u]].flow += a[t], e[p[u]^1].flow -= a[t];
+            if (e[p[u]].v == t && e[p[u]].flow) f = e[p[u]].c;
+        }
+        ++y[f]; e[c].c = f; add_edge(++b, t, 1, 0);
+        for (int i=1; i<=n; ++i) add_edge(i, b, 1, y[f]*x[i][f]);
     }
     return cc;
 }

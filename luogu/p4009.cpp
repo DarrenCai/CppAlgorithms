@@ -1,5 +1,5 @@
 /**
- * p4009 汽车加油行驶问题
+ * P4009 汽车加油行驶问题
  */
 
 #include <iostream>
@@ -16,7 +16,7 @@ int main() {
     // freopen("ou.txt", "w", stdout);
     while (cin >> n >> k >> a >> b >> c) {
         for (int i=0; i<n; ++i) for (int j=0; j<n; ++j) cin >> s[i][j];
-        memset(d, -1, sizeof(d)); d[0][0][k] = 0; q[0].x = 0; q[0].y = 0; q[0].k=k; q[0].d = 0;
+        memset(d, -1, sizeof(d)); q[0] = {0, 0, k, d[0][0][k] = 0};
         int head = 0, tail = 1, ans = -1; --n;
         while (head < tail) {
             node &t = q[head++], tt;
@@ -47,7 +47,6 @@ int main() {
             }
             int &ref = d[t.x][t.y][k], dd = t.d + (s[t.x][t.y] ? a : a+c);
             if (ref==-1 || dd<ref) ref = dd, t.k = k, t.d = dd, q[tail++] = t;
-            if (t.x==n && t.y==n) ans = ans==-1 ? ref : min(ans, ref);
         }
         cout << ans << endl;
     }

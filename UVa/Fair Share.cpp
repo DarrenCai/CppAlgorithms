@@ -1,15 +1,16 @@
 /**
- * P2774 方格取数问题
+ * LA3231
+ * Seoul 2004
+ * UVALive现在无法提交
  */
 
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-#define INF 2000000000
-#define N 10010
+#define N 11020
 struct edge {int u, v, cap, flow;} e[6*N];
-int g[N][N>>1], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, m, n; bool vis[N];
+int g[N][N], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, m, n, s, t; bool vis[N];
 
 void add_edge(int u, int v, int cap) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
@@ -29,28 +30,18 @@ bool bfs(int s, int t) {
     return vis[s];
 }
 
-int solve() {
-    memset(cnt, c = 0, sizeof(cnt));
-    int s = 0, t = m*n+1, cc = 0;
-    for (int i=1, k=1; i<=m; ++i) for (int j=1; j<=n; ++j, ++k) {
-        int a, f = (i+j)&1; cin >> a; cc += a;
-        f ? add_edge(s, k, a) : add_edge(k, t, a);
-        if (!f) continue;
-        if (i > 1) add_edge(k, k-n, INF);
-        if (i < m) add_edge(k, k+n, INF);
-        if (j > 1) add_edge(k, k-1, INF);
-        if (j < n) add_edge(k, k+1, INF);
-    }
-    if (!bfs(s, t)) return cc;
+int max_flow() {
+    int flow = 0;
+    if (!bfs(s, t)) return 0;
     memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));
     for (int i=0; i<=t; ++i) ++num[d[i]];
     int u = s;
     while (d[s] <= t) {
         if (u == t) {
-            int a = INF;
+            int a = m;
             for (int v=t; v!=s; v = e[p[v]].u) a = min(a, e[p[v]].cap - e[p[v]].flow);
             for (int v=t; v!=s; v = e[p[v]].u) e[p[v]].flow += a, e[p[v]^1].flow -= a;
-            cc -= a; u = s;
+            flow += a; u = s;
         }
         int ok = 0;
         for (int i=cur[u]; i<cnt[u]; ++i) {
@@ -71,13 +62,28 @@ int solve() {
             if (u != s) u = e[p[u]].u;
         }
     }
-    return cc;
+    return flow;
+}
+
+int solve () {
+    cin >> n >> m; memset(cnt, c = 0, sizeof(cnt)); s = 0; t = m+n+1;
+    int l = 1, r = n-1;
+    for (int i=1, a, b; i<=m; ++i) cin >> a >> b, add_edge(0, i, 1), add_edge(i, m+a, 1), add_edge(i, m+b, 1);
+    for (int i=1; i<=n; ++i) add_edge(m+i, t, 1);
+    while (l < r) {
+        int x = (l+r) >> 1;
+        for (int i=0; i<c; ++i) e[i].flow = 0;
+        for (int i=0; i<cnt[t]; ++i) e[g[t][i]^1].cap = x;
+        max_flow() < m ? l = x+1 : r = x;
+    }
+    return r;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-    while (cin >> m >> n) cout << solve() << endl;
+    int t; cin >> t;
+    while (t--) cout << solve() << endl;
     return 0;
 }

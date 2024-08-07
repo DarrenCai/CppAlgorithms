@@ -1,68 +1,51 @@
 /**
- * p2761 软件补丁问题
+ * P2761 软件补丁问题
  * 同UVa658 It’s not a Bug, it’s a Feature!
  */
 
 #include <iostream>
-#include <string>
-#include <vector>
-#include <map>
+#include <cstring>
+#include <queue>
 using namespace std;
 
-#define T 22
-#define M 110
-#define N 1050000
-int cnt[N], c[M], d[N], m, n, cc; char s1[M][T], s2[M][T], s[N][T]; struct {int v, c;} g[N][M];
-struct node {int u, d; node(int u, int d):u(u),d(d){}}; vector<node> q; map<string, int> id;
+#define M 100
+#define N 20
+int d[1<<N], w[M], m, n; char s1[M][N+1], s2[M][N+1]; bool inq[1<<N];
 
-void build(int u) {
-    cnt[u] = 0;
-    for (int i=0; i<m; ++i) {
-        bool ok = true;
-        for (int j=0; j<n; ++j) if ((s1[i][j]=='+' && s[u][j]!='+') || (s1[i][j]=='-' && s[u][j]!='-')) {
-            ok = false; break;
-        }
-        if (ok) {
-            int v = id.size(); char (&r)[T] = s[v]; r[n] = 0;
-            for (int j=0; j<n; ++j) r[j] = s2[i][j]=='0' ? s[u][j] : s2[i][j];
-            string ss(r); bool f = false;
-            if (!id.count(ss)) id[ss] = v, f = true;
-            if ((v = id[ss]) > 0 && v != u) {
-                g[u][cnt[u]].v = v; g[u][cnt[u]++].c = c[i];
-                if (f) {
-                    d[v] = d[u] + c[i];
-                    q.push_back(node(v, d[v])); build(v);
-                } else if (d[v]==0 || d[v] > d[u] + c[i]) {
-                    d[v] = d[u] + c[i];
-                    if (v == 1) cc = d[v];
-                    else q.push_back(node(v, d[v]));
-                }
+bool check(int u, const char (&s)[N+1]) {
+    for (int i=0; i<n; ++i) if ((s[i]=='+' && ~u&(1<<i)) || (s[i]=='-' && u&(1<<i))) return false;
+    return true;
+}
+
+int state(int u, const char (&s)[N+1]) {
+    int v = u;
+    for (int i=0; i<n; ++i) {
+        if (s[i]=='+') v |= 1<<i;
+        else if (s[i]=='-') v ^= v&(1<<i);
+    }
+    return v;
+}
+
+int solve() {
+    for (int i=0; i<m; ++i) cin >> w[i] >> s1[i] >> s2[i];
+    memset(d, -1, sizeof(d)); memset(inq, 0, sizeof(inq)); d[(1<<n)-1] = 0;
+    queue<int> q; q.push((1<<n)-1);
+    while (!q.empty()) {
+        int u = q.front(); q.pop(); inq[u] = false;
+        for (int i=0; i<m; ++i) if (check(u, s1[i])) {
+            int v = state(u, s2[i]);
+            if (d[v] < 0 || d[v] > d[u]+w[i]) {
+                d[v] = d[u]+w[i];
+                if (!inq[v]) q.push(v), inq[v] = true;
             }
         }
     }
+    return max(0, d[0]);
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    while (cin >> n >> m) {
-        id.clear(); q.clear(); cc = 0; s[0][n] = s[1][n] = 0;
-        for (int i=0; i<m; ++i) cin >> c[i] >> s1[i] >> s2[i];
-        for (int i=0; i<n; ++i) s[0][i] = '+'; id[string(s[0])] = 0;
-        for (int i=0; i<n; ++i) s[1][i] = '-'; id[string(s[1])] = 1;
-        build(d[0] = d[1] = 0);
-        for (int i=0; i<q.size(); ++i) {
-            int u = q[i].u, dd = q[i].d;
-            if (dd == d[u]) for (int j=0; j<cnt[u]; ++j) {
-                int v = g[u][j].v, c = g[u][j].c + d[u];
-                if (d[v] > c) {
-                    d[v] = c;
-                    if (v == 1) cc = d[v];
-                    else q.push_back(node(v, d[v]));
-                }
-            }
-        }
-        cout << cc << endl;
-    }
+    while (cin >> n >> m) cout << solve() << endl;
     return 0;
 }

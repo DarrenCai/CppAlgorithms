@@ -1,104 +1,69 @@
 /**
- * p2766 最长不降子序列问题
+ * P2766 最长不降子序列问题
  */
 
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-#define N 1010
-struct edge {short u, v, cap, flow, cost;} e[N*N>>2];
-short q[N*N*N>>2], a[N], d[N], cnt[N], n; int g[N][N>>1], p[N], c; bool visit[N];
+#define N 1006
+struct edge {int u, v, cap, flow, cost;} e[N*N>>2];
+int g[N][N], q[N*N*N>>2], a[N], d[N], p[N], cnt[N], x[N], c, n; bool vis[N];
 
-void addEdge(short u, short v, short cap, short cc) {
+void add_edge(int u, int v, int cap, int cc) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; e[c].cost = cc; g[u][cnt[u]++] = c++;
     e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; e[c].cost = -cc; g[v][cnt[v]++] = c++;
+}
+
+int mcmf(int s, int t, int flow, int cost) {
+    int f = 0;
+    while (true) {
+        memset(d, 0x7f, sizeof(d)); memset(vis, 0, sizeof(vis));
+        d[s] = 0; q[0] = s; a[s] = 1;
+        int head = 0, tail = 1;
+        while (head < tail) {
+            int u = q[head++]; vis[u] = false;
+            for (int i=0; i<cnt[u]; ++i) {
+                const edge& ee = e[g[u][i]];
+                if (ee.cap > ee.flow && d[ee.v] > d[u]+ee.cost) {
+                    d[ee.v] = d[u]+ee.cost;
+                    p[ee.v] = g[u][i];
+                    a[ee.v] = min(a[u], ee.cap-ee.flow);
+                    if (!vis[ee.v]) vis[q[tail++] = ee.v] = true;
+                }
+            }
+        }
+        if (flow == 1) return d[t];
+        if (d[t] > cost) return f;
+        ++f;
+        for (int u=t; u!=s; u=e[p[u]].u) e[p[u]].flow += a[t], e[p[u]^1].flow -= a[t];
+    }
+    return f;
+}
+
+void solve() {
+    memset(cnt, c = 0, sizeof(cnt));
+    for (int i=1; i<=n; ++i) cin >> x[i];
+    int s = 0, t = 2*n+1;
+    for (int i=1; i<=n; ++i) {
+        add_edge(s, i, n, 0); add_edge(i, i+n, 1, -1);
+        for (int j=i+1; j<=n; ++j) if (x[i] <= x[j]) add_edge(i+n, j, 1, 0);
+        add_edge(i+n, t, n, 0);
+    }
+    int cc = mcmf(s, t, 1, 0);
+    cout << -cc << endl;
+    for (int i=0; i<c; ++i) e[i].flow = 0;
+    if (cc < -1) {
+        cout << mcmf(s, t, 0, cc) << endl;
+        for (int i=0; i<c; ++i) e[i].flow = 0;
+        e[g[1][1]].cap = e[g[n][cnt[n]-1]].cap = n;
+        cout << mcmf(s, t, 0, cc) << endl;
+    } else cout << n << endl << n << endl;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    while (cin>>n) {
-        memset(cnt, c = 0, sizeof(cnt));
-        short t = 2*n+1, s = 0, s1 = 0, s2 = 0;
-        for (short i=1; i<=n; ++i) {
-            cin >> a[i]; addEdge(0, i, 1, 0); addEdge(i, i+n, 1, 0); addEdge(i+n, t, 1, 0);
-        }
-        for (short i=1; i<=n; ++i) for (short j=i+1; j<=n; ++j) if (a[i] <= a[j]) addEdge(i+n, j, 1, -1);
-        while (true) {
-            memset(d, 1, sizeof(d)); memset(visit, 0, sizeof(visit));
-            d[0] = 0; q[0] = 0; p[0] = 0; a[0] = 1;
-            int head = 0, tail = 1;
-            while (head < tail) {
-                short u = q[head++]; visit[u] = false;
-                for (short i=0; i<cnt[u]; ++i) {
-                    const edge& ee = e[g[u][i]];
-                    if (ee.cap > ee.flow && d[ee.v] > d[u]+ee.cost) {
-                        d[ee.v] = d[u]+ee.cost;
-                        p[ee.v] = g[u][i];
-                        a[ee.v] = min(a[u], short(ee.cap-ee.flow));
-                        if (!visit[ee.v]) visit[q[tail++] = ee.v] = true;
-                    }
-                }
-            }
-            if (d[t] >= 0) break;
-            s = min(s, d[t]);
-            for (short u=t; u!=0; u=e[p[u]].u) {
-                e[p[u]].flow += a[t];
-                e[p[u]^1].flow -= a[t];
-            }
-        }
-        for (int i=0; i<c; ++i) e[i].flow = 0;
-        while (true) {
-            memset(d, 1, sizeof(d)); memset(visit, 0, sizeof(visit));
-            d[0] = 0; q[0] = 0; p[0] = 0; a[0] = 1;
-            int head = 0, tail = 1;
-            while (head < tail) {
-                short u = q[head++]; visit[u] = false;
-                for (short i=0; i<cnt[u]; ++i) {
-                    const edge& ee = e[g[u][i]];
-                    if (ee.cap > ee.flow && d[ee.v] > d[u]+ee.cost) {
-                        d[ee.v] = d[u]+ee.cost;
-                        p[ee.v] = g[u][i];
-                        a[ee.v] = min(a[u], short(ee.cap-ee.flow));
-                        if (!visit[ee.v]) visit[q[tail++] = ee.v] = true;
-                    }
-                }
-            }
-            if (d[t] >= 0) break;
-            if (d[t] == s) ++s1;
-            for (short u=t; u!=0; u=e[p[u]].u) {
-                e[p[u]].flow += a[t];
-                e[p[u]^1].flow -= a[t];
-            }
-        }
-        for (int i=0; i<c; ++i) e[i].flow = 0;
-        e[0].cap = n; e[g[1][1]].cap = n;
-        e[6*n-2].cap = n; e[6*n-4].cap = n; e[g[t][cnt[t]-1]^1].cap = n;
-        while (true) {
-            memset(d, 1, sizeof(d)); memset(visit, 0, sizeof(visit));
-            d[0] = 0; q[0] = 0; p[0] = 0; a[0] = 1;
-            int head = 0, tail = 1;
-            while (head < tail) {
-                short u = q[head++]; visit[u] = false;
-                for (short i=0; i<cnt[u]; ++i) {
-                    const edge& ee = e[g[u][i]];
-                    if (ee.cap > ee.flow && d[ee.v] > d[u]+ee.cost) {
-                        d[ee.v] = d[u]+ee.cost;
-                        p[ee.v] = g[u][i];
-                        a[ee.v] = min(a[u], short(ee.cap-ee.flow));
-                        if (!visit[ee.v]) visit[q[tail++] = ee.v] = true;
-                    }
-                }
-            }
-            if (d[t] >= 0) break;
-            if (d[t] == s) ++s2;
-            for (short u=t; u!=0; u=e[p[u]].u) {
-                e[p[u]].flow += a[t];
-                e[p[u]^1].flow -= a[t];
-            }
-        }
-        cout << 1-s << endl << (s==0 ? n : s1) << endl << (s==0 ? n : s2) << endl;
-    }
+    while (cin >> n) solve();
     return 0;
 }

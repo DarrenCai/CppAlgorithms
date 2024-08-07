@@ -112,7 +112,7 @@ namespace ISAP
     #define M 10000
     #define N 1000
     struct edge {int u, v, cap, flow;} e[M];
-    int g[N][N], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, n; bool vis[N]; // todo 调整g[N][N]的大小
+    int g[N][N], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, n; bool vis[N]; // todo 调整g[N][N]的大小，注意n是总结点数
 
     void add_edge(int u, int v, int cap) {
         e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
@@ -120,7 +120,7 @@ namespace ISAP
     }
 
     bool bfs(int s, int t) {
-        memset(vis, 0, sizeof(vis)); q[0] = t; d[t] = 0; vis[t] = true;
+        memset(vis, 0, sizeof(vis)); memset(d, 0, sizeof(d)); q[0] = t; d[t] = 0; vis[t] = true;
         int head = 0, tail = 1;
         while (head < tail) {
             int v = q[head++];
@@ -138,9 +138,9 @@ namespace ISAP
         int flow = 0, s, t; // todo 源点s、汇点t
         if (!bfs(s, t)) return 0;
         memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));
-        for (int i=0; i<n; ++i) ++num[d[i]]; // todo 这里编号是从0开始的，如果数据编号是从1开始的，则需要调整
+        for (int i=0; i<n; ++i) ++num[d[i]]; // todo 这里编号是从0开始的，如果数据编号是从1开始的，则需要调整，注意n是总结点数
         int u = s;
-        while (d[s] < n) {
+        while (d[s] < n) {   // todo 注意n是总结点数
             if (u == t) {
                 int a = INF;
                 for (int v=t; v!=s; v = e[p[v]].u) a = min(a, e[p[v]].cap - e[p[v]].flow);
@@ -156,8 +156,8 @@ namespace ISAP
                 }
             }
             if (!ok) {
-                int m = n - 1;
-                for (int i=0; i<cnt[u]; i++) {
+                int m = n - 1; // todo 注意n是总结点数
+                for (int i=0; i<cnt[u]; ++i) {
                     const edge& ee = e[g[u][i]];
                     if (ee.cap > ee.flow) m = min(m, d[ee.v]);
                 }
@@ -192,8 +192,8 @@ namespace mcmf {
         d[s] = 0; q[0] = s; a[s] = INF;
         int head = 0, tail = 1;
         while (head < tail) {
-            short u = q[head++]; vis[u] = false;
-            for (short i=0; i<cnt[u]; ++i) {
+            int u = q[head++]; vis[u] = false;
+            for (int i=0; i<cnt[u]; ++i) {
                 const edge& ee = e[g[u][i]];
                 if (ee.cap > ee.flow && d[ee.v] > d[u]+ee.cost) {
                     d[ee.v] = d[u]+ee.cost;
@@ -206,7 +206,7 @@ namespace mcmf {
         if (d[t] >= INF) return false;  // todo 流量不固定的最小费用，在d[t] >= 0时停止增广即可。
         flow += a[t];   // todo 求限定流量k下的最小费用，在flow+a[t]≥k的时候只增广k-flow单位的流量，然后终止程序。
         cost += d[t] * a[t];
-        for (short u=t; u!=s; u=e[p[u]].u) {
+        for (int u=t; u!=s; u=e[p[u]].u) {
             e[p[u]].flow += a[t];
             e[p[u]^1].flow -= a[t];
         }
@@ -214,6 +214,8 @@ namespace mcmf {
     }
 
     int mcmf(int s, int t) {
+        // memset(cnt, c = 0, sizeof(cnt));
+        // 建图 add_edge(...)
         int flow = 0, cost = 0;
         while (bellman_ford(s, t, flow, cost));
         return cost;

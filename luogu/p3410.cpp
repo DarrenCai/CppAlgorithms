@@ -1,5 +1,5 @@
 /**
- * P2774 方格取数问题
+ * p3410 拍照
  */
 
 #include <iostream>
@@ -7,9 +7,9 @@
 using namespace std;
 
 #define INF 2000000000
-#define N 10010
-struct edge {int u, v, cap, flow;} e[6*N];
-int g[N][N>>1], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, m, n; bool vis[N];
+#define N 204
+struct edge {int u, v, cap, flow;} e[N*N>>1];
+int g[N][N], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, m, n; bool vis[N]; char ch[55];
 
 void add_edge(int u, int v, int cap) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
@@ -31,15 +31,13 @@ bool bfs(int s, int t) {
 
 int solve() {
     memset(cnt, c = 0, sizeof(cnt));
-    int s = 0, t = m*n+1, cc = 0;
-    for (int i=1, k=1; i<=m; ++i) for (int j=1; j<=n; ++j, ++k) {
-        int a, f = (i+j)&1; cin >> a; cc += a;
-        f ? add_edge(s, k, a) : add_edge(k, t, a);
-        if (!f) continue;
-        if (i > 1) add_edge(k, k-n, INF);
-        if (i < m) add_edge(k, k+n, INF);
-        if (j > 1) add_edge(k, k-1, INF);
-        if (j < n) add_edge(k, k+1, INF);
+    int s = 0, t = m+n+1, cc = 0;
+    for (int i=1; i<=m; ++i) {
+        int x; cin >> x; add_edge(s, i, x); cc += x;
+        while (cin >> x && x) add_edge(i, x+m, INF);
+    }
+    for (int i=1; i<=n; ++i) {
+        int x; cin >> x; add_edge(i+m, t, x);
     }
     if (!bfs(s, t)) return cc;
     memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));

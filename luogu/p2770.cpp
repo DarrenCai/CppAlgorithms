@@ -1,87 +1,80 @@
 /**
- * p2770 航空路线问题
+ * P2770 航空路线问题
  */
 
 #include <iostream>
 #include <cstring>
-#include <string>
-#include <map>
 using namespace std;
 
-#define N 220
-struct edge {short u, v, cap, flow, cost;} e[N*N>>2];
-short g[N][N>>1], q[N*N*N>>2], a[N], d[N], p[N], cnt[N], m, n, c; string s[N>>1]; bool visit[N];
+#define N 202
+struct edge {int u, v, cap, flow, cost;} e[N*N>>2]; char x[N>>1][16], y[16];
+int g[N][N], q[N*N*N>>2], a[N], d[N], p[N], cnt[N], c, n, m; bool vis[N];
 
-void addEdge(short u, short v, short cap, short cc) {
+void add_edge(int u, int v, int cap, int cc) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; e[c].cost = cc; g[u][cnt[u]++] = c++;
     e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; e[c].cost = -cc; g[v][cnt[v]++] = c++;
+}
+
+int read() {
+    cin >> y;
+    for (int i=0; i<n; ++i) if (strcmp(x[i], y) == 0) return i;
+    return n;
+}
+
+void solve() {
+    memset(cnt, c = 0, sizeof(cnt));
+    int s = 0, t = 2*n-1, f = 0, cc = 0;
+    for (int i=0; i<n; ++i) cin >> x[i], add_edge(i, i+n, i==0 || i==n-1 ? 2 : 1, i==0 || i==n-1 ? 0 : -1);
+    while (m--) {
+        int u = read(), v = read();
+        if (v < u) u += v, v = u - v, u = u - v;
+        add_edge(u+n, v, 2, 0);
+    }
+    while (true) {
+        memset(d, 1, sizeof(d)); memset(vis, 0, sizeof(vis));
+        d[s] = 0; q[0] = s; a[s] = 1;
+        int head = 0, tail = 1;
+        while (head < tail) {
+            int u = q[head++]; vis[u] = false;
+            for (int i=0; i<cnt[u]; ++i) {
+                const edge& ee = e[g[u][i]];
+                if (ee.cap > ee.flow && d[ee.v] > d[u]+ee.cost) {
+                    d[ee.v] = d[u]+ee.cost;
+                    p[ee.v] = g[u][i];
+                    a[ee.v] = min(a[u], ee.cap-ee.flow);
+                    if (!vis[ee.v]) vis[q[tail++] = ee.v] = true;
+                }
+            }
+        }
+        if (d[t] >= n) break;
+        ++f; cc -= d[t];
+        for (int u=t; u!=s; u=e[p[u]].u) e[p[u]].flow += a[t], e[p[u]^1].flow -= a[t];
+    }
+    if (f == 2) {
+        cout << cc + 2 << endl << x[s] << endl;
+        for (int u=s; u!=t;) for (int i=0; i<cnt[u]; ++i) {
+            edge &ee = e[g[u][i]];
+            if (ee.flow > 0) {
+                --ee.flow; u = ee.v;
+                if (u < n) cout << x[u] << endl;
+                break;
+            }
+        }
+        for (int u=t; u!=s;) for (int i=0; i<cnt[u]; ++i) {
+            edge &ee = e[g[u][i]^1];
+            if (ee.flow > 0) {
+                u = ee.u;
+                if (ee.v != t && u < n) cout << x[u] << endl;
+                break;
+            }
+        }
+    } else cout << "No Solution!" << endl;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    while (cin >> n >> m) {
-        short t = 2*n-1, cc = 0, flow = 0; map<string, short> id;
-        for (short i=0; i<n; ++i) cin >> s[i], id[s[i]] = i;
-        if (n==1) {
-            cout << 1 << endl << s[0] << endl;
-            continue;
-        }
-        memset(cnt, c = 0, sizeof(cnt));
-        addEdge(0, n, 2, 0); addEdge(t-n, t, 2, 0);
-        for (short i=2; i<n; ++i) addEdge(i-1, i+n-1, 1, 0);
-        for (short i=0; i<m; ++i) {
-            string s1, s2; cin >> s1 >> s2;
-            short x = id[s1], y = id[s2];
-            if (x > y) x = x+y, y = x-y, x = x-y;
-            addEdge(x+n, y, x==0 && y==n-1 ? 2 : 1, -1);
-        }
-        while (true) {
-            memset(d, 1, sizeof(d)); memset(visit, 0, sizeof(visit));
-            d[0] = 0; q[0] = 0; a[0] = 1;
-            int head = 0, tail = 1;
-            while (head < tail) {
-                short u = q[head++]; visit[u] = false;
-                for (short i=0; i<cnt[u]; ++i) {
-                    const edge& ee = e[g[u][i]];
-                    if (ee.cap > ee.flow && d[ee.v] > d[u]+ee.cost) {
-                        d[ee.v] = d[u]+ee.cost;
-                        p[ee.v] = g[u][i];
-                        a[ee.v] = min(a[u], short(ee.cap-ee.flow));
-                        if (!visit[ee.v]) visit[q[tail++] = ee.v] = true;
-                    }
-                }
-            }
-            if (d[t] >= 0) break;
-            cc -= d[t];
-            flow += 1;
-            for (short u=t; u!=0; u=e[p[u]].u) {
-                e[p[u]].flow += a[t];
-                e[p[u]^1].flow -= a[t];
-            }
-        }
-        if (flow == 2) {
-            cout << cc << endl;
-            cout << s[0] << endl;
-            short u = n;
-            while (u != t) {
-                for (short i=0, j; i<cnt[u]; ++i) if (e[j = g[u][i]].flow > 0) {
-                    cout << s[e[j].v] << endl;
-                    u = e[j].v + n;
-                    --e[j].flow; ++e[j+1].flow;
-                    break;
-                }
-            }
-            u = t-n;
-            while (u != 0) {
-                for (short i=0, j; i<cnt[u]; ++i) if (e[j = g[u][i]].flow < 0) {
-                    cout << s[e[j].v-n] << endl;
-                    u = e[j].v - n;
-                    ++e[j].flow; --e[j-1].flow;
-                    break;
-                }
-            }
-        } else cout << "No Solution!" << endl;
-    }
+    ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    while (cin >> n >> m) solve();
     return 0;
 }
