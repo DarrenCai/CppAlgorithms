@@ -1,7 +1,7 @@
 /**
  * zoj-2314 Reactor Cooling
  * https://vjudge.net/problem/ZOJ-2314
- * https://pintia.cn/problem-sets/91827364500/exam/problems/type/7?problemSetProblemId=91827365813&page=13
+ * https://pintia.cn/problem-sets/91827364500/exam/problems/type/7?problemSetProblemId=91827365813
  */
 
 #include <iostream>
