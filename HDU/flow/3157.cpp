@@ -1,0 +1,98 @@
+/**
+ * HDU-3157 Crazy Circuits
+ * https://vjudge.net/problem/HDU-3157
+ */
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+#define INF 0x7f7f7f7f
+#define N 54
+struct edge {int u, v, cap, flow;} e[24*N];
+int g[N][N], q[N], p[N], d[N], cur[N], num[N], cnt[N], cs[N], ct[N], c, m, n, f; bool vis[N];
+
+void add_edge(int u, int v, int cap) {
+    e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
+    e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; g[v][cnt[v]++] = c++;
+}
+
+bool bfs(int s, int t) {
+    memset(vis, 0, sizeof(vis)); memset(d, 0, sizeof(d)); q[0] = t; d[t] = 0; vis[t] = true;
+    int head = 0, tail = 1;
+    while (head < tail) {
+        int v = q[head++];
+        for (int i=0; i<cnt[v]; ++i) {
+            const edge& ee = e[g[v][i]^1];
+            if (!vis[ee.u] && ee.cap > ee.flow) vis[ee.u] = true, d[ee.u] = d[v] + 1, q[tail++] = ee.u;
+        }
+    }
+    return vis[s];
+}
+
+int max_flow(int s, int t, int n) {
+    int flow = 0, u = s;
+    if (!bfs(s, t)) return 0;
+    memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));
+    for (int i=0; i<n; ++i) ++num[d[i]];
+    while (d[s] < n) {
+        if (u == t) {
+            int a = INF;
+            for (int v=t; v!=s; v = e[p[v]].u) a = min(a, e[p[v]].cap - e[p[v]].flow);
+            for (int v=t; v!=s; v = e[p[v]].u) e[p[v]].flow += a, e[p[v]^1].flow -= a;
+            flow += a; u = s;
+        }
+        int ok = 0;
+        for (int i=cur[u]; i<cnt[u]; ++i) {
+            const edge& ee = e[g[u][i]];
+            if (ee.cap > ee.flow && d[u] == d[ee.v] + 1) {
+                ok = 1; p[ee.v] = g[u][i]; cur[u] = i; u = ee.v;
+                break;
+            }
+        }
+        if (!ok) {
+            int m = n-1;
+            for (int i=0; i<cnt[u]; ++i) {
+                const edge& ee = e[g[u][i]];
+                if (ee.cap > ee.flow) m = min(m, d[ee.v]);
+            }
+            if (--num[d[u]] == 0) break;
+            ++num[d[u] = m + 1]; cur[u] = 0;
+            if (u != s) u = e[p[u]].u;
+        }
+    }
+    return flow;
+}
+
+int read() {
+    int x; char c; cin >> c;
+    if (c == '+') return 0;
+    if (c == '-') return n+1;
+    cin.unget(); cin >> x;
+    return x;
+}
+
+void solve() {
+    memset(cnt, c = f = 0, sizeof(cnt)); memset(cs, 0, sizeof(cs)); memset(ct, 0, sizeof(ct));
+    int s = 0, t = n+1, x;
+    while (m--) {
+        int u = read(), v = read(), i; cin >> i; add_edge(u, v, INF); cs[v] += i; ct[u] += i; f += i;
+    }
+    x = c; add_edge(t, s, INF); s = t+1; t = s+1;
+    for (int i=s-1; i>=0; --i) {
+        if (cs[i]) add_edge(s, i, cs[i]);
+        if (ct[i]) add_edge(i, t, ct[i]);
+    }
+    if (max_flow(s, t, t+1) == f) {
+        int ans = e[x].flow; e[x].cap = e[x].flow = e[x^1].flow = 0;
+        cout << ans - max_flow(s-1, 0, t+1) << endl;
+    } else cout << "impossible" << endl;
+}
+
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    while (cin >> n >> m && m) solve();
+    return 0;
+}

@@ -1,5 +1,6 @@
 /**
  * LibreOJ-6033
+ * https://vjudge.net/problem/LibreOJ-6033
  * 棋盘游戏
  * 雅礼集训 2017 Day2
  */
