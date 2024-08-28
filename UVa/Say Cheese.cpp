@@ -1,6 +1,7 @@
 /**
- * UVa1001
+ * UVa1001/LA2233
  * 奶酪里的老鼠
+ * World Finals 2001
  */
 
 #include <iostream>

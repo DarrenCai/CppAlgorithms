@@ -14,8 +14,7 @@ namespace ek
     int g[N][N], q[M*N], a[N], p[N], cnt[N], c, n; // todo 调整g[N][N]、q[M*N]的大小
 
     void add_edge(int u, int v, int cap) {
-        e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
-        e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; g[v][cnt[v]++] = c++;
+        e[c] = {u, v, cap, 0}; g[u][cnt[u]++] = c++; e[c] = {v, u, 0, 0}; g[v][cnt[v]++] = c++;
     }
 
     int max_flow() {
@@ -61,8 +60,7 @@ namespace dinic
     int g[N][N], q[N], d[N], cur[N], cnt[N], c, n; bool vis[N]; // todo 调整g[N][N]的大小
 
     void add_edge(int u, int v, int cap) {
-        e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
-        e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; g[v][cnt[v]++] = c++;
+        e[c] = {u, v, cap, 0}; g[u][cnt[u]++] = c++; e[c] = {v, u, 0, 0}; g[v][cnt[v]++] = c++;
     }
 
     bool bfs(int s, int t) {
@@ -115,8 +113,7 @@ namespace ISAP
     int g[N][N], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, n; bool vis[N]; // todo 调整g[N][N]的大小，注意n是总结点数
 
     void add_edge(int u, int v, int cap) {
-        e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
-        e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; g[v][cnt[v]++] = c++;
+        e[c] = {u, v, cap, 0}; g[u][cnt[u]++] = c++; e[c] = {v, u, 0, 0}; g[v][cnt[v]++] = c++;
     }
 
     bool bfs(int s, int t) {
@@ -147,11 +144,11 @@ namespace ISAP
                 for (int v=t; v!=s; v = e[p[v]].u) e[p[v]].flow += a, e[p[v]^1].flow -= a;
                 flow += a; u = s;
             }
-            int ok = 0;
+            bool ok = false;
             for (int i=cur[u]; i<cnt[u]; ++i) {
                 const edge& ee = e[g[u][i]];
                 if (ee.cap > ee.flow && d[u] == d[ee.v] + 1) {
-                    ok = 1; p[ee.v] = g[u][i]; cur[u] = i; u = ee.v;
+                    ok = true; p[ee.v] = g[u][i]; cur[u] = i; u = ee.v;
                     break;
                 }
             }
@@ -183,8 +180,7 @@ namespace mcmf {
     int g[T][M], q[M*T*T], a[T], d[T], p[T], cnt[T], c; bool vis[T];   // todo 队列q的规模按需调整
     
     void add_edge(int u, int v, int cap, int cc) {
-        e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; e[c].cost = cc; g[u][cnt[u]++] = c++;
-        e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; e[c].cost = -cc; g[v][cnt[v]++] = c++;
+        e[c] = {u, v, cap, 0, cc}; g[u][cnt[u]++] = c++; e[c] = {v, u, 0, 0, -cc}; g[v][cnt[v]++] = c++;
     }
 
     bool bellman_ford(int s, int t, int &flow, int& cost) {

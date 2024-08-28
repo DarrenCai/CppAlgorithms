@@ -1,6 +1,7 @@
 /**
- * UVa1660
+ * UVa1660/LA3031
  * 电视网络
+ * SEERC 2004
  */
 
 #include <iostream>

@@ -1,56 +1,63 @@
 /**
- * UVa1665
+ * UVa1665/LA4627
  * 岛屿
+ * CERC 2009
  */
 
 #include <iostream>
 #include <algorithm>
 using namespace std;
 
-#define N 1000100
-int h[N], a[N], b[N], p[N], cnt[N], n, m;
+#define M 100010
+#define N 1000010
+int h[N], s[N], f[N], t[M], c[M], q, m, n, x;
 
-bool cmp(int x, int y) {
-    return h[x] < h[y];
-}
-
-bool cmp2(int v, int x) {
-    return v < h[x];
-}
+bool cmp(int i, int j) {
+    return h[i] > h[j] || (h[i]==h[j] && i<j);
+};
 
 int find(int x) {
-    return p[x] == x ? x : p[x] = find(p[x]);
+    return x == f[x] ? x : f[x] = find(f[x]);
+}
+
+void solve() {
+    cin >> n >> m; x = m*n;
+    for (int i=0; i<x; ++i) cin >> h[i], s[i] = i, f[i] = i;
+    cin >> q;
+    for (int i=0; i<q; ++i) cin >> t[i];
+    sort(s, s+x, cmp);
+    int j = 0, k = 0;
+    for (int i=q-1, y; i>=0; --i) {
+        while (j<x && h[y = s[j]] > t[i]) {
+            if (y >= m && h[y-m] > t[i]) {
+                int u = find(y), v = find(y-m);
+                if (u != v) f[u] = v, --k;
+            }
+            if (y+m < x && h[y+m] > t[i]) {
+                int u = find(y), v = find(y+m);
+                if (u != v) f[u] = v, --k;
+            }
+            if (y%m && h[y-1] > t[i]) {
+                int u = find(y), v = find(y-1);
+                if (u != v) f[u] = v, --k;
+            }
+            if ((y+1)%m && h[y+1] > t[i]) {
+                int u = find(y), v = find(y+1);
+                if (u != v) f[u] = v, --k;
+            }
+            ++j; ++k;
+        }
+        c[i] = k;
+    }
+    for (int i=0; i<q; ++i) cout << c[i] << ' ';
+    cout << endl;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    short z; cin >> z;
-    while (z--) {
-        cin >> n >> m;
-        int cc = n*m, c = cc, mx = 0, tt = 0, t;
-        for (int i=0; i<c; ++i) cin >> h[i], b[i] = i, mx = max(h[i], mx);
-        cin >> t; for (int i=0; i<t; ++i) cin >> a[i];
-        sort(b, b+c, cmp);
-        for (int i=t-1; i>=0; --i) {
-            if (mx > a[i]) {
-                int j = upper_bound(b, b+c, a[i], cmp2) - b; tt += c-j;
-                for (int k=j; k<c; ++k) p[b[k]] = b[k];
-                for (int k=j; k<c; ++k) {
-                    int q = b[k]-m, u = find(b[k]), v;
-                    if (q>=0 && h[q]>a[i] && u != (v = find(q))) p[v] = u, --tt;
-                    q = b[k]+m;
-                    if (q<cc && h[q]>a[i] && u != (v = find(q))) p[v] = u, --tt;
-                    q = b[k]%m>0 ? b[k]-1 : -1;
-                    if (q>=0 && h[q]>a[i] && u != (v = find(q))) p[v] = u, --tt;
-                    q = b[k]%m+1<m ? b[k]+1 : cc;
-                    if (q<cc && h[q]>a[i] && u != (v = find(q))) p[v] = u, --tt;
-                }
-                c = j;
-            }
-            cnt[i] = tt;
-        }
-        for (int i=0; i<t; ++i) cout << cnt[i] << ' '; cout << endl;
-    }
+    ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    int t; cin >> t;
+    while (t--) solve();
     return 0;
 }

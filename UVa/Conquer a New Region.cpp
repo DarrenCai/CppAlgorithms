@@ -1,37 +1,42 @@
 /**
- * UVa1664
+ * UVa1664/LA6070
  * 占领新区域
+ * Changchun 2012
  */
 
 #include <iostream>
 #include <algorithm>
 using namespace std;
 
-#define N 200100
-int u[N], v[N], c[N], e[N], p[N], cnt[N], n; long long w[N];
+#define N 200010
+int a[N], b[N], c[N], e[N], f[N], n; long long d[N], w[N];
 
-bool cmp(int a, int b) {
-    return c[a] > c[b];
+bool cmp(int i, int j) {
+    return w[i] > w[j];
 }
 
 int find(int x) {
-    return p[x]==x ? x : p[x] = find(p[x]);
+    return x == f[x] ? x : f[x] = find(f[x]);
+}
+
+void solve() {
+    for (int i=1; i<=n; ++i) {
+        c[i] = 1; d[i] = 0; f[i] = i;
+        if (i < n) cin >> a[i] >> b[i] >> w[i], e[i] = i;
+    }
+    sort(e+1, e+n, cmp);
+    long long ans = 0;
+    for (int i=1; i<n; ++i) {
+        int u = find(a[e[i]]), v = find(b[e[i]]);
+        ans = d[v] = max(c[u] * w[e[i]] + d[v], c[v] * w[e[i]] + d[u]); c[v] += c[u]; f[u] = v;
+    }
+    cout << ans << endl;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    while (cin >> n) {
-        long long ans = 0;
-        for (int i=1; i<=n; ++i) cnt[p[i] = i] = 1, w[i] = 0;
-        for (int i=1; i<n; ++i) cin >> u[i] >> v[i] >> c[i], e[i] = i;
-        sort(e+1, e+n, cmp);
-        for (int i=1; i<n; ++i) {
-            int x = find(u[e[i]]), y = find(v[e[i]]);
-            long long a = w[x] + (long long)cnt[y]*c[e[i]], b = w[y] + (long long)cnt[x]*c[e[i]];
-            a > b ? (cnt[p[y] = x] += cnt[y], ans = w[x] = a) : (cnt[p[x] = y] += cnt[x], ans = w[y] = b);
-        }
-        cout << ans << endl;
-    }
+    ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    while (cin >> n) solve();
     return 0;
 }

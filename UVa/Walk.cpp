@@ -1,6 +1,7 @@
 /**
- * UVa1666
+ * UVa1666/LA6330
  * 最短路线
+ * Jinhua 2012
  */
 
 #include <iostream>

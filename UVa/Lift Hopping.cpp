@@ -4,50 +4,45 @@
  */
 
 #include <iostream>
-#include <algorithm>
+#include <cstring>
+#include <queue>
 using namespace std;
-#define N 500
-#define INF 10000000
 
-int w[N][N], s[5][N/5], d[N], c[5], t[5]; bool visit[N];
+#define INF 0x7f7f7f7f
+#define M 5
+#define N 100
+struct node {
+    int u, d;
+    bool operator< (const node& rhs) const {
+        return d > rhs.d;
+    }
+};
+int t[M], d[N], m, n, k; bool v[M][N], f[N];
+
+void solve() {
+    memset(d, 127, sizeof(d)); memset(f, m = 0, sizeof(f)); memset(v, 0, sizeof(v));
+    for (int i=0; i<n; ++i) cin >> t[i];
+    for (int i=0; i<n; ++i) {
+        int x; cin >> x; v[i][x] = true; m = max(m, x);
+        while (cin.peek() != '\n') cin >> x, v[i][x] = true, m = max(m, x);
+    }
+    priority_queue<node> q;
+    for (int i=0; i<n; ++i) if (v[i][0]) for (int j=0; j<=m; ++j) if (v[i][j] && j*t[i] < d[j])
+        q.push({j, d[j] = j*t[i]});
+    while (!q.empty()) {
+        int u = q.top().u, d1; q.pop();
+        if (u == k) break;
+        if (f[u]) continue;
+        f[u] = true;
+        for (int i=0; i<n; ++i) if (v[i][u]) for (int k=0; k<=m; ++k)
+            if (v[i][k] && (d1 = d[u]+60+abs(u-k)*t[i]) < d[k]) q.push({k, d[k] = d1});
+    }
+    d[k] >= INF ? cout << "IMPOSSIBLE" << endl : cout << d[k] << endl;
+}
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    short n, k;
-    while (cin >> n >> k) {
-        for (short i=0; i<N; ++i) {
-            visit[i] = false;
-            d[i] = i<n ? 0 : INF;
-            for (short j=0; j<N; ++j) w[i][j] = INF;
-        }
-        for (short i=0; i<n; ++i) {
-            cin >> t[i];
-            c[i] = 0;
-        }
-        for (short i=0, u; i<n; ++i) while (cin >> u) {
-            u = n*u + i;
-            if (c[i]) {
-                short v = s[i][c[i]-1];
-                w[u][v] = w[v][u] = min(w[u][v], (u-v)/n*t[i]);
-            }
-            s[i][c[i]++] = u;
-            if (cin.get() != ' ') break;
-        }
-        for (short i=0; i<n; ++i) for (short j=0; j<n; ++j) if (i!=j) for (short k=0; k<c[i]; ++k) {
-            short u = s[i][k], v = u+j-i, p = lower_bound(s[j], s[j]+c[j], v) - s[j];
-            if (p >= c[j]) break;
-            w[u][v] = w[v][u] = 60;
-        }
-        for (short i=0; i<N; ++i) {
-            int x, m = INF;
-            for (short y = 0; y<N; ++y) if (!visit[y] && d[y]<m) m = d[x=y];
-            visit[x] = true;
-            for (short y=1; y<N; ++y) d[y] = min(d[y], d[x] + w[x][y]);
-        }
-        int ans = INF;
-        for (short i=0; i<n; ++i) ans = min(ans, d[n*k+i]);
-        ans < INF ? cout << ans << endl : cout << "IMPOSSIBLE" << endl;
-    }
+    while (cin >> n >> k) solve();
     return 0;
 }

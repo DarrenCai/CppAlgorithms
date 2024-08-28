@@ -1,88 +1,102 @@
 /**
- * UVa12264
+ * UVa12264/LA4949
  * Risk游戏
+ * NWERC 2010
  */
 
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-#define N 330
-struct edge {short u, v, cap, flow;} e[N*N/2];
-short q[N*N*N/2], g0[N][N], c0[N], a[N], cnt[N], m, n, t; int g[N][N], p[N], c; char s[N]; bool b[N];
+#define INF 10000
+#define N 204
+struct edge {int u, v, cap, flow;} e[N*N>>1];
+int g[N][N>>1], q[N], p[N], d[N], cur[N], num[N], cnt[N], a[N>>1], c, n; bool vis[N];
 
-void addEdge(short u, short v, short cap) {
-    e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
-    e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; g[v][cnt[v]++] = c++;
+void add_edge(int u, int v, int cap) {
+    e[c] = {u, v, cap, 0}; g[u][cnt[u]++] = c++; e[c] = {v, u, 0, 0}; g[v][cnt[v]++] = c++;
 }
 
-short maxFLow() {
-    short flow = 0;
-    while (true) {
-        memset(a, 0, sizeof(a)); a[0] = N; q[0] = 0;
-        int head = 0, tail = 1;
-        while (head < tail) {
-            short u = q[head++];
-            for (short i=0; i<cnt[u]; ++i) {
-                const edge& ee = e[g[u][i]];
-                if (!a[ee.v] && ee.cap > ee.flow) {
-                    p[ee.v] = g[u][i];
-                    a[ee.v] = min(a[u], short(ee.cap-ee.flow));
-                    q[tail++] = ee.v;
-                }
-            }
-            if (a[t]) break;
+bool bfs(int s, int t) {
+    memset(vis, 0, sizeof(vis)); memset(d, 0, sizeof(d)); q[0] = t; d[t] = 0; vis[t] = true;
+    int head = 0, tail = 1;
+    while (head < tail) {
+        int v = q[head++];
+        for (int i=0; i<cnt[v]; ++i) {
+            const edge& ee = e[g[v][i]^1];
+            if (!vis[ee.u] && ee.cap > ee.flow) vis[ee.u] = true, d[ee.u] = d[v] + 1, q[tail++] = ee.u;
         }
-        if (!a[t]) return flow;
-        flow += a[t];
-        for (short u=t; u!=0; u=e[p[u]].u) {
-            e[p[u]].flow += a[t];
-            e[p[u]^1].flow -= a[t];
+    }
+    return vis[s];
+}
+
+int max_flow(int s, int t) {
+    int flow = 0, u = s;
+    if (!bfs(s, t)) return 0;
+    memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));
+    for (int i=0; i<=t; ++i) ++num[d[i]];
+    while (d[s] <= t) {
+        if (u == t) {
+            int a = INF;
+            for (int v=t; v!=s; v = e[p[v]].u) a = min(a, e[p[v]].cap - e[p[v]].flow);
+            for (int v=t; v!=s; v = e[p[v]].u) e[p[v]].flow += a, e[p[v]^1].flow -= a;
+            flow += a; u = s;
+        }
+        bool ok = false;
+        for (int i=cur[u]; i<cnt[u]; ++i) {
+            const edge& ee = e[g[u][i]];
+            if (ee.cap > ee.flow && d[u] == d[ee.v] + 1) {
+                ok = true; p[ee.v] = g[u][i]; cur[u] = i; u = ee.v;
+                break;
+            }
+        }
+        if (!ok) {
+            int m = t;
+            for (int i=0; i<cnt[u]; ++i) {
+                const edge& ee = e[g[u][i]];
+                if (ee.cap > ee.flow) m = min(m, d[ee.v]);
+            }
+            if (--num[d[u]] == 0) break;
+            ++num[d[u] = m + 1]; cur[u] = 0;
+            if (u != s) u = e[p[u]].u;
         }
     }
     return flow;
 }
 
+void solve() {
+    cin >> n; memset(cnt, c = 0, sizeof(cnt));
+    for (int i=1; i<=n; ++i) cin >> a[i];
+    int s = 0, t = 2*n+1, m = 0, sum = 0;
+    for (int i=1; i<=n; ++i) {
+        bool f = false; char x;
+        for (int j=1; j<=n; ++j) if (cin >> x && x == 'Y') {
+            if (a[i]>0 && a[j]==0) f = true;
+            if (a[i]>0 && a[j]>0) add_edge(i, j+n, INF);
+        }
+        if (!a[i]) continue;
+        add_edge(i+n, i, a[i]);
+        if (f || a[i]>1) add_edge(s, i+n, f ? a[i] : a[i]-1);
+        sum += f ? a[i] : a[i]-1;
+        if (f) add_edge(i+n, t, 1), ++m;
+    }
+    int low = 1, high = sum/m;
+    while (low < high) {
+        int mid = (low+high+1)>>1;
+        for (int i=0; i<c; ++i) {
+            e[i].flow = 0;
+            if (e[i].v == t) e[i].cap = mid;
+        }
+        max_flow(s, t) == m*mid ? low = mid : high = mid-1;
+    }
+    cout << high << endl;
+}
+
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    short k; cin >> k;
-    while (cin >> n) {
-        memset(c0, m=0, sizeof(c0)); memset(b, 0, sizeof(b)); memset(cnt, c=0, sizeof(cnt));
-        for (short i=1; i<=n; ++i) {
-            cin >> a[i];
-            if (a[i]-- > 0) q[p[i] = ++m] = i;
-        }
-        for (short i=1; i<=n; ++i) {
-            cin >> s+1;
-            if (a[i]>=0) for (short j=1; j<=n; ++j) if (s[j]=='Y') 
-                a[j] < 0 ? b[p[i]] = true : g0[p[i]][c0[p[i]]++] = p[j];
-        }
-        short low = 0, high = 20000, tt = 0, sum = 0;
-        for (short i=1; i<=m; ++i) {
-            if (b[i]) {
-                c0[i] == 0 ? high = min(high, a[q[i]]) : (++tt, sum += a[q[i]]);
-            } else sum += a[q[i]];
-        }
-        if (tt) high = min(high, short(sum/tt));
-        t = 3*m+1; tt = 0;
-        for (short i=1; i<=m; ++i) {
-            addEdge(i, t, 0);
-            if (b[i]) ++tt;
-        }
-        for (short i=1; i<=m; ++i) {
-            addEdge(0, i+m, a[q[i]]); addEdge(i+m, i, N); addEdge(i+2*m, i+m, 1);
-            for (short j=0; j<c0[i]; ++j) {
-                addEdge(i+m, g0[i][j]+2*m, 1), addEdge(i+m, g0[i][j], N);
-            }
-        }
-        while (low <= high) {
-            short mid = (low + high) >> 1;
-            for (short i=1; i<=m; ++i) if(b[i]) e[g[i][0]].cap = mid;
-            for (int i=0; i<c; ++i) e[i].flow = 0;
-            maxFLow() == tt*mid ? low = mid+1 : high = mid-1;
-        }
-        cout << high+1 << endl;
-    }
+    ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    int t; cin >> t;
+    while (t--) solve();
     return 0;
 }

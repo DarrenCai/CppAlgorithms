@@ -7,26 +7,31 @@
 #include <vector>
 using namespace std;
 
-#define N 100100
-int u[N], v[N], n; long long w[N], ans; vector<int> g[N];
+#define N 100010
+int u[N], v[N], w[N], n; bool vis[N]; long long cc; vector<int> g[N];
 
-int dfs(int i, int p = -1) {
-    int a = p>0 && (v[i]==u[p] || v[i]==v[p]) ? u[i] : v[i], c = 0;
-    for (int j=g[a].size()-1, k; j>=0; --j) if ((k=g[a][j]) != i && k != p) c += 1 + dfs(k, i);
-    ans += w[i]*min(c+1, n-c-1)<<1;
+int dfs(int x) {
+    vis[x] = true; int c = 1;
+    for (int i=g[x].size()-1; i>=0; --i) {
+        int j = g[x][i], y = u[j] + v[j] - x, cy;
+        if (!vis[y]) cy = dfs(y), cc += min(cy, n-cy)*(long long)w[j], c += cy;
+    }
     return c;
+}
+
+long long solve() {
+    cin >> n; cc = 0;
+    for (int i=1; i<=n; ++i) vis[i] = 0, g[i].clear();
+    for (int i=1; i<n; ++i) cin >> u[i] >> v[i] >> w[i], g[u[i]].push_back(i), g[v[i]].push_back(i);
+    dfs(1);
+    return cc << 1;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
+    ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
     int t; cin >> t;
-    for (int kase=1; kase<=t; ++kase) {
-        cin >> n;
-        for (int i=1; i<=n; ++i) g[i].clear();
-        for (int i=1; i<n; ++i) cin >> u[i] >> v[i] >> w[i], g[u[i]].push_back(i), g[v[i]].push_back(i);
-        ans = 0; dfs(1);
-        cout << "Case #" << kase << ": " << ans << endl;
-    }
+    for (int k=1; k<=t; ++k) cout << "Case #" << k << ": " << solve() << endl;
     return 0;
 }

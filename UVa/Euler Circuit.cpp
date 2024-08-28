@@ -7,96 +7,71 @@
 #include <cstring>
 using namespace std;
 
-#define N 150
-#define M 650
-struct edge {short u, v, cap, flow;} e[2*M*N];
-short q[2*M*N*(M+N)], cnt[M+N], a[M+N], path[M], u[M], v[M], d[N], cc, n, m;
-int g[M+N][M], p[M+N], id[M], c; bool vis[N][M];
+#define M 600
+#define N 102
+struct edge {int u, v, cap, flow;} e[M<<1];
+int g[N][M], q[M*N<<1], p[M], a[N], d[N], cnt[N], u[M], v[M], h[M], c, m, n; bool vis[M];
 
-void addEdge(short u, short v, short cap) {
+void add_edge(int u, int v, int cap) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
     e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; g[v][cnt[v]++] = c++;
 }
 
-bool check() {
-    for (short i=1; i<=n; ++i) if (d[i]&1) return false;
-    return true;
+void euler(int x) {
+    for (int i=0, j; i<cnt[x]; ++i) if (!vis[j = g[x][i]]) vis[j] = true, euler(u[j]+v[j]-x), p[n++] = x;
 }
 
-void euler(short u) {
-    for (short i=0; i<cnt[u]; ++i) if (!vis[u][i]) {
-        vis[u][i] = true;
-        euler(g[u][i]);
-        path[cc++] = g[u][i];
+bool solve() {
+    cin >> n >> m; memset(cnt, c = 0, sizeof(cnt)); memset(d, 0, sizeof(d));
+    for (int i=0; i<m; ++i) {
+        char x; cin >> u[i] >> v[i] >> x; ++d[u[i]]; --d[v[i]]; h[i] = -1;
+        if (x == 'U') h[i] = c, add_edge(u[i], v[i], 1);
     }
+    int s = 0, t = n+1, f = 0;
+    for (int i=1; i<=n; ++i) {
+        if (d[i] & 1) return false;
+        if (d[i] > 0) add_edge(s, i, d[i]>>1), f += d[i]>>1;
+        if (d[i] < 0) add_edge(i, t, -d[i]>>1);
+    }
+    if (f) {
+        while (true) {
+            memset(a, 0, sizeof(a)); a[s] = m; q[0] = s;
+            int head = 0, tail = 1;
+            while (head < tail) {
+                int u = q[head++];
+                for (int i=0; i<cnt[u]; ++i) {
+                    const edge& ee = e[g[u][i]];
+                    if (!a[ee.v] && ee.cap > ee.flow) {
+                        p[ee.v] = g[u][i];
+                        a[ee.v] = min(a[u], ee.cap-ee.flow);
+                        q[tail++] = ee.v;
+                    }
+                }
+                if (a[t]) break;
+            }
+            if (!a[t]) break;
+            f -= a[t];
+            for (int u=t; u!=s; u=e[p[u]].u) e[p[u]].flow += a[t], e[p[u]^1].flow -= a[t];
+        }
+    }
+    if (f) return false;
+    memset(cnt, n = 0, sizeof(cnt));
+    for (int i=0; i<m; ++i) {
+        vis[i] = false; h[i] >= 0 && e[h[i]].flow ? g[v[i]][cnt[v[i]]++] = i : g[u[i]][cnt[u[i]]++] = i;
+    }
+    euler(1);
+    while (n--) cout << p[n] << ' ';
+    cout << 1 << endl;
+    return true;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    short tt; cin >> tt;
-    while (tt--) {
-        memset(d, 0, sizeof(d));
-        memset(cnt, 0, sizeof(cnt));
-        cin >> n >> m;
-        short t = n+1; c = 0; cc = t;
-        for (short i=0; i<m; ++i) {
-            char c; cin >> u[i] >> v[i] >> c;
-            ++d[u[i]]; --d[v[i]];
-            if (c == 'U') {
-                id[i] = ::c;
-                addEdge(u[i], v[i], 1);
-            } else id[i] = -1;
-        }
-        if (check()) {
-            short s = 0, flow = 0;
-            for (short i=1; i<=n; ++i) {
-                if (d[i] > 0) addEdge(0, i, d[i]>>1), s += d[i]>>1;
-                if (d[i] < 0) addEdge(i, t, -d[i]>>1);
-            }
-            while (true) {
-                memset(a, 0, sizeof(a)); a[0] = m; q[0] = 0;
-                int head = 0, tail = 1;
-                while (head < tail) {
-                    short u = q[head++];
-                    for (short i=0; i<cnt[u]; ++i) {
-                        const edge& ee = e[g[u][i]];
-                        if (!a[ee.v] && ee.cap > ee.flow) {
-                           p[ee.v] = g[u][i];
-                           a[ee.v] = min(int(a[u]), ee.cap-ee.flow);
-                           q[tail++] = ee.v; 
-                        }
-                    }
-                    if (a[t]) break;
-                }
-                if (!a[t]) break;
-                flow += a[t];
-                for (short u=t; u!=0; u=e[p[u]].u) {
-                    e[p[u]].flow += a[t];
-                    e[p[u]^1].flow -= a[t];
-                }
-            }
-            if (s != flow) {
-                cout << "No euler circuit exist" << endl;
-            } else {
-                for (short i=0; i<m; ++i) if (id[i] >= 0) {
-                    const edge& ee = e[id[i]];
-                    if (ee.flow>0 && ee.u>0 && ee.v<t && ee.v>0 && ee.v<t) {
-                        u[i] = u[i]+v[i]; v[i] = u[i]-v[i]; u[i] = u[i]-v[i];
-                    }
-                }
-                memset(cnt, cc=0, sizeof(cnt));
-                memset(vis, 0, sizeof(vis));
-                for (short i=0; i<m; ++i) g[u[i]][cnt[u[i]]++] = v[i];
-                cout << 1;
-                euler(1);
-                while (--cc >= 0) cout << ' ' << path[cc];
-                cout << endl;
-            }
-        } else {
-            cout << "No euler circuit exist" << endl;
-        }
-        if (tt) cout << endl;
+    int t; cin >> t;
+    while (t--) {
+        if (!solve()) cout << "No euler circuit exist" << endl;
+        if (t) cout << endl;
     }
     return 0;
 }

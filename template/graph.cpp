@@ -334,7 +334,7 @@ namespace dijkstra {
 
     void dijkstra(int s) {
         memset(d, 0x3f, sizeof(d)); memset(f, 0, sizeof(f));
-        d[s] = 0; priority_queue<node> q; q.push({d[s], s});
+        priority_queue<node> q; q.push({d[s]=0, s});
         while (!q.empty()) {
             int u = q.top().u; q.pop();
             if (f[u]) continue;

@@ -1,130 +1,75 @@
 /**
- * UVa1661
+ * UVa1661/LA4047
  * 方程
+ * NEERC 2007
  */
 
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
-#define N 81
-char s[81]; short x;
-
-struct node {
+#define N 32
+struct frac {
     long long p, q;
-    node():p(0),q(1) {}
-    void operator += (const node& rhs) {
-        p = p*rhs.q + rhs.p*q;
-        q *= rhs.q;
+    void calc(char op, const frac& x) {
+        if (op == '+') p = p*x.q + x.p*q, q *= x.q;
+        else if (op == '-') p = p*x.q - x.p*q, q *= x.q;
+        else if (op == '*') q *= x.q, p *= x.p;
+        else q *= x.p, p *= x.q;
     }
-    void operator -= (const node& rhs) {
-        p = p*rhs.q - rhs.p*q;
-        q *= rhs.q;
-    }
-    void operator *= (const node& rhs) {
-        p *= rhs.p;
-        q *= rhs.q;
-    }
-    void operator /= (const node& rhs) {
-        p *= rhs.q;
-        q *= rhs.p;
+    void print() const {
+        long long g = abs(__gcd(p, q));
+        if (q < 0) g = -g;
+        cout << "X = " << p/g << '/' << q/g << endl;
     }
 };
+int s[N], l[N], r[N], n; char op[N];
 
-short l(short b) {
-    if (s[b] >= '0') {
-        if (s[--b] >= '0') return b;
-        return l(b-1);
-    }
-    short r = l(b-1) - 1;
-    return s[r] >= '0' ? r : l(r-1);
+bool has_x(int i) {
+    if (op[i] == 'X') return true;
+    if (op[i] < '0') return has_x(l[i]) || has_x(r[i]);
+    return false;
 }
 
-short r(short b) {
-    if (s[b] >= '0') return b;
-    return l(b-1);
+frac calc(int i) {
+    if (op[i] >='0' && op[i] <= '9') return {op[i]-'0', 1};
+    frac x = calc(l[i]); x.calc(op[i], calc(r[i]));
+    return x;
 }
 
-long long gcd(long long a, long long b) {
-    if (a > b) return gcd(b, a);
-    if (a < 0) return gcd(-a, b);
-    if (a==0) return b;
-    if (a & 1) {
-        if (b & 1) return gcd(a, (b-a)>>1);
-        return gcd(a, b>>1);
+void solve(int i, frac& c) {
+    if (i < 0) return;
+    if (op[i] == 'X') return c.print();
+    if (op[i] >= '0') cout << (c.p != (op[i]-'0') * c.q ? "NONE" : "MULTIPLE") << endl;
+    else if (has_x(l[i])) {
+        frac f = calc(r[i]);
+        if (f.p == 0 && (op[i] == '*' || op[i] == '/')) cout << (c.p ? "NONE" : "MULTIPLE") << endl;
+        else c.calc(op[i] == '*' ? '/' : (op[i] == '/' ? '*' : (op[i] == '+' ? '-' : '+')), f), solve(l[i], c);
+    } else if (has_x(r[i])) {
+        frac f = calc(l[i]);
+        if (f.p == 0 && (op[i] == '*' || op[i] == '/')) cout << (c.p ? "NONE" : "MULTIPLE") << endl;
+        else if (op[i] == '/' && c.p == 0) cout << "NONE" << endl;
+        else if (op[i] == '-' || op[i] == '/') f.calc(op[i], c), solve(r[i], f);
+        else c.calc(op[i] == '*' ? '/' : '-', f), solve(r[i], c);
     } else {
-        if (b & 1) return gcd(a>>1, b);
-        return gcd(a>>1, b>>1)<<1;
-    } 
+        frac f = calc(i); cout << (f.p * c.q != c.p * f.q ? "NONE" : "MULTIPLE") << endl;
+    }
 }
 
-node calc(short a, short b) {
-    if (a == b) {
-        node v; v.p = s[a] - '0';
-        return v;
-    }
-    node lhs, rhs;
-    if (a+2 == b) {
-        lhs.p = s[a] - '0'; rhs.p = s[b-1] - '0';
-    } else if (s[b-1] >= '0') {
-        rhs.p = s[b-1] - '0';
-        lhs = calc(a, b-2);
-    } else {
-        short i = l(b-2);
-        rhs = calc(i, b-1);
-        lhs = calc(a, i-1);
-    }
-    s[b]=='*' ? lhs*=rhs : (s[b]=='/' ? lhs/=rhs : (s[b]=='+' ? lhs+=rhs : lhs-=rhs));
-    return lhs;
-}
-
-void solve(short a, short b, node c = node()) {
-    if (a == b) {
-        if (s[a] < 'X') {
-            cout << (c.p == (s[a]-'0')*c.q ? "MULTIPLE" : "NONE") << endl;
-        } else {
-            long long g = gcd(c.p, c.q);
-            if (c.q < 0) g *= -1;
-            cout << "X = " << c.p/g << '/' << c.q/g << endl;
-        }
-        return;
-    }
-    if (x<a || x>b) {
-        node v = calc(a, b);
-        cout << (c.p*v.q == v.p*c.q ? "MULTIPLE" : "NONE") << endl;
-        return;
-    }
-    short l = r(b-1); node v = x<l ? calc(l, b-1) : calc(a, l-1);
-    if (v.p==0 && (s[b]=='*' || s[b]=='/')) {
-        cout << (c.p == 0 ? "MULTIPLE" : "NONE") << endl;
-    } else {
-        if (s[b] == '/') {
-            if (x < l) {
-                c *= v; solve(a, l-1, c);
-            } else if (c.p == 0) {
-                cout << "NONE" << endl;
-            } else {
-                v /= c; solve(l, b-1, v);
-            }
-        } else {
-            if (s[b]=='-' && x>=l) {
-                v -= c; solve(l, b-1, v);
-            } else {
-                s[b]=='*' ? c /= v : (s[b]=='+' ? c -= v : c += v);
-                x<l ? solve(a, l-1, c) : solve(l, b-1, c);
-            }
-        }
-    }
+void solve() {
+    int t = n = 0, k; frac c{0, 1};
+    if (cin.peek() == '\n') cin.get();
+    while ((k = cin.peek()) != '\n' && k != EOF) if (k != ' ') {
+        cin >> op[n++];
+        if (k >= '0') s[t++] = n-1;
+        else r[n-1] = s[--t], l[n-1] = s[t-1], s[t-1] = n-1;
+    } else cin.get();
+    solve(n-1, c);
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    while (cin.getline(s, N)) {
-        short n = -1; x = -1;
-        for (short i=0; s[i]; ++i) if (s[i] != ' ') {
-            s[++n] = s[i];
-            if (s[i] == 'X') x = n;
-        }
-        solve(0, n, node());
-    }
+    while (cin.peek() != EOF) solve();
+    return 0;
 }

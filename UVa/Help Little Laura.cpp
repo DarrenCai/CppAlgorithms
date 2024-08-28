@@ -1,6 +1,7 @@
 /**
- * UVa1659
+ * UVa1659/LA4030
  * 帮助小罗拉
+ * Beijing 2007
  */
 
 #include <iostream>
@@ -49,7 +50,7 @@ int main() {
         while (true) {
             for (short i=0; i<n+2; ++i) d[i] = 1e39;
             memset(visit, 0, sizeof(visit));
-            d[0] = 0.; q[0] = 0; p[0] = 0; a[0] = M;
+            d[0] = 0.; q[0] = 0; p[0] = 0; a[0] = 1;
             int head = 0, tail = 1;
             while (head < tail) {
                 short u = q[head++]; visit[u] = false;
