@@ -10,11 +10,24 @@ using namespace std;
 #define M 600
 #define N 102
 struct edge {int u, v, cap, flow;} e[M<<1];
-int g[N][M], q[M*N<<1], p[M], a[N], d[N], cnt[N], u[M], v[M], h[M], c, m, n; bool vis[M];
+int g[N][M], q[N], p[M], d[N], cur[N], num[N+1], cnt[N], u[M], v[M], h[M], c, m, n; bool vis[M];
 
 void add_edge(int u, int v, int cap) {
     e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
     e[c].u = v; e[c].v = u; e[c].cap = 0; e[c].flow = 0; g[v][cnt[v]++] = c++;
+}
+
+bool bfs(int s, int t) {
+    memset(vis, 0, sizeof(vis)); q[0] = t; d[t] = 0; vis[t] = true;
+    int head = 0, tail = 1;
+    while (head < tail) {
+        int v = q[head++];
+        for (int i=0; i<cnt[v]; ++i) {
+            const edge& ee = e[g[v][i]^1];
+            if (!vis[ee.u] && ee.cap > ee.flow) vis[ee.u] = true, d[ee.u] = d[v] + 1, q[tail++] = ee.u;
+        }
+    }
+    return vis[s];
 }
 
 void euler(int x) {
@@ -34,24 +47,34 @@ bool solve() {
         if (d[i] < 0) add_edge(i, t, -d[i]>>1);
     }
     if (f) {
-        while (true) {
-            memset(a, 0, sizeof(a)); a[s] = m; q[0] = s;
-            int head = 0, tail = 1;
-            while (head < tail) {
-                int u = q[head++];
+        for (int i=0; i<=t; ++i) d[i] = t+1;
+        bfs(s, t); memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));
+        for (int i=0; i<=t; ++i) ++num[d[i]];
+        for (int u=s; d[s] <= t;) {
+            if (u == t) {
+                int a = 1;
+                for (int v=t; v!=s; v = e[p[v]].u) a = min(a, e[p[v]].cap - e[p[v]].flow);
+                for (int v=t; v!=s; v = e[p[v]].u) e[p[v]].flow += a, e[p[v]^1].flow -= a;
+                f -= a; u = s;
+            }
+            bool ok = false;
+            for (int i=cur[u]; i<cnt[u]; ++i) {
+                const edge& ee = e[g[u][i]];
+                if (ee.cap > ee.flow && d[u] == d[ee.v] + 1) {
+                    ok = true; p[ee.v] = g[u][i]; cur[u] = i; u = ee.v;
+                    break;
+                }
+            }
+            if (!ok) {
+                int m = t;
                 for (int i=0; i<cnt[u]; ++i) {
                     const edge& ee = e[g[u][i]];
-                    if (!a[ee.v] && ee.cap > ee.flow) {
-                        p[ee.v] = g[u][i];
-                        a[ee.v] = min(a[u], ee.cap-ee.flow);
-                        q[tail++] = ee.v;
-                    }
+                    if (ee.cap > ee.flow) m = min(m, d[ee.v]);
                 }
-                if (a[t]) break;
+                if (--num[d[u]] == 0) break;
+                ++num[d[u] = m + 1]; cur[u] = 0;
+                if (u != s) u = e[p[u]].u;
             }
-            if (!a[t]) break;
-            f -= a[t];
-            for (int u=t; u!=s; u=e[p[u]].u) e[p[u]].flow += a[t], e[p[u]^1].flow -= a[t];
         }
     }
     if (f) return false;
