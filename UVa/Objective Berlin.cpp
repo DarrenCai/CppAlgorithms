@@ -1,21 +1,19 @@
 /**
- * UVa1515/LA5905
- * 水塘
- * NWERC 2011
+ * UVa1161/LA3645
+ * 航程规划
+ * SWERC 2004
  */
 
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-#define INF 200000000
-#define N 2510
-struct edge {int u, v, cap, flow;} e[6*N];
-int g[N][N], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, w, h, x, f, b; bool vis[N]; char ch[55];
+#define N 10002
+struct edge {int u, v, cap, flow;} e[N*N>>1]; char city[152][10];
+int g[N][N>>1], q[N], p[N], d[N], cnt[N], cur[N], num[N+1], a[N], b[N], w[N], c, m, n, x, y; bool vis[N];
 
-void add_edge(int u, int v, int cap, int cc = 0) {
-    e[c].u = u; e[c].v = v; e[c].cap = cap; e[c].flow = 0; g[u][cnt[u]++] = c++;
-    e[c].u = v; e[c].v = u; e[c].cap = cc; e[c].flow = 0; g[v][cnt[v]++] = c++;
+void add_edge(int u, int v, int cap) {
+    e[c] = {u, v, cap, 0}; g[u][cnt[u]++] = c++; e[c] = {v, u, 0, 0}; g[v][cnt[v]++] = c++;
 }
 
 bool bfs(int s, int t) {
@@ -31,42 +29,49 @@ bool bfs(int s, int t) {
     return vis[s];
 }
 
+int idx() {
+    cin >> city[x];
+    for (int i=0; i<x; ++i) if (!strcmp(city[i], city[x])) return i;
+    return x++;
+}
+
+int get_t() {
+    int x; cin >> x;
+    return x/100*60 + x%100;
+}
+
 int solve() {
-    cin >> w >> h >> x >> f >> b; memset(cnt, c = 0, sizeof(cnt));
-    int s = 0, t = w*h+1, cc = 0;
-    for (int i=1, k=1; i<=h; ++i) {
-        cin >> ch+1;
-        for (int j=1; j<=w; ++j, ++k) {
-            if (i == 1 || j == 1 || i == h || j == w) {
-                if (ch[j] == '.') cc += f;
-                add_edge(s, k, INF);
-            } else ch[j] == '.' ? add_edge(k, t, f) : add_edge(s, k, x);
-            if (i > 1) add_edge(k, k-w, b, b);
-            if (j > 1) add_edge(k, k-1, b, b);
-        }
+    cin >> city[0] >> city[1]; y = get_t(); cin >> m;
+    int s = 0, t = 2*m+1, u = s, cc = 0; x = 2; memset(cnt, c = 0, sizeof(cnt));
+    for (int i=1; i<=m; ++i) {
+        p[i] = idx(); q[i] = idx(); cin >> w[i]; a[i] = get_t(); b[i] = get_t();
+        add_edge(i, i+m, w[i]);
+        if (p[i] == 0) add_edge(s, i, w[i]);
+        if (q[i] == 1 && b[i] <= y) add_edge(i+m, t, w[i]);
     }
-    if (!bfs(s, t)) return cc;
+    for (int i=1; i<=m; ++i) for (int j=1; j<=m; ++j) if (q[i] == p[j] && b[i]+30 <= a[j]) add_edge(i+m, j, w[i]);
+    for (int i=0; i<=t; ++i) d[i] = t+1;
+    if (!bfs(s, t)) return 0;
     memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));
     for (int i=0; i<=t; ++i) ++num[d[i]];
-    int u = s;
     while (d[s] <= t) {
         if (u == t) {
-            int a = INF;
+            int a = N;
             for (int v=t; v!=s; v = e[p[v]].u) a = min(a, e[p[v]].cap - e[p[v]].flow);
             for (int v=t; v!=s; v = e[p[v]].u) e[p[v]].flow += a, e[p[v]^1].flow -= a;
             cc += a; u = s;
         }
-        int ok = 0;
+        bool ok = false;
         for (int i=cur[u]; i<cnt[u]; ++i) {
             const edge& ee = e[g[u][i]];
             if (ee.cap > ee.flow && d[u] == d[ee.v] + 1) {
-                ok = 1; p[ee.v] = g[u][i]; cur[u] = i; u = ee.v;
+                ok = true; p[ee.v] = g[u][i]; cur[u] = i; u = ee.v;
                 break;
             }
         }
         if (!ok) {
             int m = t;
-            for (int i=0; i<cnt[u]; i++) {
+            for (int i=0; i<cnt[u]; ++i) {
                 const edge& ee = e[g[u][i]];
                 if (ee.cap > ee.flow) m = min(m, d[ee.v]);
             }
@@ -82,7 +87,6 @@ int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
     ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-    int t; cin >> t;
-    while (t--) cout << solve() << endl;
+    while (cin >> n) cout << solve() << endl;
     return 0;
 }

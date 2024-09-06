@@ -81,7 +81,7 @@ namespace dinic
         int flow = 0, f;
         for (int& i = cur[u]; i<cnt[u]; ++i) {
             edge& ee = e[g[u][i]];
-            if (d[u]+1 == d[ee.v] && (f = dfs(ee.v, min(a, ee.cap-ee.flow))) > 0) {
+            if (d[u]+1 == d[ee.v] && (f = dfs(ee.v, min(a, ee.cap-ee.flow), t)) > 0) {
                 ee.flow += f; e[g[u][i]^1].flow -= f; flow += f; a -= f;
                 if (a == 0) break;
             }
@@ -110,14 +110,14 @@ namespace ISAP
     #define M 10000
     #define N 1000
     struct edge {int u, v, cap, flow;} e[M];
-    int g[N][N], q[N], p[N], d[N], cur[N], num[N], cnt[N], c, n; bool vis[N]; // todo 调整g[N][N]的大小，注意n是总结点数
+    int g[N][N], q[N], p[N], d[N], cur[N], num[N+1], cnt[N], c, n; bool vis[N]; // todo 调整g[N][N]的大小，注意n是总结点数
 
     void add_edge(int u, int v, int cap) {
         e[c] = {u, v, cap, 0}; g[u][cnt[u]++] = c++; e[c] = {v, u, 0, 0}; g[v][cnt[v]++] = c++;
     }
 
     bool bfs(int s, int t) {
-        memset(vis, 0, sizeof(vis)); memset(d, 0, sizeof(d)); q[0] = t; d[t] = 0; vis[t] = true;
+        memset(vis, 0, sizeof(vis)); q[0] = t; d[t] = 0; vis[t] = true;
         int head = 0, tail = 1;
         while (head < tail) {
             int v = q[head++];
@@ -133,6 +133,7 @@ namespace ISAP
         // memset(cnt, c = 0, sizeof(cnt));
         // 建图 add_edge(...)
         int flow = 0, s, t; // todo 源点s、汇点t
+        for (int i=0; i<n; ++i) d[i] = n; // todo 这里编号是从0开始的，如果数据编号是从1开始的，则需要调整，注意n是总结点数
         if (!bfs(s, t)) return 0;
         memset(num, 0, sizeof(num)); memset(cur, 0, sizeof(cur));
         for (int i=0; i<n; ++i) ++num[d[i]]; // todo 这里编号是从0开始的，如果数据编号是从1开始的，则需要调整，注意n是总结点数
@@ -172,6 +173,8 @@ namespace mcmf {
      * 最小费用最大流BellmanFord算法，BellmanFord算法还可求非最大流下的最小费用，比如：
      * 求限定流量k下的最小费用，在flow+a≥k的时候只增广k-flow单位的流量，然后终止程序；
      * 流量不固定的最小费用，在最短增广路费用非负时停止增广即可。
+     * 追求效率可以采用PrimalDual原始对偶算法，参见
+     * https://oi-wiki.org/graph/flow/min-cost/?query=%E8%B4%B9%E7%94%A8%E6%B5%81#primal-dual-%E5%8E%9F%E5%A7%8B%E5%AF%B9%E5%81%B6%E7%AE%97%E6%B3%95。
      */
     #define INF 200000000
     #define M 105
