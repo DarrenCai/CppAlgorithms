@@ -3,6 +3,7 @@ Algorithms implememted in C++ <br><br>
 
 # 还可以尝试其他思路的题目
 UVa11589 [Save the President](https://onlinejudge.org/index.php?option=com_onlinejudge\&Itemid=8\&category=27\&page=show_problem\&problem=2636) 多维线段树的区间更新、区间查询 <br><br>
+UVa11990 ["Dynamic" Inversion](https://onlinejudge.org/index.php?option=com_onlinejudge\&Itemid=8\&category=27\&page=show_problem\&problem=3141) CDQ分治/整体二分 [洛谷题解](https://www.luogu.com.cn/problem/solution/UVA11990) <br><br>
 
 # 有些知识点暂时没找到对应的题目练手
 最优排序二叉树问题（OBST，Optimal Binary Search Tree） <br><br>
@@ -16,6 +17,7 @@ UVa11589 [Save the President](https://onlinejudge.org/index.php?option=com_onlin
 
 # 待学习的知识点
 [wqs二分](https://zhuanlan.zhihu.com/p/340514421) <br><br>
+[离线算法](https://oiwiki.org/misc/offline/) <br><br>
 
 # 群论相关的一些暂时没搞明白的题目
 LA7504 [Colorful Floor](https://vjudge.net/problem/UVALive-7504) [知乎题解](https://zhuanlan.zhihu.com/p/574461039) <br><br>
