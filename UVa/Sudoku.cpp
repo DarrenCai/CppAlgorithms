@@ -1,6 +1,7 @@
 /**
- * UVa1309
+ * UVa1309/LA2659
  * 数独
+ * SEERC 2006
  */
 
 #include <iostream>
@@ -75,8 +76,9 @@ void decode(short code, short& a, short& b, short& c) {
     a = code; c = a&15; a>>=4; b = a&15; a>>=4;
 }
 
-int main()
-{
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     char sudoku[16][17]; int k=0;
     while (!cin.eof()) {
         for (short i=0; i<16; ++i) cin >> sudoku[i];
