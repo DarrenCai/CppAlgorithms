@@ -70,3 +70,17 @@ void phi_table(int n, int* phi) {
             phi[j] = phi[j] / i * (i-1);
         }
 }
+
+/**
+ * 计算a^n mod M
+ */
+#define M 1007
+int pow_mod(long long a, int n) {
+    int ans = 1;
+    while (n) {
+        if (n & 1) ans = ans*a % M;
+        a = a*a % M;
+        n >>= 1;
+    }
+    return ans;
+}
