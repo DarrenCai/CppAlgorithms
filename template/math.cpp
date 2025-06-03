@@ -84,3 +84,61 @@ int pow_mod(long long a, int n) {
     }
     return ans;
 }
+
+namespace fft {
+    #include <cmath>
+    #define N 1<<21
+    int res[N], tot;
+    struct complex {
+        double x, y;
+        void operator+= (const complex &t) {
+            x += t.x; y += t.y;
+        }
+        complex operator- (const complex &t) const {
+            return {x - t.x, y - t.y};
+        }
+        complex operator* (const complex &t) const {
+            return {x * t.x - y * t.y, x * t.y + y * t.x};
+        }
+
+    } a[N], b[N];
+    
+    /**
+     * inv=1时求的是傅里叶变换（DFT），inv=-1时求的是傅里叶逆变换（IDFT）
+     */
+    void fft(complex (&a)[N], int inv) {
+        for (int i=0, j=0; i<tot; ++i) { // 原地快速bit reversal
+            if(j > i) {complex t = a[i]; a[i] = a[j]; a[j] = t;}
+            int k = tot;
+            while(j & (k >>= 1)) j &= ~k;
+            j |= k;
+        }
+        for(int step=1; step<tot; step<<=1) {
+            // 把每相邻两个“step点DFT”通过一系列蝴蝶变换合并为一个“2*step点DFT”
+            double alpha = inv*M_PI / step;
+            // 为求高效，我们并不是依次执行各个完整的DFT合并，而是枚举下标k
+            // 对于一个下标k，执行所有DFT合并中该下标对应的蝴蝶变换，即通过E[k]和O[k]计算X[k]
+            // 蝴蝶变换参考：http://en.wikipedia.org/wiki/Butterfly_diagram
+            for(int k=0; k<step; k++) {
+                // 计算omega^k
+                complex wk = {cos(alpha*k), sin(alpha*k)};
+                for(int Ek=k; Ek<tot; Ek += step<<1) { // Ek是某次DFT合并中E[k]在原始序列中的下标
+                    int Ok = Ek + step; // Ok是该DFT合并中O[k]在原始序列中的下标
+                    complex t = wk * a[Ok]; // 蝴蝶变换：x1 * omega^k
+                    a[Ok] = a[Ek] - t;  // 蝴蝶变换：y1 = x0 - t
+                    a[Ek] += t;         // 蝴蝶变换：y0 = x0 + t
+                }
+            }
+        }
+    }
+
+    void workFFT(int n, int m) { // a[0, n], b[0, m]
+        int bit = 0;
+        while ((1 << bit) < n + m + 1) ++bit;
+        tot = 1 << bit;
+        fft(a, 1); fft(b, 1);
+        for (int i=0; i<tot; ++i) a[i] = a[i] * b[i]; //点表示法直接运算
+        fft(a, -1); //逆变换，点表示法转换为多项式表示法
+        for (int i=0, j=m+n; i<=j; ++i) res[i]  = a[i].x / tot + 0.5; //向上取整
+    }
+}
