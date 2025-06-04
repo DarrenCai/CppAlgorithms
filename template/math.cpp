@@ -142,3 +142,115 @@ namespace fft {
         for (int i=0, j=m+n; i<=j; ++i) res[i]  = a[i].x / tot + 0.5; //向上取整
     }
 }
+
+namespace simplex {
+    /**
+     * 单纯形在必然有解时的一种实现，能算出优化目标的最大值或者指出最大值无界
+     */
+    #define INF 1e100
+    #define M 10005
+    #define N 1005
+    double a[M][N], b[M], c[N], ans; int m, n; // m个约束n个变量
+
+    void pivot(int l, int e) {  // 转轴操作函数
+        b[l] /= a[l][e];
+        for (int j = 1; j <= n; j++) if (j != e) a[l][j] /= a[l][e];
+        a[l][e] = 1 / a[l][e];
+
+        for (int i = 1; i <= m; i++) if (i != l && abs(a[i][e]) > 0.) {
+            b[i] -= a[i][e] * b[l];
+            for (int j = 1; j <= n; j++) if (j != e) a[i][j] -= a[i][e] * a[l][j];
+            a[i][e] = -a[i][e] * a[l][e];
+        }
+
+        ans += c[e] * b[l];
+        for (int j = 1; j <= n; j++) if (j != e) c[j] -= c[e] * a[l][j]; c[e] = -c[e] * a[l][e];
+    }
+
+    double simplex() {
+        // 初始时如果找不到e进行替换，那么说明原问题无解。
+        // for (e = 1; e <= n; e++) 判断是否所有初始c[e]都<=0
+        while (true) {
+            int e = 0, l = 0;
+            for (e = 1; e <= n; e++) if (c[e] > 0.) break;
+            if (e == n + 1) return ans;  // 此时ans即为最优解
+            double mn = INF;
+            for (int i = 1; i <= m; i++) {
+                if (a[i][e] > 0. && mn > b[i] / a[i][e]) {
+                    mn = b[i] / a[i][e];  // 找对这个e限制最紧的l
+                    l = i;
+                }
+            }
+            if (mn == INF) return INF;  // 无界
+            pivot(l, e);                // 转动l,e
+        }
+    }
+}
+
+namespace simplex2 {
+    // 改进单纯形算法的实现
+    // 参考：http://en.wikipedia.org/wiki/Simplex_algorithm
+    // 输入矩阵a描述线性规划的标准形式。a为m+1行n+1列，其中行0~m-1为不等式，行m为目标函数（最大化）。列0~n-1为变量0~n-1的系数，列n为常数项
+    // 第i个约束为a[i][0]*x[0] + a[i][1]*x[1] + ... <= a[i][n]
+    // 目标为max(a[m][0]*x[0] + a[m][1]*x[1] + ... + a[m][n-1]*x[n-1] - a[m][n])
+    // 注意：变量均有非负约束x[i] >= 0
+    #define INF 1e100
+    #define eps 1e-10
+    #define M 10005
+    #define N 1005
+    int m; // 约束个数
+    int n; // 变量个数
+    double a[M][N]; // 输入矩阵
+    int B[M], C[N]; // 算法辅助变量
+
+    void pivot(int r, int c) {
+        int t = C[c]; C[c] = B[r]; B[r] = t;
+        a[r][c] = 1 / a[r][c];
+        for (int j = 0; j <= n; j++) if (j != c) a[r][j] *= a[r][c];
+        for (int i = 0; i <= m; i++) if (i != r) {
+            for (int j = 0; j <= n; j++) if (j != c) a[i][j] -= a[i][c] * a[r][j];
+            a[i][c] = -a[i][c] * a[r][c];
+        }
+    }
+
+    bool feasible() {
+        while (true) {
+            int r, c; double p = INF;
+            for (int i = 0; i < m; i++) if (a[i][n] < p) p = a[r = i][n];
+            if (p > -eps) return true;
+            p = 0.;
+            for (int i = 0; i < n; i++) if (a[r][i] < p) p = a[r][c = i];
+            if (p > -eps) return false;
+            p = a[r][n] / a[r][c];
+            for (int i = r+1; i < m; i++) if (a[i][c] > eps) {
+                double v = a[i][n] / a[i][c];
+                if (v < p) r = i, p = v;
+            }
+            pivot(r, c);
+        }
+    }
+
+    // 解有界返回1，无解返回0，无界返回-1。x[i]的值为可行解，ret为目标函数的值
+    int simplex(double x[N], double& ret) {
+        for (int i = 0; i < n; i++) C[i] = i;
+        for (int i = 0; i < m; i++) B[i] = n+i;
+        if (!feasible()) return 0;
+        while (true) {
+            int r, c; double p = 0.;
+            for (int i = 0; i < n; i++) if (a[m][i] > p) p = a[m][c = i];
+            if (p < eps) {
+                for (int i = 0; i < n; i++) if (C[i] < n) x[C[i]] = 0;
+                for (int i = 0; i < m; i++) if (B[i] < n) x[B[i]] = a[i][n];
+                ret = -a[m][n];
+                return 1;
+            }
+            p = INF;
+            for (int i = 0; i < m; i++) if (a[i][c] > eps) {
+                double v = a[i][n] / a[i][c];
+                if (v < p) r = i, p = v;
+            }
+            if (p == INF) return -1;
+            pivot(r, c);
+        }
+    }
+}
