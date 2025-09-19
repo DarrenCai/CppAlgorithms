@@ -1,6 +1,7 @@
 /**
- * UVa1603
+ * UVa1603/LA2328
  * 破坏正方形
+ * Taejon 2001
  */
 
 #include <iostream>
@@ -88,8 +89,9 @@ bool IDDFS(char cnt, vector<char> s, char step = 0) {
     return false;
 }
 
-int main()
-{
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     int t; cin >> t;
     while (t--) {
         cin >> n >> k; char cnt = 0;

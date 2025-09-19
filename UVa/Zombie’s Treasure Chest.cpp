@@ -1,50 +1,41 @@
 /**
- * UVa12325
+ * UVa12325/LA5703
  * 宝箱
+ * Shanghai 2011
  */
 
 #include <iostream>
+using namespace std;
 
-int gcd(int a, int b) {
-    if (a > b) return gcd(b, a);
-    if (a == 0) return b;
-    if (a & 1) {
-        if (b & 1) return gcd(a, (b-a)>>1);
-        return gcd(a, b >> 1);
+int gcd(int a, int b, int& x, int& y) {
+    if (!b) {
+        x = 1; y = 0; return a;
     } else {
-        if (b & 1) return gcd(a >> 1, b);
-        return gcd(a >> 1, b >> 1) << 1;
-    } 
+        int g = gcd(b, a%b, y, x);
+        y -= a/b*x;
+        return g;
+    }
 }
 
-int n, s[2], v[2];
-long long calc(short i, int m) {
-    long long max = 0; short ii = i^1;
-    for (int j=0; j<=m; ++j) {
-        long long t = (long long)v[i]*j + (n-(long long)s[i]*j)/s[ii]*v[ii];
-        if (t > max) max = t;
-    }
-    return max;
+long long solve() {
+    int n, s1, s2; long long v1, v2; cin >> n >> s1 >> v1 >> s2 >> v2;
+    int x = min(s1, s2) - 1, y = min(n/s1, n/s2); long long ans = 0;
+    if (x < y) {
+        int a, b, g = gcd(s1, s2, a, b), i = s1/g, j = s2/g; long long k = v1*j - v2*i;
+        for (y=n-x; y<=n; ++y) if (y%g == 0) {
+            long long u = y/g*(long long)a, v = y/g*(long long)b, c1 = (u<0 ? j-1-u : -u)/j, c2 = (v<0 ? v+1-i : v)/i;
+            if (c1 > c2) continue;
+            ans = max(ans, v1*u + v2*v + k * (k > 0 ? c2 : c1));
+        }
+    } else if (s1 > s2) for (int i=n/s1; i>=0; --i) ans = max(ans, v1*i + (n-i*s1)/s2*v2);
+    else for (int i=n/s2; i>=0; --i) ans = max(ans, v2*i + (n-i*s2)/s1*v1);
+    return ans;
 }
 
-int main()
-{
-    using namespace std;
-    short k=0, t; cin>>t;
-    while (k < t) {
-        cout << "Case #" << ++k << ": ";
-        cin >> n >> s[0] >> v[0] >> s[1] >> v[1];
-        int g = gcd(s[0], s[1]), ss1 = s[0]/g, ss2 = s[1]/g;
-        long long lcm = (long long)ss1*s[1], ss1v2 = (long long)ss1*v[1], ss2v1 = (long long)ss2*v[0];
-        int d = n/lcm; if (d) {-- d; n -= d*lcm;}
-        long long va = ss1v2 > ss2v1 ? (long long)d*ss1v2 : (long long)d*ss2v1;
-        int nds1 = n/s[0], nds2 = n/s[1];
-        if (nds1 < nds2 && nds1 < ss1 && nds1 < ss2) {
-            cout << va + calc(0, nds1) << endl;
-        } else if (nds2 < nds1 && nds2 < ss1 && nds2 < ss2) {
-            cout << va + calc(1, nds2) << endl;
-        } else
-            cout << va + ((ss1v2 == ss2v1 && ss1 > ss2) || ss1v2 > ss2v1 ? calc(0, ss2-1) : calc(1, ss1-1)) << endl;
-    }
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    int t; cin >> t;
+    for (int k=1; k<=t; ++k) cout << "Case #" << k << ": " << solve() << endl;
     return 0;
 }

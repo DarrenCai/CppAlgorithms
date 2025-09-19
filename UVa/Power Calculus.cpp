@@ -1,9 +1,11 @@
 /**
- * UVa1374
+ * UVa1374/LA3621
  * 快速幂计算
+ * Yokohama 2006
  */
 
 #include <iostream>
+using namespace std;
 
 #define abs(x) (x>0 ? x : -(x))
 
@@ -26,10 +28,10 @@ bool IDDFS(short cur = 0) {
     return false;
 }
 
-int main()
-{
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     s[0] = 1;
-    using namespace std;
     while (cin>>n && n) {
         if (n==1) {
             cout << 0 << endl;

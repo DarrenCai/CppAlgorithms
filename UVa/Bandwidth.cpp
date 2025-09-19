@@ -1,77 +1,50 @@
 /**
- * UVa140
+ * UVa140/LA5570
  * 带宽
+ * NWERC 1992
  */
 
 #include <iostream>
-#include <algorithm>
-#include <string>
-#include <vector>
 using namespace std;
 
-vector<char> g[26], v; char n, s[8], s1[8], p[8], m[8]={1,1,1,1,1,1,1,1}, mi; bool visit[26] = {false};
+const int m = 8; int id[26], a[m], t, ans; char s[90], ch[m]; bool c[m][m], f[26];
 
-void dfs(char cur) {
-    if (cur == n) {
-        char mmax = m[0];
-        for (char i=1; i<n; ++i) mmax = max(mmax, m[i]);
-        if (mmax < mi || !mi) {
-            mi = mmax;
-            for (char i=0; i<n; ++i) s1[i] = s[i];
-        }
-    } else for (char i=0; i<n; ++i) {
-        if (!visit[i]) {
-            visit[i] = true;
-            s[cur] = i;
-            p[i] = cur;
-            char t = 0, len = g[v[i]].size();
-            for (char j=0; j<len; ++j) if (!visit[g[v[i]][j]]) ++t;
-            bool ok = !mi || t<mi;
-            for (char j=0; ok && j<cur; ++j) {
-                if (find(g[v[i]].begin(), g[v[i]].end(), v[s[j]]) != g[v[i]].end()) {
-                    char d = max(p[s[j]]-p[i], p[i]-p[s[j]]);
-                    m[i] = max(m[i], d);
-                    if (mi && m[i]>=mi) ok = false;
-                }
-            }
-            if (ok) dfs(cur+1);
-            m[i] = 1;
-            visit[i] = false;
+void dfs(int i = 0, int w = -1) {
+    if (i == t) {
+        ans = w; for (int j=0; j<t; ++j) s[j] = ch[a[j]];
+    } else for (int j=0; j<t; ++j) if (!f[j]) {
+        int x = w;
+        for (int k=0; k<i; ++k) if (c[a[k]][j]) x = max(x, i-k);
+        if (x < ans) {
+            f[a[i] = j] = true;
+            dfs(i+1, x);
+            f[j] = false;
         }
     }
 }
 
-int main()
-{
-    string s;
-    while (cin>>s && s[0]!='#') {
-        s += ';';
-        const char len = s.length();
-        for (char i=0; i<len; ++i) {
-            if (s[i]!=';' && s[i]!=':') {
-                char c = s[i]-'A';
-                v.push_back(c);
-                if (s[i+1] == ':') {
-                    ++ i;
-                    while(s[++i] != ';') {
-                        char c1= s[i]-'A';
-                        v.push_back(c1);
-                        if (find(g[c].begin(), g[c].end(), c1) == g[c].end())
-                            g[c].push_back(c1);
-                        if (find(g[c1].begin(), g[c1].end(), c) == g[c1].end())
-                            g[c1].push_back(c);
-                    }
-                }
-            }
+void solve() {
+    for (int i=0; i<26; ++i) f[i] = false;
+    for (int i=0; s[i]; ++i) if (s[i] >= 'A' && s[i] <= 'Z') f[s[i]-'A'] = true;
+    for (int i=t=0; i<26; ++i) if (f[i]) id[i] = t, ch[t++] = 'A'+i;
+    for (int i=0; i<t; ++i) for (int j=0; j<t; ++j) c[i][j] = false;
+    for (int i=0; s[i]; ++i) if (s[i] == ':') {
+        int u = id[s[i-1]-'A'];
+        for (int j=i+1; s[j]; ++j) {
+            if (s[j] == ';') break;
+            int v = id[s[j]-'A'];
+            c[u][v] = c[v][u] = true;
         }
-        sort(v.begin(), v.end());
-        n = unique(v.begin(), v.end()) - v.begin();
-        mi = 0;
-        dfs(0);
-        for (char i=0; i<n; ++i) cout << char(v[s1[i]]+'A') << ' ';
-        cout << "->" << ' ' << short(mi) << endl;
-        v.clear();
-        for (char i=0; i<26; ++i) g[i].clear();
     }
+    ans = m; for (int i=0; i<t; ++i) f[i] = false;
+    dfs();
+    for (int i=0; i<t; ++i) cout << s[i] << ' ';
+    cout << "-> " << ans << endl;
+}
+
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    while (cin >> s && s[0] != '#') solve();
     return 0;
 }

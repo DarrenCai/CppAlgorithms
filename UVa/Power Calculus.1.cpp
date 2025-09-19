@@ -1,6 +1,7 @@
 /**
  * UVa1374/LA3621
  * 快速幂计算
+ * Yokohama 2006
  */
 
 #include <iostream>

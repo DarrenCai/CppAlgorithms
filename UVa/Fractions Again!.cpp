@@ -4,21 +4,21 @@
  */
 
 #include <iostream>
-#include <vector>
+using namespace std;
+
+#define N 10002
+int x[N], y[N], k;
+
+void solve() {
+    int t = 0;
+    for (int i=k+1, m=k<<1; i<=m; ++i) if (k*i % (i-k) == 0) x[t] = k*i / (i-k), y[t++] = i;
+    cout << t << endl;
+    for (int i=0; i<t; ++i) cout << 1 << '/' << k << " = " << 1 << '/' << x[i] << " + " << 1 << '/' << y[i] << endl;
+}
 
 int main() {
-    using namespace std;
-    short k;
-    while(cin >> k) {
-        vector<pair<int, short> > v; short m=k<<1;
-        for(short y=k+1; y<=m; ++y) {
-            int p = k*y; short s = y-k;
-            if (p % s == 0)
-                v.push_back(pair<int, short>(p / s, y));
-        }
-        cout << v.size() << endl;
-        for(short i=0; i<v.size(); ++i)
-            cout << "1/" << k << " = 1/" << v[i].first << " + 1/" << v[i].second << endl;
-    }
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    while (cin >> k) solve();
     return 0;
 }

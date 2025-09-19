@@ -1,6 +1,7 @@
 /**
- * UVa1602
+ * UVa1602/LA3224
  * 网格动物
+ * NEERC 2004
  */
 
 #include <iostream>
@@ -85,8 +86,9 @@ void generate() {
         }
 }
 
-int main()
-{
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     generate();
     short n, w, h;
     while (cin >> n >> w >> h)

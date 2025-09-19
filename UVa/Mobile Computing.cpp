@@ -1,89 +1,73 @@
 /**
  * UVa1354/LA3403
  * 天平难题
+ * Tokyo 2005
  */
 
 #include <iostream>
-#include <set>
 #include <iomanip>
+#include <vector>
 using namespace std;
 
-struct Node {
-    short w; set<pair<double, double> > l;
-    Node(short w1): w(w1) {}
-};
+#define N 6
+struct node {double l, r;}; int w[1<<N], m, n; double s; vector<node> g[1<<N]; bool f[1<<N];
 
-double r, m; short s, w[6], a[5]; bool visit[6];
-
-Node calc(Node& left, Node& right) {
-    Node node(left.w + right.w);
-    double t1 = 1.0*right.w/node.w;
-    double t2 = 1.0*left.w/node.w;
-    for (set<pair<double, double> >::iterator it=left.l.begin(); it!=left.l.end(); ++it) {
-         for (set<pair<double, double> >::iterator it1=right.l.begin(); it1!=right.l.end(); ++it1) {
-             double l1 = it->first + t1, l2 = it1->first - t2; if (l1<l2) l1 = l2;
-             double r1 = it1->second + t2, r2 = it->second - t1; if (r1<r2) r1 = r2;
-             node.l.insert(pair<double, double>(l1, r1));
-         }
-    }
-    return node;
-}
-
-Node split(char f, char l) {
-    Node node(0);
-    if (l == 1) {
-        node = Node(w[a[f]]);
-        node.l.insert(pair<double, double>(0, 0));
-    } else if (l == 2) {
-        node = Node(w[a[f]] + w[a[f+1]]);
-        node.l.insert(pair<double, double>(1.0*w[a[f+1]]/node.w, 1.0*w[a[f]]/node.w));
-    } else {
-        for (char i=1; i<l; ++i) {
-            Node left = split(f, i);
-            Node right = split(f+i, l-i);
-            Node ret = calc(left, right);
-            if (!node.w) node.w = ret.w;
-            node.l.insert(ret.l.begin(), ret.l.end());
-        }
-    }
-    return node;
-}
-
-void dfs(char cur) {
-    if (cur == s) {
-        for (char i=1; i<s; ++i) {
-            Node left = split(0, i);
-            Node right = split(i, s-i);
-            Node ret = calc(left, right);
-            for (set<pair<double, double> >::iterator it=ret.l.begin(); it!=ret.l.end(); ++it) {
-                double t = it->first + it->second;
-                if (t<=r && t>m) m = t;
+void merge(int a, int b) {
+    vector<node>& t = g[a | b];
+    double u = w[b] / double(w[a] + w[b]), v = 1. - u;
+    for (int i=g[a].size()-1; i>=0; --i) {
+        double l = g[a][i].l, r = g[a][i].r;
+        for (int j=g[b].size()-1; j>=0; --j) {
+            double x = g[b][j].l, y = g[b][j].r;
+            double c = max(u+l, x-v), d = max(v+y, r-u);
+            if (c+d < s) t.push_back({c, d});
+            if (x != y) {
+                c = max(u+l, y-v); d = max(v+x, r-u);
+                if (c+d < s) t.push_back({c, d});
+            }
+            if (l != r) {
+                c = max(u+r, x-v); d = max(v+y, l-u);
+                if (c+d < s) t.push_back({c, d});
+                if (x != y) {
+                    c = max(u+r, y-v); d = max(v+x, l-u);
+                    if (c+d < s) t.push_back({c, d});
+                }
             }
         }
-    } else for (char i=0; i<s; ++i) {
-        if (!visit[i]) {
-            visit[i] = true;
-            a[cur] = i;
-            dfs(cur+1);
-            visit[i] = false;
-        }
     }
+}
+
+bool build(int x) {
+    if (f[x]) return g[x].size() > 0;
+    f[x] = true;
+    if (x == (x&-x)) g[x].push_back({0., 0.});
+    else for (int i=x&(x-1), j=x>>1; i>j; i=x&(i-1)) if (build(i) && build(x^i)) merge(i, x^i);
+    return g[x].size() > 0;
+}
+
+void solve() {
+    cin >> s >> n; m = (1<<n) - 1;
+    for (int i=0; i<n; ++i) cin >> w[1<<i];
+    if (n == 1) {
+        cout << 0 << endl;
+        return;
+    }
+    for (int i=1; i<=m; ++i) {
+        if (i > (i&-i)) w[i] = w[i&-i] + w[i ^ i&-i];
+        g[i].clear(); f[i] = false;
+    }
+    if (build(m)) {
+        double x = 0.;
+        for (int i=g[m].size()-1; i>=0; --i) x = max(x, g[m][i].l + g[m][i].r);
+        cout << x << endl;
+    } else cout << -1 << endl;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    cout << setprecision(17); int n; cin>>n;
-    while(n--) {
-        m = -1; cin >> r >> s;
-        for(char i=0; i<s; ++i) cin >> w[i];
-        if (s==1) cout << 0 << endl;
-        else if (r<1) cout << -1 << endl;
-        else if (s == 2) cout << (r<1 ? -1 : 1) << endl;
-        else {
-            dfs(0);
-            cout << m << endl;
-        }
-    }
+    // freopen("ou.txt", "w", stdout);
+    cout << fixed << setprecision(15);
+    int t; cin >> t;
+    while (t--) solve();
     return 0;
 }

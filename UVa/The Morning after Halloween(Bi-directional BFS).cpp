@@ -1,16 +1,18 @@
 /**
- * UVa1601
+ * UVa1601/LA3888
  * 万圣节后的早晨
+ * Tokyo 2007
  */
 
 #include <iostream>
 #include <vector>
 #include <queue>
 #include <cstring>
+using namespace std;
 
-int main()
-{
-    using namespace std;
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     const char d[]={0, -16, 16, -1, 1}; short w, h, n;
     while (cin >> w >> h >> n && w) {
         char s[16][16];

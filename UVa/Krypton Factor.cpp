@@ -4,43 +4,44 @@
  */
 
 #include <iostream>
-#include <vector>
 using namespace std;
-int n, t; short l; vector<char> s;
 
-bool dfs(int cur) {
-    const int len = s.size() + 1;
-    for (char i=0; i<l; ++i) {
-        if (len>1 && i==s.back()) continue;
-        bool ok = true; s.push_back(i);
-        for (int j=2; ok && (j<<1) <= len; ++j) {
-            bool eq = true;
-            for (int k=len-j; eq && k<len; ++k)
-                if (s[k] != s[k-j]) eq = false;
-            if (eq) ok = false;
-        }
-        if (ok) {
-            if (++t == n) {
-                for (int j=0; j<len; ++j) {
-                    if (j && !(j&3)) j&63 ? cout << ' ' : cout << endl;
-                    cout << char(s[j]+'A');
-                }
-                cout << endl << len << endl;
-                return true;
-            } else if (dfs(cur+1))
-                return true;
-        }
-        s.pop_back();
+#define M 81
+int n, l, c; char a[M];
+
+bool check(int i) {
+    for (int j=1, k=(i+1)>>1, x; j<=k; ++j) {
+        for (x=0; x<j; ++x) if (a[i-x] != a[i-x-j]) break;
+        if (x == j) return false;
     }
-    return false; 
+    return true;
 }
 
-int main()
-{
-    while (cin >> n >> l && n) {
-        t = 0;
-        dfs(0);
-        s.clear();
+void print(int m) {
+    for (int i=0; i<m; ++i) {
+        cout << a[i];
+        if (i==63 || i+1==m) cout << endl;
+        else if ((i&3) == 3) cout << ' ';
     }
+    cout << m << endl;
+}
+
+bool dfs(int i=0) {
+    for (int j=0; j<l; ++j) {
+        a[i] = 'A' + j;
+        if (!check(i)) continue;
+        if (++c == n) {
+            print(i+1);
+            return true;
+        }
+        if (dfs(i+1)) return true;
+    }
+    return false;
+}
+
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    while (cin >> n >> l && n) c = 0, dfs();
     return 0;
 }

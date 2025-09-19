@@ -4,24 +4,24 @@
  */
 
 #include <iostream>
+using namespace std;
 
-int main()
-{
-    using namespace std;
-    int k=0; short n, s[18];
-    while(cin>>n) {
-        for(short i=0; i<n; ++i)
-            cin >> s[i];
-        long long max = 0;
-        for(short i=0; i<n; ++i) {
-            for(short j=i; j<n; ++j) {
-                long long p = s[i];
-                for(short t=i+1; t<=j; ++t)
-                    p *= s[t];
-                if (p > max) max = p;
-            }
-        }
-        cout << "Case #" << ++k << ": The maximum product is " << max << '.' << endl << endl;
+#define N 18
+int a[N], n, kase = 0;
+
+void solve() {
+    for (int i=0; i<n; ++i) cin >> a[i];
+    long long ans = 0;
+    for (int i=0; i<n; ++i) {
+        long long v = 1;
+        for (int j=i; j<n; ++j) ans = max(ans, v *= a[j]);
     }
+    cout << "Case #" << ++kase << ": The maximum product is " << ans << "." << endl << endl;
+}
+
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    while (cin >> n && n) solve();
     return 0;
 }

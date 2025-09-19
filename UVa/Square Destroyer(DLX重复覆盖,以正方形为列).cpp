@@ -1,6 +1,7 @@
 /**
- * UVa1603
+ * UVa1603/LA2328
  * 破坏正方形
+ * Taejon 2001
  */
 
 #include <iostream>
@@ -76,8 +77,9 @@ void dfs(short d=0) {
     }
 }
 
-int main()
-{
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     short t, N, k, e[maxR]; cin >> t;
     while (t--) {
         cin >> N >> k;

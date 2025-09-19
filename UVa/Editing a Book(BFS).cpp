@@ -8,7 +8,7 @@
 #include <set>
 using namespace std;
 
-short n; char s[9];
+short n, k = 0; char s[9];
 const int p[9] = {1, 1, 2, 6, 24, 120, 720, 5040, 40320};
 
 char idx(char a) {
@@ -100,9 +100,9 @@ short bfs() {
     return step;
 }
 
-int main()
-{
-    short k=0;
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
     while (cin>>n && n) {
         for (short i=0; i<n; ++i)
             cin >> s[i];

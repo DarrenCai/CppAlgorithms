@@ -1,97 +1,71 @@
 /**
- * UVa1601
+ * UVa1601/LA3888
  * 万圣节后的早晨
+ * Tokyo 2007
  */
 
 #include <iostream>
-#include <vector>
-#include <queue>
 #include <cstring>
+using namespace std;
 
-int main()
-{
-    using namespace std;
-    const char d[]={0, -16, 16, -1, 1}; short w, h, n;
-    while (cin >> w >> h >> n && w) {
-        char s[16][16];
-        int a = 0, b = 0;
-        for (char i = 0; i < h; ++i) {
-            cin.ignore();
-            for (char j = 0; j < w; ++j) {
-                s[i][j] = cin.get();
-                if (s[i][j] >= 'a' && s[i][j] < 'd')
-                    a |= (i<<4 | j) << ((s[i][j]-'a') << 3);
-                else if (s[i][j] >= 'A' && s[i][j] < 'D')
-                    b |= (i<<4 | j) << ((s[i][j]-'A') << 3);
+#define N 16
+int q[1<<24], x[26], y[26], p[3], t[3], a[3], d[] = {1, 0, 0, -1, 0}, e[] = {0, -1, 1, 0, 0}, w, h, n, ans;
+bool f[N][N], vis[1<<24];
+
+bool check() {
+    for (int i=0; i<n; ++i) if (p[i] != t[i]) return false;
+    return true;
+}
+
+int bfs() {
+    memset(vis, 0, sizeof(vis)); vis[q[0] = n<2 ? p[0] : (n<3 ? p[1]<<8 | p[0] : p[2]<<16 | p[1]<<8 | p[0])] = true;
+    for (int s=1, c=1, t=1, r=0; r<c;) {
+        for (int v=q[r], i=0; i<n; ++i, v>>=8) a[i] = v&255, x[i] = a[i]>>4, y[i] = a[i]&15;
+        for (int i=0, u, v; i<5; ++i) {
+            u = x[0] + d[i]; v = y[0] + e[i]; p[0] = u<<4 | v;
+            if (u < 0 || u >= h || v < 0 || v >= w || f[u][v]) continue;
+            if (n == 1) {
+                if (check()) return s;
+                if (!vis[p[0]]) vis[p[0]] = true, q[t++] = p[0];
+            } else for (int j=0; j<5; ++j) {
+                u = x[1] + d[j]; v = y[1] + e[j]; p[1] = u<<4 | v;
+                if (u < 0 || u >= h || v < 0 || v >= w || f[u][v] || p[0] == p[1] || (p[0] == a[1] && p[1] == a[0])) continue;
+                if (n == 2) {
+                    if (check()) return s;
+                    int ss = p[1]<<8 | p[0];
+                    if (!vis[ss]) vis[ss] = true, q[t++] = ss;
+                } else for (int k=0; k<5; ++k) {
+                    u = x[2] + d[k]; v = y[2] + e[k]; p[2] = u<<4 | v;
+                    if (u < 0 || u >= h || v < 0 || v >= w || f[u][v] || p[0] == p[2] || p[1] == p[2] ||
+                        (p[0] == a[2] && p[2] == a[0]) || (p[1] == a[2] && p[2] == a[1])) continue;
+                    if (check()) return s;
+                    int ss = p[2]<<16 | p[1]<<8 | p[0];
+                    if (!vis[ss]) vis[ss] = true, q[t++] = ss;
+                }
             }
         }
-        if (a == b) {
-            cout << 0 << endl;
-        } else {
-            vector<char> m[256];
-            for (char i = 0; i < h; ++i)
-                for (char j = 0; j < w; ++j) {
-                    if (s[i][j] != '#') {
-                        short k = i<<4 | j; m[k].push_back(0);
-                        if (i && s[i-1][j]!='#') m[k].push_back(1);
-                        if (i<h-1 && s[i+1][j]!='#') m[k].push_back(2);
-                        if (j && s[i][j-1]!='#') m[k].push_back(3);
-                        if (j<w-1 && s[i][j+1]!='#') m[k].push_back(4);
-                    }
-                }
-            static short dd[16777216];       // static一定要加上，否则运行时可能导致error
-            memset(dd, 0, sizeof(dd)); dd[a] = 1;
-            queue<int> q; q.push(a);
-            while (!q.empty()) {
-                int f = q.front(); q.pop();
-                if (n==1) {
-                    for (char k=m[f].size()-1; k>0; --k) {
-                        int next = f + d[m[f][k]];
-                        if (!dd[next]) {
-                            dd[next] = dd[f] + 1;
-                            if (next == b) goto OUT;
-                            q.push(next);
-                        }
-                    }
-                } else if (n==2) {
-                    short f0 = f & 0xff, f1 = f>>8;
-                    for (char k=m[f0].size()-1; k>=0; --k) {
-                        short a0 = f0 + d[m[f0][k]];
-                        for (char l=m[f1].size()-1; l>=0; --l) {
-                            short a1 = f1 + d[m[f1][l]];
-                            if (a0==a1 || (a0==f0 && a1==f1) || (a0==f1 && a1==f0)) continue;
-                            int next = a1<<8 | a0;
-                            if (!dd[next]) {
-                                dd[next] = dd[f] + 1;
-                                if (next == b) goto OUT;
-                                q.push(next);
-                            }
-                        }
-                    }
-                } else {
-                    short f0 = f & 0xff, f1 = f>>8 & 0xff, f2 = f>>16;
-                    for (char k=m[f0].size()-1; k>=0; --k) {
-                        short a0 = f0 + d[m[f0][k]];
-                        for (char l=m[f1].size()-1; l>=0; --l) {
-                            short a1 = f1 + d[m[f1][l]];
-                            if (a0==a1 || (a0==f1 && a1==f0)) continue;
-                            for (char p=m[f2].size()-1; p>=0; --p) {
-                                short a2 = f2 + d[m[f2][p]];
-                                if (a0==a2 || a1==a2 || (a0==f0 && a1==f1 && a2==f2) ||
-                                    (a0==f2 && a2==f0) || (a1==f2 && a2==f1)) continue;
-                                int next = a2<<16 | a1<<8 | a0;
-                                if (!dd[next]) {
-                                    dd[next] = dd[f] + 1;
-                                    if (next == b) goto OUT;
-                                    q.push(next);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            OUT: cout << dd[b] -1 << endl;
+        if (++r == c) c = t, ++s;
+    }
+    return -1;
+}
+
+void solve() {
+    for (int i=0, k=0; i<h; ++i) {
+        cin.get();
+        for (int j=0; j<w; ++j) {
+            char c = cin.get();
+            f[i][j] = c == '#';
+            if (c >= 'a' && c <= 'z') x[a[k++] = c-'a'] = i<<4 | j;
+            if (c >= 'A' && c <= 'Z') y[c-'A'] = i<<4 | j;
         }
     }
+    for (int i=0; i<n; ++i) p[i] = x[a[i]], t[i] = y[a[i]];
+    cout << bfs() << endl;
+}
+
+int main() {
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    while (cin >> w >> h >> n && w) solve();
     return 0;
 }

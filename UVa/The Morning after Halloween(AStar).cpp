@@ -1,121 +1,88 @@
 /**
- * UVa1601
+ * UVa1601/LA3888
  * 万圣节后的早晨
+ * Tokyo 2007
  */
 
 #include <iostream>
+#include <cstring>
 #include <vector>
 #include <queue>
-#include <cstring>  // gcc编译器一定要加上,clang可以不要
+using namespace std;
 
-const char d[]={0, -16, 16, -1, 1}; short dist[3][256];
+#define N 16
+int g[1<<24], x[26], y[26], p[3], t[3], a[3], e, w, h, n, ans; bool f[N][N]; vector<int> d[N*N];
 
-short h(int s, short n) {
-    short max = 0;
-    for (char i=0; i<n; ++i) {
-        max = std::max(max, dist[i][s & 0xff]); s>>=8;
+struct node {
+    int d, s, v;
+    bool operator< (const node& rhs) const {
+        return d > rhs.d;
     }
-    return max;
+};
+
+int hh() {
+    int x = 0;
+    for (int i=0; i<n; ++i) x = max(x, abs((p[i]>>4) - (t[i]>>4)) + abs((p[i]&15) - (t[i]&15)));
+    return x;
+}
+
+int AStar() {
+    node t = {hh(), 0, n<2 ? p[0] : (n<3 ? p[1]<<8 | p[0] : p[2]<<16 | p[1]<<8 | p[0])};
+    priority_queue<node> q; q.push(t); memset(g, 0x7f, sizeof(g)); g[t.v] = 0;
+    while (!q.empty()) {
+        t = q.top(); q.pop();
+        if (t.s++ > g[t.v]) continue;
+        for (int v=t.v, i=0; i<n; ++i, v>>=8) a[i] = v&255;
+        for (int u=a[0], i=d[u].size()-1; i>=0; --i) {
+            p[0] = d[u][i];
+            if (n == 1) {
+                if (p[0] == e) return t.s;
+                if (t.s < g[p[0]]) q.push({t.s+hh(), g[p[0]] = t.s, p[0]});
+            } else for (int v=a[1], j=d[v].size()-1; j>=0; --j) {
+                p[1] = d[v][j];
+                if (p[0] == p[1] || (p[0] == a[1] && p[1] == a[0])) continue;
+                if (n == 2) {
+                    int ss = p[1]<<8 | p[0];
+                    if (ss == e) return t.s;
+                    if (t.s < g[ss]) q.push({t.s+hh(), g[ss] = t.s, ss});
+                } else for (int w=a[2], k=d[w].size()-1; k>=0; --k) {
+                    p[2] = d[w][k];
+                    if (p[0] == p[2] || p[1] == p[2] || (p[0] == a[2] && p[2] == a[0]) ||
+                        (p[1] == a[2] && p[2] == a[1])) continue;
+                    int ss = p[2]<<16 | p[1]<<8 | p[0];
+                    if (ss == e) return t.s;
+                    if (t.s < g[ss]) q.push({t.s+hh(), g[ss] = t.s, ss});
+                }
+            }
+        }
+    }
+    return -1;
+}
+
+void solve() {
+    for (int i=0, k=0; i<h; ++i) {
+        cin.get();
+        for (int j=0; j<w; ++j) {
+            char c = cin.get();
+            f[i][j] = c == '#';
+            if (c >= 'a' && c <= 'z') x[a[k++] = c-'a'] = i<<4 | j;
+            if (c >= 'A' && c <= 'Z') y[c-'A'] = i<<4 | j;
+        }
+    }
+    for (int i=e=0; i<h; ++i) for (int j=0; j<w; ++j) if (!f[i][j]) {
+        int u = i<<4 | j; d[u].clear(); d[u].push_back(u);
+        if (i && !f[i-1][j]) d[u].push_back(u-16);
+        if (i+1 < h && !f[i+1][j]) d[u].push_back(u+16);
+        if (j && !f[i][j-1]) d[u].push_back(u-1);
+        if (j+1 < w && !f[i][j+1]) d[u].push_back(u+1);
+    }
+    for (int i=n-1; i>=0; --i) p[i] = x[a[i]], t[i] = y[a[i]], e = e<<8 | t[i];
+    cout << AStar() << endl;
 }
 
 int main() {
-    using namespace std;
-    short w, h, n;
-    while (cin >> w >> h >> n && w) {
-        char s[16][16];
-        int a = 0, b = 0, bp[3];
-        for (char i = 0; i < h; ++i) {
-            cin.ignore();
-            for (char j = 0; j < w; ++j) {
-                s[i][j] = cin.get();
-                if (s[i][j] >= 'a' && s[i][j] < 'd')
-                    a |= (i<<4 | j) << ((s[i][j]-'a') << 3);
-                else if (s[i][j] >= 'A' && s[i][j] < 'D') {
-                    char p = s[i][j]-'A';
-                    short k = i<<4 | j;
-                    dist[p][k] = 0;
-                    bp[p] = k;
-                    b |= k << (p << 3);
-                }
-            }
-        }
-        if (a == b) {
-            cout << 0 << endl;
-        } else {
-            vector<char> m[256];
-            for (char i = 0; i < h; ++i)
-                for (char j = 0; j < w; ++j) {
-                    if (s[i][j] != '#') {
-                        short k = i<<4 | j; m[k].push_back(0);
-                        if (i && s[i-1][j]!='#') m[k].push_back(1);
-                        if (i<h-1 && s[i+1][j]!='#') m[k].push_back(2);
-                        if (j && s[i][j-1]!='#') m[k].push_back(3);
-                        if (j<w-1 && s[i][j+1]!='#') m[k].push_back(4);
-                    }
-                }
-            for (char i=0; i<n; ++i) {
-                bool visit[256] = {false}; queue<short> q; q.push(bp[i]); visit[bp[i]] = true;
-                while (!q.empty()) {
-                    short k = q.front(); q.pop();
-                    for (char j=m[k].size()-1; j>0; --j) {
-                        short next = k + d[m[k][j]];
-                        if (!visit[next]) {
-                            dist[i][next] = dist[i][k] + 1;
-                            q.push(next); visit[next] = true;
-                        }
-                    }
-                }
-            }
-            if (n==1) {
-                cout << dist[0][a] << endl;
-                continue;
-            }
-            static unsigned short g[16777216]; memset(g, 0xff, sizeof(g)); g[a] = 0;
-            priority_queue<pair<short, int>, vector<pair<short, int> >, greater<pair<short, int> > > q;
-            q.push(make_pair(::h(a, n), a));
-            while (!q.empty()) {
-                short f = q.top().first; int c = q.top().second; q.pop();
-                if (c == b) {
-                    cout << f << endl; break;
-                }
-                const short d = f - ::h(c, n);
-                if (d > g[c]) continue;
-                if (n==2) {
-                    short c0 = c&0xff, c1 = c>>8;
-                    for (char i=m[c0].size()-1; i>=0; --i) {
-                        short a0 = c0 + ::d[m[c0][i]];
-                        for (char j=m[c1].size()-1; j>=0; --j) {
-                            short a1 = c1 + ::d[m[c1][j]];
-                            if (a0==a1 || (a0==c0 && a1==c1) || (a0==c1 && a1==c0)) continue;
-                            int next = a1<<8 | a0;
-                            if (d+1 < g[next]) {
-                                g[next] = d + 1;
-                                q.push(make_pair(g[next]+::h(next, n), next));
-                            }
-                        }
-                    }
-                } else {
-                    short c0 = c&0xff, c1 = c>>8 & 0xff, c2 = c>>16;
-                    for (char i=m[c0].size()-1; i>=0; --i) {
-                        short a0 = c0 + ::d[m[c0][i]];
-                        for (char j=m[c1].size()-1; j>=0; --j) {
-                            short a1 = c1 + ::d[m[c1][j]];
-                            if (a0==a1 || (a0==c1 && a1==c0)) continue;
-                            for (char k=m[c2].size()-1; k>=0; --k) {
-                                short a2 = c2 + ::d[m[c2][k]];
-                                if (a0==a2 || a1==a2 || (a0==c0 && a1==c1 && a2==c2) ||
-                                    (a0==c2 && a2==c0) || (a1==c2 && a2==c1)) continue;
-                                int next = a2<<16 | a1<<8 | a0;
-                                if (d+1 < g[next]) {
-                                    g[next] = d + 1;
-                                    q.push(make_pair(g[next]+::h(next, n), next));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    // freopen("in.txt", "r", stdin);
+    // freopen("ou.txt", "w", stdout);
+    while (cin >> w >> h >> n && w) solve();
     return 0;
 }
