@@ -1,6 +1,7 @@
 /**
  * UVa1491/LA5693
  * 字符串压缩
+ * Dalian 2011
  */
 
 #include <iostream>
