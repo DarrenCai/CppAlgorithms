@@ -7,13 +7,14 @@
 #include <cmath>
 using namespace std;
 
-#define M 50020
-#define N 1<<17
-int rev[N] = {0}, na, nb, nc, tot; bool f[M] = {false};
+#define M 1<<17
+#define N 50001
+int a, b, c, tot; bool f[N];
+
 struct complex {
     double x, y;
-    complex operator+ (const complex &t) const {
-        return {x + t.x, y + t.y};
+    void operator+= (const complex &t) {
+        x += t.x; y += t.y;
     }
     complex operator- (const complex &t) const {
         return {x - t.x, y - t.y};
@@ -21,47 +22,50 @@ struct complex {
     complex operator* (const complex &t) const {
         return {x * t.x - y * t.y, x * t.y + y * t.x};
     }
+} s[4][M];
 
-} a[4][N];
-
-void fft(complex (&a)[N], int inv) {
-    for (int i=0; i<tot; ++i) if (i < rev[i]) {
-        complex t = a[i]; a[i] = a[rev[i]]; a[rev[i]] = t;
+void fft(complex (&a)[M], int inv) {
+    for (int i=0, j=0; i<tot; ++i) {
+        if(j > i) {complex t = a[i]; a[i] = a[j]; a[j] = t;}
+        int k = tot;
+        while(j & (k >>= 1)) j &= ~k;
+        j |= k;
     }
-    for (int mid=1; mid<tot; mid<<=1) for (int i=0, k=mid<<1; i<tot; i+=k) {
-        complex wk = {1., 0.};
-        for (int j=0; j<mid; ++j, wk = {cos(j*M_PI / mid), inv * sin(j*M_PI / mid)}) {
-            complex x = a[i + j], y = wk * a[i + j + mid];
-            a[i + j] = x + y; a[i + j + mid] = x - y;
+    for(int step=1; step<tot; step<<=1) {
+        double alpha = inv*M_PI / step;
+        for(int k=0; k<step; k++) {
+            complex wk = {cos(alpha*k), sin(alpha*k)};
+            for(int Ek=k; Ek<tot; Ek += step<<1) {
+                int Ok = Ek + step; complex t = wk * a[Ok];
+                a[Ok] = a[Ek] - t; a[Ek] += t;
+            }
         }
     }
 }
 
 void solve() {
-    int bit = 0; tot = (nb<<1) | 1;
-    while ((1 << bit) < tot) ++bit;
-    tot = 1 << bit;
-    for (int i=0; i<tot; ++i) a[0][i] = a[1][i] = a[2][i] = a[3][i] = {i<nb && f[i] ? 1. : 0., 0.};
-    while (nc--) {
-        int v; char h; cin >> v >> h;
-        a[h == 'S' ? 0 : (h == 'H' ? 1 : (h == 'C' ? 2 : 3))][v].x = 0.;
+    for (int t = (b<<1) + (tot=1); tot < t; tot <<= 1);
+    for (int i=0; i<tot; ++i) s[0][i] = s[1][i] = s[2][i] = s[3][i] = {i<b && f[i] ? 1. : 0., 0.};
+    while (c--) {
+        int p; char ch; cin >> p >> ch;
+        s[ch=='S' ? 0 : (ch=='H' ? 1 : (ch=='C' ? 2 : 3))][p].x = 0.;
     }
-    for (int i=0; i<tot; ++i) rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (bit - 1));
-    for (int i=0; i<4; ++i) fft(a[i], 1);
-    for (int i=0; i<tot; ++i) a[0][i] = a[0][i] * a[1][i], a[2][i] = a[2][i] * a[3][i];
-    fft(a[0], -1); fft(a[2], -1);
-    for (int i=0; i<tot; ++i) a[0][i] = {i<nb ? a[0][i].x / tot : 0., 0.}, a[2][i] = {i<nb ? a[2][i].x / tot : 0., 0.};
-    fft(a[0], 1); fft(a[2], 1);
-    for (int i=0; i<tot; ++i) a[0][i] = a[0][i] * a[2][i];
-    fft(a[0], -1);
-    for (int i=na; i<=nb; ++i) cout << (long long)(a[0][i].x / tot + .5) << endl;
+    for (int i=0; i<4; ++i) fft(s[i], 1);
+    for (int i=0; i<tot; ++i) s[0][i] = s[0][i] * s[2][i], s[1][i] = s[1][i] * s[3][i];
+    fft(s[0], -1); fft(s[1], -1);
+    for (int i=0; i<tot; ++i)
+        s[0][i].x = i<b ? s[0][i].x / tot : 0., s[1][i].x = i<b ? s[1][i].x / tot : 0., s[0][i].y = s[1][i].y = 0.;
+    fft(s[0], 1); fft(s[1], 1);
+    for (int i=0; i<tot; ++i) s[0][i] = s[0][i] * s[1][i];
+    fft(s[0], -1);
+    for (int i=a; i<=b; ++i) cout << (long long)(s[0][i].x / tot + 0.5) << endl;
     cout << endl;
 }
 
 int main() {
     // freopen("in.txt", "r", stdin);
     // freopen("ou.txt", "w", stdout);
-    for (int i=2; i*i<M; ++i) if (!f[i]) for (int j=i*i; j<M; j+=i) f[j] = true;
-    while (cin >> na >> nb >> nc && (na || nb || nc)) solve();
-    return 0;
+    for (int i=0; i<N; ++i) f[i] = false;
+    for (int i=2; i<N; ++i) if (!f[i]) for (int j=i<<1; j<N; j+=i) f[j] = true;
+    while (cin >> a >> b >> c && (a || b || c)) solve();
 }
