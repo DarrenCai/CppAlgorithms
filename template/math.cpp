@@ -254,3 +254,53 @@ namespace simplex2 {
         }
     }
 }
+
+namespace simplex3 {
+    // 单纯形算法高效版
+    #define INF 1e200
+    #define eps 1e-10
+    #define M 10005
+    #define N 1005
+    double a[M][N]; int B[M], C[N], m, n, L, R, kase = 0;
+
+    void pivot(int r, int c) {
+        double t = a[r][c]; int e = C[c]; C[c] = B[r]; B[r] = e; a[r][c] = 1.;
+        for (int i = 0; i <= n; ++i) a[r][i] /= t;
+        for (int i = 0; i <= m; ++i) if (i != r && abs(a[i][c]) > eps){
+            t = a[i][c]; a[i][c] = 0;
+            for (int j = 0; j <= n; j++) a[i][j] -= a[r][j] * t;
+        }
+    }
+
+    bool feasible() {
+        while (true) {
+            int r = -1, c = -1;
+            for (int i = 0; i < m; i++) if (a[i][n] < -eps && (r < 0 || (rand() & 1))) r = i;
+            if (r < 0) break;
+            for (int i = 0; i < n; i++) if (a[r][i] < -eps && (c < 0 || (rand() & 1))) c = i;
+            if (c < 0) return false;
+            pivot(r, c);
+        }
+        return true;
+    }
+
+    int simplex() {
+        for (int i = 0; i < n; i++) C[i] = i;
+        for (int i = 0; i < m; i++) B[i] = n+i;
+        if (!feasible()) return 0;
+        while (true) {
+            int r = -1, c = -1; double p = INF;
+            for (int i = 0; i < n; i++) if (a[m][i] > eps) {
+                c = i; break;
+            }
+            if (c < 0) break;
+            for (int i = 0; i < m; i++) if (a[i][c] > eps) {
+                double v = a[i][n] / a[i][c];
+                if (v < p) r = i, p = v;
+            }
+            if (r < 0) return -1;
+            pivot(r, c);
+        }
+        return 1;
+    }
+}
